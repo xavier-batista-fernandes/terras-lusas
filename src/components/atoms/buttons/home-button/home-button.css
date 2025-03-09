@@ -3,7 +3,7 @@
     --secondary-color: '';
 }
 
-button {
+.home-button {
     background: linear-gradient(to top, var(--primary-color) 50%, var(--secondary-color) 50%) bottom;
     background-size: 100% 200%;
     border: none;
@@ -15,13 +15,13 @@ button {
     box-shadow: #242424 5px 5px;
 }
 
-button:hover {
+.home-button:hover {
     background-position: top;
     box-shadow: #242424 7px 7px;
     transform: translate(-1px, -1px);
 }
 
-button:active {
+.home-button:active {
     transform: translate(5px, 5px);
     box-shadow: none;
 }
