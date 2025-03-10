@@ -15,6 +15,7 @@ export const Daily = () => {
             overflow={'hidden'}
         >
             <Text fontSize={'3rem'} fontWeight={'bolder'}>Coming soon...</Text>
+            <input type="text" name="Município" value="Leiria" placeholder="Oliveira do Hospital..." />
         </Container>
     </>;
 };

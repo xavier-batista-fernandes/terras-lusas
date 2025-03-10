@@ -35,15 +35,18 @@ export const Home = () => {
         style: unselectedStyle
     });
 
+    const view = new View({
+        center: fromLonLat([-8.85, 38.70]),
+        zoom: 9.5,
+        rotation: 0
+    });
+
     const mapOptions: MapOptions = {
         target: 'map',
         layers: [
             vectorLayer
         ],
-        view: new View({
-            center: fromLonLat([-8.611, 39.824]),
-            zoom: 8.5
-        })
+        view
     };
 
     useEffect(() => {
@@ -57,7 +60,6 @@ export const Home = () => {
         map.addInteraction(selectInteraction);
 
         selectInteraction.getFeatures().on('add', (event) => {
-            console.log('on add', event);
             const colors = ['#386641', '#6a994e', '#a7c957', '#f2e8cf', '#fb8b24'];
             const selectedStyle = new Style({
                 stroke: new Stroke({
@@ -70,8 +72,11 @@ export const Home = () => {
                 zIndex: 10
             });
             event.element.setStyle(selectedStyle);
+
+            console.log('geometry', event.element.getGeometry()?.getExtent());
+            // view.animate({ rotation: 290, duration: 500, easing: easeIn });
         });
-        
+
     }, []);
 
     return <>
@@ -87,7 +92,7 @@ export const Home = () => {
                 justifyContent={'center'}
                 alignItems={'center'}
                 height={'100vh'}
-                width={'50%'}
+                width={'30%'}
             >
                 <Text fontSize={'3rem'} margin={'10px 0'}>Terras Lusas</Text>
                 <Text fontWeight={'lighter'} margin={'10px 0'}>Sabes onde é a tal terrinha do teu amigo António?</Text>
@@ -95,7 +100,7 @@ export const Home = () => {
             </Container>
             <Container
                 height={'100vh'}
-                width={'50%'}
+                width={'70%'}
 
             >
                 <div id="map"></div>
@@ -103,3 +108,10 @@ export const Home = () => {
         </Container>
     </>;
 };
+
+// const getCentroid = (feature: Feature) => {
+//     if (feature === undefined) return;
+//     if (feature.getGeometry() === undefined) return;
+//
+//     const [] = feature.getGeometry()?.getExtent();
+// };
