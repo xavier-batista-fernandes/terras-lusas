@@ -2,17 +2,14 @@ import './home.css';
 import { Container } from '../../atoms/container/container.tsx';
 import { useEffect } from 'react';
 import { Map, View } from 'ol';
-import VectorLayer from 'ol/layer/Vector';
-import VectorSource from 'ol/source/Vector';
-import { GeoJSON } from 'ol/format';
 import { fromLonLat } from 'ol/proj';
-import { MapOptions } from 'ol/Map';
 import { Select } from 'ol/interaction';
 import { always, pointerMove } from 'ol/events/condition';
 import { Text } from '../../atoms/text/text.tsx';
 import { HomeButton } from '../../atoms/buttons/home-button/home-button.tsx';
 import { Fill, Stroke, Style } from 'ol/style';
 import { useNavigate } from 'react-router-dom';
+import { getMunicipalitiesLayer } from '../../../utilities/getMunicipalitiesLayer.ts';
 
 export const Home = () => {
     const navigate = useNavigate();
@@ -27,31 +24,24 @@ export const Home = () => {
         zIndex: 5
     });
 
-    const vectorLayer = new VectorLayer({
-        source: new VectorSource({
-            url: 'assets/data/portugal.geojson',
-            format: new GeoJSON()
-        }),
-        style: unselectedStyle
-    });
-
     const view = new View({
-        center: fromLonLat([-8.85, 38.70]),
-        zoom: 9.5,
-        rotation: 0
+        center: fromLonLat([-8.55, 38.65]),
+        resolution: 0,
+        maxResolution: 300,
+        minResolution: 300
+
     });
 
-    const mapOptions: MapOptions = {
-        target: 'map',
-        layers: [
-            vectorLayer
-        ],
-        view
-    };
+    const municipalitiesLayer = getMunicipalitiesLayer();
+    municipalitiesLayer.setStyle(unselectedStyle);
 
     useEffect(() => {
 
-        const map = new Map(mapOptions);
+        const map = new Map();
+        map.setTarget('map');
+        map.setView(view);
+        map.addLayer(municipalitiesLayer);
+
 
         const selectInteraction = new Select({
             condition: pointerMove,

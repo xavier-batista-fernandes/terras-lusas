@@ -1,0 +1,5 @@
+1. Add logs for different log levels
+2. Wait for features to be loaded before getting random feature
+3. Add error handling for mapping operations
+    3.1 Loading the map
+    3.2 Loading the target municipality
