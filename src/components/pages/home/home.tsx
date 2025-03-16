@@ -1,8 +1,8 @@
 import './home.css';
 import { Container } from '../../atoms/container/container.tsx';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Map, View } from 'ol';
-import { fromLonLat } from 'ol/proj';
+import { useGeographic } from 'ol/proj';
 import { Select } from 'ol/interaction';
 import { always, pointerMove } from 'ol/events/condition';
 import { Text } from '../../atoms/text/text.tsx';
@@ -11,8 +11,13 @@ import { Fill, Stroke, Style } from 'ol/style';
 import { useNavigate } from 'react-router-dom';
 import { getMunicipalitiesLayer } from '../../../utilities/getMunicipalitiesLayer.ts';
 
+
 export const Home = () => {
+
+    useGeographic();
     const navigate = useNavigate();
+    const mapElement = useRef(null);
+
     const unselectedStyle = new Style({
         stroke: new Stroke({
             color: 'black',
@@ -24,48 +29,67 @@ export const Home = () => {
         zIndex: 5
     });
 
-    const view = new View({
-        center: fromLonLat([-8.55, 38.65]),
-        resolution: 0,
-        maxResolution: 300,
-        minResolution: 300
 
+    const selectInteraction = new Select({
+        condition: pointerMove,
+        addCondition: always
     });
-
-    const municipalitiesLayer = getMunicipalitiesLayer();
-    municipalitiesLayer.setStyle(unselectedStyle);
 
     useEffect(() => {
 
-        const map = new Map();
-        map.setTarget('map');
-        map.setView(view);
-        map.addLayer(municipalitiesLayer);
+        const mapInstance = new Map();
+
+        const init = async () => {
+            if (!mapElement.current) throw new Error('Map element not found.');
+
+            const municipalitiesLayer = getMunicipalitiesLayer();
+            municipalitiesLayer.setStyle(unselectedStyle);
 
 
-        const selectInteraction = new Select({
-            condition: pointerMove,
-            addCondition: always
-        });
-        map.addInteraction(selectInteraction);
+            console.log('Setting target...');
+            mapInstance.setTarget(mapElement.current);
 
-        selectInteraction.getFeatures().on('add', (event) => {
-            const colors = ['#386641', '#6a994e', '#a7c957', '#f2e8cf', '#fb8b24'];
-            const selectedStyle = new Style({
-                stroke: new Stroke({
-                    color: 'black',
-                    width: 1
-                }),
-                fill: new Fill({
-                    color: colors[Math.floor(Math.random() * colors.length)]
-                }),
-                zIndex: 10
+            console.log('Setting view...');
+            const view = new View({
+                center: [-8.35, 39.35],
+                zoom: 8.75
+
             });
-            event.element.setStyle(selectedStyle);
+            mapInstance.setView(view);
 
-            console.log('geometry', event.element.getGeometry()?.getExtent());
-            // view.animate({ rotation: 290, duration: 500, easing: easeIn });
-        });
+            console.log('Adding layer...');
+            mapInstance.addLayer(municipalitiesLayer);
+
+            console.log('Adding interaction...');
+            mapInstance.addInteraction(selectInteraction);
+
+            selectInteraction.getFeatures().on('add', (event) => {
+                const colors = ['#386641', '#6a994e', '#a7c957', '#f2e8cf', '#fb8b24'];
+                const selectedStyle = new Style({
+                    stroke: new Stroke({
+                        color: 'black',
+                        width: 1
+                    }),
+                    fill: new Fill({
+                        color: colors[Math.floor(Math.random() * colors.length)]
+                    }),
+                    zIndex: 10
+                });
+                event.element.setStyle(selectedStyle);
+
+                console.log('geometry', event.element.getGeometry()?.getExtent());
+            });
+        };
+
+        init().then(() => console.log('Setup complete.'));
+
+        return () => {
+            console.log('Disposing...');
+            console.log('\n');
+
+            mapInstance.setTarget(undefined);
+            mapInstance.dispose();
+        };
 
     }, []);
 
@@ -74,6 +98,7 @@ export const Home = () => {
             height={'100vh'}
             width={'100vw'}
             display={'flex'}
+            alignItems={'end'}
             overflow={'hidden'}
         >
             <Container
@@ -82,7 +107,7 @@ export const Home = () => {
                 justifyContent={'center'}
                 alignItems={'center'}
                 height={'100vh'}
-                width={'30%'}
+                width={'50%'}
             >
                 <Text fontSize={'3rem'} margin={'10px 0'}>Terras Lusas</Text>
                 <Text fontWeight={'lighter'} margin={'10px 0'}>Sabes onde é a tal terrinha do teu amigo António?</Text>
@@ -90,18 +115,11 @@ export const Home = () => {
             </Container>
             <Container
                 height={'100vh'}
-                width={'70%'}
+                width={'50%'}
 
             >
-                <div id="map"></div>
+                <div id="map" ref={mapElement}></div>
             </Container>
         </Container>
     </>;
 };
-
-// const getCentroid = (feature: Feature) => {
-//     if (feature === undefined) return;
-//     if (feature.getGeometry() === undefined) return;
-//
-//     const [] = feature.getGeometry()?.getExtent();
-// };

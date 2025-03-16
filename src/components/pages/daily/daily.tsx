@@ -1,63 +1,96 @@
 import './daily.css';
 import { Container } from '../../atoms/container/container.tsx';
 import { Map, View } from 'ol';
-import { fromLonLat } from 'ol/proj';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Text } from '../../atoms/text/text.tsx';
 import { Fill, Stroke, Style } from 'ol/style';
-import { getMunicipalitiesLayer } from '../../../utilities/getMunicipalitiesLayer.ts';
+import { getRandomFeature } from '../../../utilities/getRandomFeature.ts';
+import { getMunicipalityCenter } from '../../../utilities/getMunicipalityCenter.ts';
+import VectorSource from 'ol/source/Vector';
+import { GeoJSON } from 'ol/format';
+import VectorLayer from 'ol/layer/Vector';
+import { useGeographic } from 'ol/proj';
+
+// Map projections:
+// 1. Web Mercator (EPSG:3857) (Meters) – The Default
+// 2. Geographic Coordinates (EPSG:4326) (Degrees, longitude and latitude)
 
 export const Daily = () => {
 
+    useGeographic();
     const [isLoading, setIsLoading] = useState(true);
+    const mapElement = useRef(null);
 
     useEffect(() => {
 
+        if (!mapElement.current) throw new Error('Map element not found.');
 
-        const municipalitiesLayer = getMunicipalitiesLayer();
-        municipalitiesLayer.setStyle((feature) => {
-            const yesStyle = new Style({
-                fill: new Fill({ color: 'green' }),
-                stroke: new Stroke({ color: 'black', width: 3 }),
-                zIndex: 10
+        const mapInstance = new Map();
+
+        const init = async () => {
+
+            if (!mapElement.current) throw new Error('Map element not found.');
+
+            // Read geojson file
+            const geojson = await fetch('assets/data/municipalities-heavy.geojson');
+            const geojsonObject = await geojson.json();
+            console.log('geojson:', geojson);
+            console.log('geojsonObject:', geojsonObject);
+
+            // Create a vector source
+            const vectorSource = new VectorSource({
+                features: new GeoJSON().readFeatures(geojsonObject)
             });
-            const noStyle = new Style({
-                fill: new Fill({ color: 'gray' }), stroke: new Stroke({ color: 'black', width: 1 }),
-                zIndex: 5
+
+            // Create vector layer
+            const vectorLayer = new VectorLayer({ source: vectorSource });
+
+            // Get random feature
+            const targetFeature = getRandomFeature(vectorLayer);
+
+            // Update style of features
+            vectorLayer.setStyle((feature) => {
+                const yesStyle = new Style({
+                    fill: new Fill({ color: '#84c844' }),
+                    stroke: new Stroke({ color: 'black', width: 2 }),
+                    zIndex: 10
+                });
+                const noStyle = new Style({
+                    fill: new Fill({ color: '#c5c5c5' }),
+                    stroke: new Stroke({ color: 'gray', width: 1 }),
+                    zIndex: 5
+                });
+
+                return feature === targetFeature ? yesStyle : noStyle;
             });
 
-            return feature.getProperties()['Municipality'] === 'LEIRIA' ? yesStyle : noStyle;
-        });
+            // Get center of the feature
+            const centerFeature = getMunicipalityCenter(targetFeature);
 
-        municipalitiesLayer.getSource()?.on('change', () => {
-            console.log('Source changed');
-            console.log(municipalitiesLayer.getSource()?.getFeatures());
-        });
-        // const targetMunicipality = getRandomFeature(municipalitiesLayer);
-        // console.log('target:', targetMunicipality);
+            // Create view
+            const view = new View({
+                center: centerFeature,
+                zoom: 10
+            });
 
-        // console.log('Feature:', feature);
-        // console.log('Geometry:', feature.getGeometry());
-        // console.log('Municipality', feature.getProperties()['Municipality']);
-        // console.log('Center', getMunicipalityCenter(feature));
-        //
-        const map = new Map();
+            mapInstance.setTarget(mapElement.current);
+            mapInstance.setLayers([vectorLayer]);
+            mapInstance.setView(view);
 
-        map.setTarget('map');
-        map.setView(new View({
-            center: fromLonLat([-8.55, 38.65]),
-            zoom: 10.75
-        }));
-        map.addLayer(municipalitiesLayer);
+            setIsLoading(false);
+        };
 
-        setIsLoading(false);
+        init().then(() => console.log('Setup complete.'));
 
         return () => {
             console.log('Cleaning up...');
+
+            mapInstance.setTarget(undefined);
+            mapInstance.dispose();
         };
     }, []);
 
-    return <>
+    return (
         <Container
             height={'100vh'}
             width={'100vw'}
@@ -68,7 +101,7 @@ export const Daily = () => {
             overflow={'hidden'}
         >
             <Text display={isLoading ? 'inherit' : 'none'} fontSize={'3rem'} fontWeight={'bolder'}>Loading...</Text>
-            <div style={{ display: isLoading ? 'none' : 'inherit' }} id="map"></div>
+            <div style={{ display: isLoading ? 'none' : 'inherit' }} id="map" ref={mapElement}></div>
         </Container>
-    </>;
+    );
 };
