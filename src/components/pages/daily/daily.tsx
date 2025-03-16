@@ -91,17 +91,38 @@ export const Daily = () => {
     }, []);
 
     return (
-        <Container
-            height={'100vh'}
-            width={'100vw'}
-            display={'flex'}
-            flexDirection={'column'}
-            justifyContent={'center'}
-            alignItems={'center'}
-            overflow={'hidden'}
-        >
-            <Text display={isLoading ? 'inherit' : 'none'} fontSize={'3rem'} fontWeight={'bolder'}>Loading...</Text>
-            <div style={{ display: isLoading ? 'none' : 'inherit' }} id="map" ref={mapElement}></div>
-        </Container>
+        <>
+            {/* Loading component... */}
+            <Container
+                height={'100vh'}
+                width={'100vw'}
+                display={isLoading ? 'flex' : 'none'}
+                flexDirection={'column'}
+                justifyContent={'center'}
+                alignItems={'center'}
+                overflow={'hidden'}
+            >
+                <Text fontSize={'3rem'} fontWeight={'bolder'}>Loading...</Text>
+            </Container>
+
+            {/* Content... */}
+            <Container
+                height={'100vh'}
+                width={'100vw'}
+                display={isLoading ? 'none' : 'flex'}
+                justifyContent={'center'}
+                alignItems={'center'}
+                overflow={'hidden'}
+            >
+                <Container width={'50%'}>
+                    <div id="map" ref={mapElement}></div>
+                </Container>
+                <Container width={'50%'} display={'flex'} flexDirection={'column'} justifyContent={'center'}
+                           alignItems={'center'}>
+                    <Text fontSize={'2rem'} fontWeight={'bolder'}>Que terrinha é esta?</Text>
+                    {/* TODO: add dropdown or text input */}
+                </Container>
+            </Container>;
+        </>
     );
 };

@@ -2,30 +2,32 @@ import './container.css';
 import { ContainerProps } from './container.props.ts';
 import { CSSProperties, FC } from 'react';
 
-export const Container: FC<ContainerProps> = ({
-    children,
-    height = '100%',
-    width = '100%',
-    position,
-    left,
-    right,
-    top,
-    bottom,
-    padding,
-    margin,
-    background,
-    backgroundColor,
-    overflow,
-    display,
-    justifyContent,
-    alignItems,
-    flexDirection,
-    gap,
-    boxShadow,
-    zIndex,
-    border,
-    transition,
-}) => {
+export const Container: FC<ContainerProps> = (
+    {
+        children,
+        height = '100%',
+        width = '100%',
+        position,
+        left,
+        right,
+        top,
+        bottom,
+        padding,
+        margin,
+        background,
+        backgroundColor,
+        overflow,
+        display,
+        justifyContent,
+        alignItems,
+        flexDirection,
+        gap,
+        boxShadow,
+        zIndex,
+        border,
+        transition
+    }
+) => {
     const style: CSSProperties = {
         height,
         width,
@@ -38,7 +40,7 @@ export const Container: FC<ContainerProps> = ({
         display,
         boxShadow,
         border,
-        transition,
+        transition
     };
 
     if (position !== 'static') {
@@ -49,6 +51,7 @@ export const Container: FC<ContainerProps> = ({
         if (zIndex !== undefined) style.zIndex = zIndex;
     }
 
+    // TODO: add linter rules for display properties being defined with display not defined
     if (display === 'flex') {
         if (justifyContent !== undefined) style.justifyContent = justifyContent;
         if (alignItems !== undefined) style.alignItems = alignItems;
