@@ -1,15 +1,15 @@
 import './home.css';
-import { Container } from '../../atoms/container/container.tsx';
+import { Container } from '../../components/atoms/container/container.tsx';
 import { useEffect, useRef } from 'react';
 import { Map, View } from 'ol';
 import { useGeographic } from 'ol/proj';
 import { Select } from 'ol/interaction';
 import { always, pointerMove } from 'ol/events/condition';
-import { Text } from '../../atoms/text/text.tsx';
-import { HomeButton } from '../../atoms/buttons/home-button/home-button.tsx';
+import { Text } from '../../components/atoms/text/text.tsx';
+import { HomeButton } from '../../components/atoms/buttons/home-button/home-button.tsx';
 import { Fill, Stroke, Style } from 'ol/style';
 import { useNavigate } from 'react-router-dom';
-import { getMunicipalitiesLayer } from '../../../utilities/getMunicipalitiesLayer.ts';
+import { getMunicipalitiesLayer } from '../../utilities/getMunicipalitiesLayer.ts';
 
 
 export const Home = () => {

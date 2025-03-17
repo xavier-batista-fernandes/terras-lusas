@@ -3,3 +3,7 @@
     width: 100%;
     overflow: hidden;
 }
+
+.ol-control {
+    display: none;
+}
