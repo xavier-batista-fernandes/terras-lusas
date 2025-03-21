@@ -3,3 +3,8 @@
 3. Add error handling for mapping operations
     3.1 Loading the map
     3.2 Loading the target municipality
+
+
+FEATURES:
+1. In the clock game mode, have a details section so the player can track
+which municipalities have been guessed already.
