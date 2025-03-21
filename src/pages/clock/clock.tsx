@@ -70,7 +70,8 @@ export const Clock = () => {
 
         const greenColors = ['#386641', '#6a994e', '#a7c957'];
         // TODO: create a map context (sort of a component store).
-        const features: Feature[] = mapInstance.getLayers().getArray()[0].getSource().getFeatures();
+        const municipalitiesLayer: any = mapInstance.getLayers().getArray()[0];
+        const features: Feature[] = municipalitiesLayer.getSource()!.getFeatures();
 
 
         for (const feature of features) {
