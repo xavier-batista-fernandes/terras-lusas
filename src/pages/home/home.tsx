@@ -111,7 +111,7 @@ export const Home = () => {
             >
                 <Text fontSize={'3rem'} margin={'10px 0'}>Terras Lusas</Text>
                 <Text fontWeight={'lighter'} margin={'10px 0'}>Sabes onde é a tal terrinha do teu amigo António?</Text>
-                <HomeButton margin={'20px'} onClick={() => navigate('/daily')}>Jogar</HomeButton>
+                <HomeButton margin={'20px'} onClick={() => navigate('/clock')}>Jogar</HomeButton>
             </Container>
             <Container
                 height={'100vh'}
