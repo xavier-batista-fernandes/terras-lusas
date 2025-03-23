@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useGeographic } from 'ol/proj';
-import { Map, View } from 'ol';
+import { Feature, Map, View } from 'ol';
 import { useMunicipalities } from '../providers/municipalities-provider.tsx';
 import { GeoJSON } from 'ol/format';
 import VectorSource from 'ol/source/Vector';
@@ -13,6 +13,7 @@ export function useMap() {
 
     const mapElement = useRef(null);
     const mapInstance = useRef<Map>(null);
+    const mapFeatures = useRef<Feature[]>(null);
 
     // Get municipalities context
     const { isLoading, geojson } = useMunicipalities();
@@ -34,23 +35,27 @@ export function useMap() {
     });
 
     useEffect(() => {
+        if (!mapElement.current) throw new Error('Could not retrieve map reference from the component\'s view.');
+    }, []);
+
+    useEffect(() => {
 
         if (isLoading) return;
         if (mapInstance.current) return;
+        if (!mapElement.current) return;
 
         mapInstance.current = new Map();
-        if (!mapElement.current) throw new Error('Map element not found.');
 
         const features = new GeoJSON().readFeatures(geojson);
         const source = new VectorSource({ features });
-        const vectorLayer = new VectorLayer({ source });
-
-        // Update style of features
-        vectorLayer.setStyle(() => DEFAULT_STYLE);
+        const layer = new VectorLayer({ source });
+        layer.setStyle(() => DEFAULT_STYLE);
 
         mapInstance.current.setTarget(mapElement.current);
-        mapInstance.current.setLayers([vectorLayer]);
+        mapInstance.current.setLayers([layer]);
         mapInstance.current.setView(DEFAULT_VIEW);
+
+        mapFeatures.current = features;
 
         return () => {
             console.log('Cleaning up...');
@@ -62,6 +67,7 @@ export function useMap() {
 
     return {
         mapElement,
-        mapInstance
+        mapInstance: mapInstance.current,
+        mapFeatures: mapFeatures.current
     };
 }

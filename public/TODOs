@@ -6,5 +6,5 @@
 
 
 FEATURES:
-1. In the clock game mode, have a details section so the player can track
-which municipalities have been guessed already.
+1. In the clock game mode, have a details section so the player can track which municipalities have been guessed already that opens when clicked.
+2. Create daily achievements for the player to complete (like guessing 5 municipalities that start with A in a row)

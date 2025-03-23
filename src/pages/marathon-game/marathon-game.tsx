@@ -1,5 +1,4 @@
-import './clock.css';
-import { Feature } from 'ol';
+import './marathon-game.css';
 import { useEffect, useState } from 'react';
 import { Fill, Stroke, Style } from 'ol/style';
 import { useMunicipalities } from '../../providers/municipalities-provider.tsx';
@@ -7,6 +6,7 @@ import { Container } from '../../components/atoms/container/container.tsx';
 import { Text } from '../../components/atoms/text/text.tsx';
 import { HomeButton } from '../../components/atoms/buttons/home-button/home-button.tsx';
 import { useMap } from '../../hooks/useMap.ts';
+import { CountdownUpdates, useCountdown } from '../../hooks/useCountdown.ts';
 
 export enum gameStates {
     NOT_STARTED,
@@ -16,60 +16,53 @@ export enum gameStates {
 
 const GAME_DURATION_IN_SECONDS = 30;
 
-export const Clock = () => {
+export const MarathonGame = () => {
 
     const municipalitiesContext = useMunicipalities();
 
     // Setup map and load it with municipalities
-    const { mapElement, mapInstance } = useMap();
-
+    const { mapElement, mapFeatures } = useMap();
 
     const [gameState, setGameState] = useState(gameStates.NOT_STARTED);
     const [numberOfCorrectGuesses, setNumberOfCorrectGuesses] = useState(0);
-    const [remainingTime, setRemainingTime] = useState(GAME_DURATION_IN_SECONDS);
+    const {
+        remainingTime,
+        updateState
+    } = useCountdown(GAME_DURATION_IN_SECONDS, () => setGameState(gameStates.GAME_OVER));
+
+    // Create a timer to keep track of the remaining time
     useEffect(() => {
         if (gameStates.ON_GOING !== gameState) return;
-
-        const initialTime = new Date().getTime();
-        const interval = setInterval(() => {
-            const currentTime = new Date().getTime();
-            const elapsedTime = currentTime - initialTime;
-            const TIME_LIMIT = GAME_DURATION_IN_SECONDS * 1000;
-            setRemainingTime(Math.floor((TIME_LIMIT - elapsedTime) / 1000));
-            if (elapsedTime > TIME_LIMIT) {
-                setGameState(gameStates.GAME_OVER);
-                clearInterval(interval);
-            }
-        }, 100);
+        updateState(CountdownUpdates.START);
     }, [gameState]);
 
+    // Function that evaluates the user's input
     function evaluateAnswer(input: string) {
 
         const greenColors = ['#53b565', '#69a545', '#a7c957', '#a2df47', '#adc178'];
-        // TODO: create a map context (sort of a component store).
-        const municipalitiesLayer: any = mapInstance.current!.getLayers().getArray()[0];
-        const features: Feature[] = municipalitiesLayer.getSource()!.getFeatures();
 
-
-        for (const feature of features) {
-            if (feature.getProperties().Municipality === input.toUpperCase()) {
+        for (const feature of mapFeatures!) {
+            if (feature.getProperties()['con_name_lower'] === input.toLowerCase()) {
                 setNumberOfCorrectGuesses(numberOfCorrectGuesses + 1);
+                console.log('updating color...', feature);
                 feature.setStyle(new Style({
                     fill: new Fill({ color: greenColors[Math.floor(Math.random() * greenColors.length)] }),
                     stroke: new Stroke({ width: 1 }),
                     zIndex: 10
                 }));
 
-                // const center = getMunicipalityCenter(feature);
-                // mapInstance.current!.setView(new View({ center, zoom: 8 }));
-
-                // const DURATION = 1000;
-                // view.animate({ center: center, duration: DURATION });
-                // view.animate({ zoom: 7.75, duration: DURATION / 2 }, { zoom: 8, duration: DURATION / 2 });
-
                 return;
             }
         }
+    }
+
+    function handleKeyDown(event: any) {
+        if (event.key !== 'Enter') return;
+
+        const inputValue = event.target.value.trim();
+        if (inputValue) evaluateAnswer(inputValue);
+
+        event.target.value = '';
     }
 
     return (<>
@@ -95,10 +88,6 @@ export const Clock = () => {
                 alignItems="center"
                 overflow="hidden"
             >
-                <Container width="50%">
-                    <div id="map" ref={mapElement}></div>
-                </Container>
-
                 {gameState === gameStates.NOT_STARTED && (
                     <Container
                         width="50%"
@@ -134,7 +123,6 @@ export const Clock = () => {
                                 width: '45%',
                                 height: '2.5rem',
                                 fontSize: '1.5rem',
-                                borderRadius: '8px',
                                 border: '1px solid black',
                                 padding: '1% 2%',
                                 fontFamily: 'monospace'
@@ -142,16 +130,7 @@ export const Clock = () => {
                             type="text"
                             placeholder="Escreve aqui..."
                             autoFocus
-                            onKeyDown={(event: any) => {
-                                if (event.key === 'Enter') {
-                                    const inputValue = event.target.value.trim();
-                                    if (inputValue) {
-                                        evaluateAnswer(inputValue);
-                                        console.log('key pressed', inputValue);
-                                    }
-                                    event.target.value = '';
-                                }
-                            }}
+                            onKeyDown={(event) => handleKeyDown(event)}
                         />
                     </Container>
                 )}
@@ -171,6 +150,10 @@ export const Clock = () => {
                         <Text fontSize="1.5rem">Conseguiste escrever {numberOfCorrectGuesses} concelhos.</Text>
                     </Container>
                 )}
+
+                <Container width="50%">
+                    <div id="map" ref={mapElement}></div>
+                </Container>
             </Container>
         </>
     );
