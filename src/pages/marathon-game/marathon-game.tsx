@@ -1,12 +1,12 @@
 import './marathon-game.css';
 import { useEffect, useState } from 'react';
-import { Fill, Stroke, Style } from 'ol/style';
 import { useMunicipalities } from '../../providers/municipalities-provider.tsx';
 import { Container } from '../../components/atoms/container/container.tsx';
 import { Text } from '../../components/atoms/text/text.tsx';
 import { HomeButton } from '../../components/atoms/buttons/home-button/home-button.tsx';
 import { useMap } from '../../hooks/useMap.ts';
 import { CountdownUpdates, useCountdown } from '../../hooks/useCountdown.ts';
+import { Fill, Stroke, Style } from 'ol/style';
 
 export enum gameStates {
     NOT_STARTED,
@@ -18,13 +18,14 @@ const GAME_DURATION_IN_SECONDS = 30;
 
 export const MarathonGame = () => {
 
+    // Load game dependencies
+    // 1. Municipalities
+    // 2. Map
     const municipalitiesContext = useMunicipalities();
-
-    // Setup map and load it with municipalities
     const { mapElement, mapFeatures } = useMap();
 
     const [gameState, setGameState] = useState(gameStates.NOT_STARTED);
-    const [numberOfCorrectGuesses, setNumberOfCorrectGuesses] = useState(0);
+    const [correctMunicipalities, setCorrectMunicipalities] = useState(new Set<string>());
     const {
         remainingTime,
         updateState
@@ -36,31 +37,51 @@ export const MarathonGame = () => {
         updateState(CountdownUpdates.START);
     }, [gameState]);
 
-    // Function that evaluates the user's input
     function evaluateAnswer(input: string) {
-
-        const greenColors = ['#53b565', '#69a545', '#a7c957', '#a2df47', '#adc178'];
-
-        for (const feature of mapFeatures!) {
-            if (feature.getProperties()['con_name_lower'] === input.toLowerCase()) {
-                setNumberOfCorrectGuesses(numberOfCorrectGuesses + 1);
-                console.log('updating color...', feature);
-                feature.setStyle(new Style({
-                    fill: new Fill({ color: greenColors[Math.floor(Math.random() * greenColors.length)] }),
-                    stroke: new Stroke({ width: 1 }),
-                    zIndex: 10
-                }));
-
-                return;
-            }
+        if (!mapFeatures || mapFeatures.length === 0) {
+            console.log('No municipalities available.');
+            return;
         }
+
+        const guessedMunicipality = mapFeatures.find(
+            (feature) => feature.getProperties()['con_name_lower'] === input.toLowerCase()
+        );
+
+        if (!guessedMunicipality) {
+            console.log('What you guessed is not even a municipality...');
+            return;
+        }
+
+        if (correctMunicipalities.has(input)) {
+            console.log('You already guessed this one...');
+            return;
+        }
+
+        // Create new set with the correct municipalities
+        setCorrectMunicipalities(new Set([...correctMunicipalities, input]));
+
+        // Update styles of the guessed municipality
+        guessedMunicipality.setStyle(
+            new Style({
+                fill: new Fill({ color: getRandomColor() }),
+                stroke: new Stroke({ width: 1 }),
+                zIndex: 10
+            })
+        );
     }
+
+    function getRandomColor() {
+        const CORRECT_GUESS_COLORS = ['#53b565', '#69a545', '#a7c957', '#a2df47', '#adc178'];
+        return CORRECT_GUESS_COLORS[Math.floor(Math.random() * CORRECT_GUESS_COLORS.length)];
+    }
+
 
     function handleKeyDown(event: any) {
         if (event.key !== 'Enter') return;
 
-        const inputValue = event.target.value.trim();
-        if (inputValue) evaluateAnswer(inputValue);
+        const input = event.target.value.trim().toLowerCase();
+
+        if (input) evaluateAnswer(input);
 
         event.target.value = '';
     }
@@ -147,7 +168,7 @@ export const MarathonGame = () => {
                         <Text fontSize="2rem" fontWeight="bold">
                             O tempo esgotou-se! 🎉
                         </Text>
-                        <Text fontSize="1.5rem">Conseguiste escrever {numberOfCorrectGuesses} concelhos.</Text>
+                        <Text fontSize="1.5rem">Conseguiste escrever {correctMunicipalities.size} concelhos.</Text>
                     </Container>
                 )}
 

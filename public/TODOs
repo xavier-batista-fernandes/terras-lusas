@@ -8,3 +8,7 @@
 FEATURES:
 1. In the clock game mode, have a details section so the player can track which municipalities have been guessed already that opens when clicked.
 2. Create daily achievements for the player to complete (like guessing 5 municipalities that start with A in a row)
+
+3. Have a learning mode where use can start type municipalities and they are highlighted in the map
+    3.1 Po ==> Pombal & Porto & Ponte de Lima
+    3.2 Hovering the map shows the name of the municipality

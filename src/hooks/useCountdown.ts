@@ -15,7 +15,7 @@ export function useCountdown(duration: number, callback: () => void) {
                 const startTime = new Date().getTime();
                 interval.current = setInterval(() => {
                     const elapsedTime = new Date().getTime() - startTime;
-                    if (elapsedTime > duration * 1000) {
+                    if (elapsedTime >= duration * 1000) {
                         callback();
                         clearInterval(interval.current);
                     }
