@@ -1,16 +1,12 @@
 import './clock.css';
-import { Feature, Map, View } from 'ol';
-import { useEffect, useRef, useState } from 'react';
+import { Feature } from 'ol';
+import { useEffect, useState } from 'react';
 import { Fill, Stroke, Style } from 'ol/style';
-import { useGeographic } from 'ol/proj';
 import { useMunicipalities } from '../../providers/municipalities-provider.tsx';
-import { GeoJSON } from 'ol/format';
-import VectorLayer from 'ol/layer/Vector';
-import VectorSource from 'ol/source/Vector';
-import { getMunicipalityCenter } from '../../utilities/getMunicipalityCenter.ts';
 import { Container } from '../../components/atoms/container/container.tsx';
 import { Text } from '../../components/atoms/text/text.tsx';
 import { HomeButton } from '../../components/atoms/buttons/home-button/home-button.tsx';
+import { useMap } from '../../hooks/useMap.ts';
 
 export enum gameStates {
     NOT_STARTED,
@@ -18,36 +14,19 @@ export enum gameStates {
     GAME_OVER
 }
 
+const GAME_DURATION_IN_SECONDS = 30;
+
 export const Clock = () => {
 
-    useGeographic();
-    const mapElement = useRef(null);
-    const mapInstance = useRef<Map | null>(null);
     const municipalitiesContext = useMunicipalities();
 
-    const unselectedStyle = new Style({
-        stroke: new Stroke({
-            color: 'black',
-            width: 1
-        }),
-        fill: new Fill({
-            color: 'rgba(211,211,211,0.66)'
-        }),
-        zIndex: 5
-    });
-
-
-    // Create view
-    const view = new View({
-        center: [-8, 39.5],
-        zoom: 7.25
-    });
+    // Setup map and load it with municipalities
+    const { mapElement, mapInstance } = useMap();
 
 
     const [gameState, setGameState] = useState(gameStates.NOT_STARTED);
     const [numberOfCorrectGuesses, setNumberOfCorrectGuesses] = useState(0);
-    const DURATION_SECONDS = 5;
-    const [remainingTime, setRemainingTime] = useState(DURATION_SECONDS);
+    const [remainingTime, setRemainingTime] = useState(GAME_DURATION_IN_SECONDS);
     useEffect(() => {
         if (gameStates.ON_GOING !== gameState) return;
 
@@ -55,47 +34,14 @@ export const Clock = () => {
         const interval = setInterval(() => {
             const currentTime = new Date().getTime();
             const elapsedTime = currentTime - initialTime;
-            const TIME_LIMIT = DURATION_SECONDS * 1000;
-            setRemainingTime(DURATION_SECONDS - Math.floor(elapsedTime / 1000));
+            const TIME_LIMIT = GAME_DURATION_IN_SECONDS * 1000;
+            setRemainingTime(Math.floor((TIME_LIMIT - elapsedTime) / 1000));
             if (elapsedTime > TIME_LIMIT) {
                 setGameState(gameStates.GAME_OVER);
                 clearInterval(interval);
             }
         }, 100);
     }, [gameState]);
-
-    useEffect(() => {
-
-        if (municipalitiesContext.isLoading) return;
-
-        mapInstance.current = new Map();
-        if (!mapElement.current) throw new Error('Map element not found.');
-
-        const geojson = municipalitiesContext.geojson;
-        console.log('geojosn', geojson);
-        const features = new GeoJSON().readFeatures(geojson);
-        const source = new VectorSource({ features });
-        const vectorLayer = new VectorLayer({ source });
-
-
-        // Update style of features
-        vectorLayer.setStyle(() => {
-            return unselectedStyle;
-        });
-
-
-        mapInstance.current.setTarget(mapElement.current);
-        mapInstance.current.setLayers([vectorLayer]);
-        mapInstance.current.setView(view);
-
-        return () => {
-            console.log('Cleaning up...');
-
-            if (!mapInstance.current) return;
-            mapInstance.current.setTarget(undefined);
-            mapInstance.current.dispose();
-        };
-    }, [municipalitiesContext.isLoading]);
 
     function evaluateAnswer(input: string) {
 
@@ -110,15 +56,16 @@ export const Clock = () => {
                 setNumberOfCorrectGuesses(numberOfCorrectGuesses + 1);
                 feature.setStyle(new Style({
                     fill: new Fill({ color: greenColors[Math.floor(Math.random() * greenColors.length)] }),
-                    stroke: new Stroke({ width: 2 }),
+                    stroke: new Stroke({ width: 1 }),
                     zIndex: 10
                 }));
-                const center = getMunicipalityCenter(feature);
+
+                // const center = getMunicipalityCenter(feature);
                 // mapInstance.current!.setView(new View({ center, zoom: 8 }));
 
-                const DURATION = 1000;
-                view.animate({ center: center, duration: DURATION });
-                view.animate({ zoom: 7.75, duration: DURATION / 2 }, { zoom: 8, duration: DURATION / 2 });
+                // const DURATION = 1000;
+                // view.animate({ center: center, duration: DURATION });
+                // view.animate({ zoom: 7.75, duration: DURATION / 2 }, { zoom: 8, duration: DURATION / 2 });
 
                 return;
             }
@@ -163,7 +110,7 @@ export const Clock = () => {
                     >
                         <Text fontSize="1.75rem" fontFamily={'monospace'} margin="0 10%"
                               textAlign={'center'}>
-                            Quantos concelhos consegues lembrar antes do tempo acabar?
+                            Pronto?
                         </Text>
                         <HomeButton onClick={() => setGameState(gameStates.ON_GOING)}>
                             Começar 🚀
@@ -181,7 +128,7 @@ export const Clock = () => {
                         gap="15px"
                     >
                         <Text fontSize="3rem" fontWeight="bold">{remainingTime} ⏳</Text>
-                        <Text fontSize="1.75rem" fontWeight="normal">Quais terrinhas te lembras?</Text>
+                        <Text fontSize="1.75rem" fontWeight="normal">Tens um amigo que é de...</Text>
                         <input
                             style={{
                                 width: '45%',
@@ -202,7 +149,7 @@ export const Clock = () => {
                                         evaluateAnswer(inputValue);
                                         console.log('key pressed', inputValue);
                                     }
-                                    event.target.value = ''; // Clear input first
+                                    event.target.value = '';
                                 }
                             }}
                         />
@@ -227,6 +174,5 @@ export const Clock = () => {
             </Container>
         </>
     );
-
 
 };
