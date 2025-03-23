@@ -4,6 +4,9 @@
     3.1 Loading the map
     3.2 Loading the target municipality
 
+4. Add animations to the input text when the user inserts something that isn't even a municipality
+5. Automatically accept the input when the user types the correct municipality (no need for Enter press)
+
 
 FEATURES:
 1. In the clock game mode, have a details section so the player can track which municipalities have been guessed already that opens when clicked.
