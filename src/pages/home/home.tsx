@@ -21,18 +21,18 @@ export const Home = () => {
     const unselectedStyle = new Style({
         stroke: new Stroke({
             color: 'black',
-            width: 1
+            width: 1,
         }),
         fill: new Fill({
-            color: 'rgba(211,211,211,0.66)'
+            color: 'rgba(211,211,211,0.66)',
         }),
-        zIndex: 5
+        zIndex: 5,
     });
 
 
     const selectInteraction = new Select({
         condition: pointerMove,
-        addCondition: always
+        addCondition: always,
     });
 
     useEffect(() => {
@@ -52,7 +52,7 @@ export const Home = () => {
             console.log('Setting view...');
             const view = new View({
                 center: [-8.35, 39.35],
-                zoom: 8.75
+                zoom: 8.75,
 
             });
             mapInstance.setView(view);
@@ -68,12 +68,12 @@ export const Home = () => {
                 const selectedStyle = new Style({
                     stroke: new Stroke({
                         color: 'black',
-                        width: 1
+                        width: 1,
                     }),
                     fill: new Fill({
-                        color: colors[Math.floor(Math.random() * colors.length)]
+                        color: colors[Math.floor(Math.random() * colors.length)],
                     }),
-                    zIndex: 10
+                    zIndex: 10,
                 });
                 event.element.setStyle(selectedStyle);
 
@@ -109,10 +109,17 @@ export const Home = () => {
                 height={'100vh'}
                 width={'50%'}
             >
-                <Text fontSize={'3rem'} margin={'10px 0'}>Terras Lusas</Text>
-                <Text fontWeight={'lighter'} margin={'10px 0'}>Sabes onde é a tal terrinha do teu amigo António?</Text>
-                <HomeButton margin={'20px'} onClick={() => navigate('/marathon')}>Maratona</HomeButton>
-                <HomeButton margin={'20px'} onClick={() => navigate('/explore')}>Explorar</HomeButton>
+                <Text fontSize={'5rem'} fontWeight={'bold'} margin={'10px 0'}>Terras
+                    Lusas</Text>
+                <Text fontFamily={'monospace'} fontSize={'1.15rem'} fontWeight={'lighter'} margin={'10px 0'}>Sabes onde
+                    é
+                    a
+                    tal terrinha do
+                    teu amigo António?</Text>
+                <Container display={'flex'} justifyContent={'center'} height={'100px'}>
+                    <HomeButton margin={'20px'} onClick={() => navigate('/marathon')}>Maratona</HomeButton>
+                    <HomeButton margin={'20px'} onClick={() => navigate('/explore')}>Explorar</HomeButton>
+                </Container>
             </Container>
             <Container
                 height={'100vh'}

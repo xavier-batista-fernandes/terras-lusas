@@ -1,4 +1,4 @@
-import './marathon-game.css';
+import './marathon.css';
 import { useEffect, useState } from 'react';
 import { Container } from '../../components/atoms/container/container.tsx';
 import { Text } from '../../components/atoms/text/text.tsx';
@@ -9,6 +9,7 @@ import { HomeButton } from '../../components/atoms/buttons/home-button/home-butt
 import { Loading } from '../../components/molecules/loading/loading.tsx';
 import { getMunicipalityCenter } from '../../utilities/getMunicipalityCenter.ts';
 import { UnderlinedTextInput } from '../../components/molecules/inputs/underlined-text-input/underlined-text-input.tsx';
+import { useNavigate } from 'react-router-dom';
 
 export enum gameStates {
     NOT_STARTED,
@@ -18,12 +19,13 @@ export enum gameStates {
 
 const GAME_DURATION_IN_SECONDS = 120;
 
-export const MarathonGame = () => {
+export const Marathon = () => {
 
-    // Load game dependencies
-    // 1. Municipalities
-    // 2. Map
+    // Load hooks
+    // 1. Map
+    // 2. useNavigate
     const { isLoading, mapElement, mapFeatures, mapView } = useMap();
+    const navigate = useNavigate();
 
     const [gameState, setGameState] = useState(gameStates.NOT_STARTED);
     const [correctMunicipalities, setCorrectMunicipalities] = useState(new Set<string>());
@@ -146,10 +148,9 @@ export const MarathonGame = () => {
                         alignItems="center"
                         gap="15px"
                     >
-                        <Text fontSize="2rem" fontWeight="bold">
-                            O tempo esgotou-se! 🎉
-                        </Text>
+                        <Text fontSize="2rem" fontWeight="bold">O tempo esgotou-se! 🎉</Text>
                         <Text fontSize="1.5rem">Conseguiste escrever {correctMunicipalities.size} concelhos.</Text>
+                        <HomeButton margin={'20px 0'} onClick={() => navigate('/')}>Sair</HomeButton>
                     </Container>
                 )}
 
