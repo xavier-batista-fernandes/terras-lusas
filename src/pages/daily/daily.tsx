@@ -7,7 +7,7 @@ import { Fill, Stroke, Style } from 'ol/style';
 import { getRandomFeature } from '../../utilities/getRandomFeature.ts';
 import { getMunicipalityCenter } from '../../utilities/getMunicipalityCenter.ts';
 import { useGeographic } from 'ol/proj';
-import { MunicipalitiesInput } from '../../components/molecules/municipalities-input/municipalities-input.tsx';
+import { MunicipalitiesInput } from '../../components/molecules/inputs/municipalities-input/municipalities-input.tsx';
 import { useMunicipalities } from '../../providers/municipalities-provider.tsx';
 import { GeoJSON } from 'ol/format';
 import VectorLayer from 'ol/layer/Vector';
@@ -46,12 +46,12 @@ export const Daily = () => {
             const yesStyle = new Style({
                 fill: new Fill({ color: 'rgba(122,122,122,0.7)' }),
                 stroke: new Stroke({ color: 'black', width: 2 }),
-                zIndex: 10
+                zIndex: 10,
             });
             const noStyle = new Style({
                 fill: new Fill({ color: '#c5c5c5' }),
                 stroke: new Stroke({ color: 'gray', width: 1 }),
-                zIndex: 5
+                zIndex: 5,
             });
 
             return feature === targetFeature ? yesStyle : noStyle;
@@ -63,13 +63,13 @@ export const Daily = () => {
         // Create view
         const view = new View({
             center: centerFeature,
-            zoom: 10
+            zoom: 10,
         });
 
         mapInstance.setTarget(mapElement.current);
         mapInstance.setLayers([vectorLayer]);
         mapInstance.setView(view);
-        
+
         return () => {
             console.log('Cleaning up...');
 

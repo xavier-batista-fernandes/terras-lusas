@@ -1,5 +1,5 @@
 import './municipalities-input.css';
-import { getMunicipalitiesLayer } from '../../../utilities/getMunicipalitiesLayer.ts';
+import { getMunicipalitiesLayer } from '../../../../utilities/getMunicipalitiesLayer.ts';
 
 export const MunicipalitiesInput = () => {
     const onInput = (event: any) => {

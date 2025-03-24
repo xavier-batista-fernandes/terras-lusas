@@ -21,17 +21,17 @@ export function useMap() {
     const DEFAULT_STYLE = new Style({
         stroke: new Stroke({
             color: 'black',
-            width: 1
+            width: 1,
         }),
         fill: new Fill({
-            color: 'rgba(211,211,211,0.66)'
+            color: 'rgba(211,211,211,0.66)',
         }),
-        zIndex: 5
+        zIndex: 5,
     });
 
     const DEFAULT_VIEW = new View({
         center: [-8, 39.5],
-        zoom: 7.25
+        zoom: 7.25,
     });
 
     useEffect(() => {
@@ -66,8 +66,10 @@ export function useMap() {
     }, [isLoading]);
 
     return {
+        isLoading,
         mapElement,
         mapInstance: mapInstance.current,
-        mapFeatures: mapFeatures.current
+        mapFeatures: mapFeatures.current,
+        mapView: mapInstance.current?.getView(),
     };
 }
