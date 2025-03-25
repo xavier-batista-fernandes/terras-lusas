@@ -17,7 +17,7 @@ export enum gameStates {
     GAME_OVER
 }
 
-const GAME_DURATION_IN_SECONDS = 2;
+const GAME_DURATION_IN_SECONDS = 180;
 
 export const Marathon = () => {
 
