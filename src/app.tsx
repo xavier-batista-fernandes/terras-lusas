@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Home } from './pages/home/home.tsx';
 import { Daily } from './pages/daily/daily.tsx';
 import { MunicipalitiesProvider } from './providers/municipalities-provider.tsx';
-import { Marathon } from './pages/marathon-game/marathon.tsx';
+import { Marathon } from './pages/marathon/marathon.tsx';
 import { Explore } from './pages/explore/explore.tsx';
 
 

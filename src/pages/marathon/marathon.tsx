@@ -9,7 +9,7 @@ import { HomeButton } from '../../components/atoms/buttons/home-button/home-butt
 import { Loading } from '../../components/molecules/loading/loading.tsx';
 import { getMunicipalityCenter } from '../../utilities/getMunicipalityCenter.ts';
 import { UnderlinedTextInput } from '../../components/molecules/inputs/underlined-text-input/underlined-text-input.tsx';
-import { useNavigate } from 'react-router-dom';
+import { ResultsModal } from '../../components/molecules/modals/results-modal/results-modal.tsx';
 
 export enum gameStates {
     NOT_STARTED,
@@ -17,7 +17,7 @@ export enum gameStates {
     GAME_OVER
 }
 
-const GAME_DURATION_IN_SECONDS = 120;
+const GAME_DURATION_IN_SECONDS = 2;
 
 export const Marathon = () => {
 
@@ -25,19 +25,30 @@ export const Marathon = () => {
     // 1. Map
     // 2. useNavigate
     const { isLoading, mapElement, mapFeatures, mapView } = useMap();
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const [gameState, setGameState] = useState(gameStates.NOT_STARTED);
     const [correctMunicipalities, setCorrectMunicipalities] = useState(new Set<string>());
     const {
         remainingTime,
         updateState,
-    } = useCountdown(GAME_DURATION_IN_SECONDS, () => setGameState(gameStates.GAME_OVER));
+    } = useCountdown(GAME_DURATION_IN_SECONDS, timeIsUp);
+
+    function timeIsUp() {
+        setGameState(gameStates.GAME_OVER);
+        updateState(CountdownUpdates.RESET);
+    }
 
     // Create a timer to keep track of the remaining time
     useEffect(() => {
-        if (gameStates.IN_PROGRESS !== gameState) return;
-        updateState(CountdownUpdates.START);
+        switch (gameState) {
+            case gameStates.IN_PROGRESS:
+                updateState(CountdownUpdates.START);
+                break;
+            case gameStates.GAME_OVER:
+                updateState(CountdownUpdates.RESET);
+                break;
+        }
     }, [gameState]);
 
     function isMunicipality(input: string) {
@@ -114,7 +125,7 @@ export const Marathon = () => {
                         alignItems="center"
                         gap="15px"
                     >
-                        <Text fontSize="1.75rem" fontFamily={'monospace'} margin="0 10%"
+                        <Text fontSize="1.75rem" margin="0 10%"
                               textAlign={'center'}>
                             Pronto?
                         </Text>
@@ -124,7 +135,7 @@ export const Marathon = () => {
                     </Container>
                 )}
 
-                {gameState === gameStates.IN_PROGRESS && (
+                {(gameState === gameStates.IN_PROGRESS &&
                     <Container
                         width="50%"
                         display="flex"
@@ -139,20 +150,16 @@ export const Marathon = () => {
                     </Container>
                 )}
 
-                {gameState === gameStates.GAME_OVER && (
-                    <Container
-                        width="50%"
-                        display="flex"
-                        flexDirection="column"
-                        justifyContent="center"
-                        alignItems="center"
-                        gap="15px"
-                    >
-                        <Text fontSize="2rem" fontWeight="bold">O tempo esgotou-se! 🎉</Text>
-                        <Text fontSize="1.5rem">Conseguiste escrever {correctMunicipalities.size} concelhos.</Text>
-                        <HomeButton margin={'20px 0'} onClick={() => navigate('/')}>Sair</HomeButton>
-                    </Container>
-                )}
+                {gameState === gameStates.GAME_OVER &&
+                    <ResultsModal onClose={() => setGameState(gameStates.NOT_STARTED)}>
+                        <Container display={'flex'} justifyContent={'center'}
+                                   flexDirection={'column'}>
+                            <Text fontSize={'clamp(12px, 1.5rem, 26px)'}>
+                                Conseguiste escrever {correctMunicipalities.size} concelhos. Boa pá!
+                            </Text>
+                        </Container>
+                    </ResultsModal>}
+
 
                 <Container width="50%">
                     <div id="map" ref={mapElement}></div>

@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 
 export enum CountdownUpdates {
     START,
-    STOP,
+    RESET,
 }
 
 export function useCountdown(duration: number, callback: () => void) {
@@ -17,6 +17,7 @@ export function useCountdown(duration: number, callback: () => void) {
                     const elapsedTime = new Date().getTime() - startTime;
                     if (elapsedTime >= duration * 1000) {
                         callback();
+                        // setRemainingTime(duration);
                         clearInterval(interval.current);
                     }
                     setRemainingTime(duration - Math.floor(elapsedTime / 1000));
@@ -24,9 +25,10 @@ export function useCountdown(duration: number, callback: () => void) {
                 }, 500);
                 break;
 
-            case CountdownUpdates.STOP:
-                clearInterval(interval.current);
+            case CountdownUpdates.RESET:
+                console.log('RESETTING TIMER', duration);
                 setRemainingTime(duration);
+                clearInterval(interval.current);
                 break;
         }
     }

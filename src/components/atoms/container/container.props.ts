@@ -21,6 +21,7 @@ export interface ContainerProps {
     gap?: CSSProperties['gap'];
     boxShadow?: CSSProperties['boxShadow'];
     border?: CSSProperties['border'];
+    borderRadius?: CSSProperties['borderRadius'];
     zIndex?: CSSProperties['zIndex'];
     transition?: CSSProperties['transition'];
 }

@@ -39,7 +39,7 @@ export function useMap() {
     }, []);
 
     useEffect(() => {
-
+        console.log('Mounting map...');
         if (isLoading) return;
         if (mapInstance.current) return;
         if (!mapElement.current) return;
@@ -58,7 +58,7 @@ export function useMap() {
         mapFeatures.current = features;
 
         return () => {
-            console.log('Cleaning up...');
+            console.log('Dismounting map...');
             if (!mapInstance.current) return;
             mapInstance.current.setTarget(undefined);
             mapInstance.current.dispose();

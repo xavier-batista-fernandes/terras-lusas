@@ -111,7 +111,7 @@ export const Home = () => {
             >
                 <Text fontSize={'5rem'} fontWeight={'bold'} margin={'10px 0'}>Terras
                     Lusas</Text>
-                <Text fontFamily={'monospace'} fontSize={'1.15rem'} fontWeight={'lighter'} margin={'10px 0'}>Sabes onde
+                <Text fontSize={'1.15rem'} fontWeight={'lighter'} margin={'10px 0'}>Sabes onde
                     é
                     a
                     tal terrinha do

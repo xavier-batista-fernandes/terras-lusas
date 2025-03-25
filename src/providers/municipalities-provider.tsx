@@ -21,13 +21,14 @@ export const MunicipalitiesProvider = ({ children }: { children: ReactNode }) =>
 
     const data: MunicipalitiesContextData = {
         geojson,
-        isLoading
+        isLoading,
     };
 
     useEffect(() => {
 
         const init = async () => {
             setGeojson(await fetchMunicipalities());
+            // TODO: handle errors and allow for page reloads
             setIsLoading(false);
         };
 
