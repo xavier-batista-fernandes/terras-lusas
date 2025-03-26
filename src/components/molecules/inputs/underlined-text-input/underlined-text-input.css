@@ -5,6 +5,7 @@
     font-size: 2rem;
     text-transform: uppercase;
     padding: 0.15em 0.5em;
+    font-family: monospace;
 }
 
 .underlined-text-input:focus {

@@ -9,7 +9,8 @@ import { HomeButton } from '../../components/atoms/buttons/home-button/home-butt
 import { Loading } from '../../components/molecules/loading/loading.tsx';
 import { getMunicipalityCenter } from '../../utilities/getMunicipalityCenter.ts';
 import { UnderlinedTextInput } from '../../components/molecules/inputs/underlined-text-input/underlined-text-input.tsx';
-import { ResultsModal } from '../../components/molecules/modals/results-modal/results-modal.tsx';
+import { ResultsModal } from '../../components/organisms/modals/results-modal/results-modal.tsx';
+import { Flyout } from '../../components/organisms/flyout/flyout.tsx';
 
 export enum gameStates {
     NOT_STARTED,
@@ -28,11 +29,10 @@ export const Marathon = () => {
     // const navigate = useNavigate();
 
     const [gameState, setGameState] = useState(gameStates.NOT_STARTED);
+    const [isFlyoutOpen, setIsFlyoutOpen] = useState(false);
+
     const [correctMunicipalities, setCorrectMunicipalities] = useState(new Set<string>());
-    const {
-        remainingTime,
-        updateState,
-    } = useCountdown(GAME_DURATION_IN_SECONDS, timeIsUp);
+    const { remainingTime, updateState } = useCountdown(GAME_DURATION_IN_SECONDS, timeIsUp);
 
     function timeIsUp() {
         setGameState(gameStates.GAME_OVER);
@@ -85,11 +85,18 @@ export const Marathon = () => {
         return true;
     }
 
+    function closeFlyout() {
+        setIsFlyoutOpen(false);
+    }
+
+    function closeResultsModal() {
+        setGameState(gameStates.NOT_STARTED);
+    }
+
     function getRandomColor() {
         const CORRECT_GUESS_COLORS = ['#53b565', '#69a545', '#a7c957', '#a2df47', '#adc178'];
         return CORRECT_GUESS_COLORS[Math.floor(Math.random() * CORRECT_GUESS_COLORS.length)];
     }
-
 
     function handleKeyDown(event: any) {
         if (event.key !== 'Enter') return;
@@ -106,6 +113,7 @@ export const Marathon = () => {
     return (<>
             {/* Loading component... */}
             {isLoading && <Loading />}
+            {isFlyoutOpen && <Flyout onClose={closeFlyout} />}
 
             {/* Content... */}
             <Container
@@ -147,11 +155,12 @@ export const Marathon = () => {
                         <Text fontSize="3rem" fontWeight="bold">{remainingTime} ⏳</Text>
                         <Text fontSize="1.75rem" fontWeight="normal">Tens um amigo que é de...</Text>
                         <UnderlinedTextInput onChange={handleChange} onKeyDown={handleKeyDown} />
+                        <HomeButton onClick={() => setIsFlyoutOpen(true)}>Ver detalhes</HomeButton>
                     </Container>
                 )}
 
                 {gameState === gameStates.GAME_OVER &&
-                    <ResultsModal onClose={() => setGameState(gameStates.NOT_STARTED)}>
+                    <ResultsModal onClose={closeResultsModal}>
                         <Container display={'flex'} justifyContent={'center'}
                                    flexDirection={'column'}>
                             <Text fontSize={'clamp(12px, 1.5rem, 26px)'}>
@@ -167,5 +176,4 @@ export const Marathon = () => {
             </Container>
         </>
     );
-
 };
