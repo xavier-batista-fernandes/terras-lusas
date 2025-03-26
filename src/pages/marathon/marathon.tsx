@@ -10,7 +10,7 @@ import { Loading } from '../../components/molecules/loading/loading.tsx';
 import { getMunicipalityCenter } from '../../utilities/getMunicipalityCenter.ts';
 import { UnderlinedTextInput } from '../../components/molecules/inputs/underlined-text-input/underlined-text-input.tsx';
 import { ResultsModal } from '../../components/organisms/modals/results-modal/results-modal.tsx';
-import { Flyout } from '../../components/organisms/flyout/flyout.tsx';
+import { MarathonFlyout } from '../../components/organisms/flyouts/marathon-flyout/marathon-flyout.tsx';
 
 export enum gameStates {
     NOT_STARTED,
@@ -113,7 +113,7 @@ export const Marathon = () => {
     return (<>
             {/* Loading component... */}
             {isLoading && <Loading />}
-            {isFlyoutOpen && <Flyout onClose={closeFlyout} />}
+            {isFlyoutOpen && <MarathonFlyout onClose={closeFlyout} />}
 
             {/* Content... */}
             <Container

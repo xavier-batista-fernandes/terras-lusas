@@ -1,0 +1,26 @@
+.flyout-backdrop {
+    position: fixed;
+    right: 0;
+    z-index: 1000;
+    height: 100vh;
+    width: 50vw;
+}
+
+.flyout-container {
+    background-color: #b13336;
+    height: 100%;
+    width: 50vw;
+    position: absolute;
+    right: -50vw;
+    transition: right 0.15s;
+}
+
+.flyout-content {
+    margin: 1rem;
+    padding: 1rem;
+    background-color: beige;
+}
+
+.flyout-container.open {
+    right: 0;
+}

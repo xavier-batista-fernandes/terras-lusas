@@ -1,9 +1,8 @@
-import { FlyoutProps } from './flyout.props';
+import { FlyoutProps } from './flyout.props.ts';
 import { useEffect, useState } from 'react';
 import './flyout.css';
-import { HomeButton } from '../../atoms/buttons/home-button/home-button.tsx';
 
-export function Flyout({ onClose }: FlyoutProps) {
+export function Flyout({ children }: FlyoutProps) {
     const [isMounted, setIsMounted] = useState(false);
     useEffect(() => {
         setIsMounted(true);
@@ -12,8 +11,10 @@ export function Flyout({ onClose }: FlyoutProps) {
     return (
         <div className={'flyout-backdrop'}>
             <div className={`flyout-container ${isMounted ? 'open' : ''}`}>
-                Flyout
-                <HomeButton onClick={onClose}>Fechar</HomeButton>
+                <div className={'flyout-content'}>
+                    {children}
+                </div>
             </div>
-        </div>);
+        </div>
+    );
 }

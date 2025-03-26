@@ -16,7 +16,7 @@ export function useMap() {
     const mapFeatures = useRef<Feature[]>(null);
 
     // Get municipalities context
-    const { isLoading, geojson } = useMunicipalities();
+    const { isLoading, rawData } = useMunicipalities();
 
     const DEFAULT_STYLE = new Style({
         stroke: new Stroke({
@@ -46,7 +46,7 @@ export function useMap() {
 
         mapInstance.current = new Map();
 
-        const features = new GeoJSON().readFeatures(geojson);
+        const features = new GeoJSON().readFeatures(rawData);
         const source = new VectorSource({ features });
         const layer = new VectorLayer({ source });
         layer.setStyle(() => DEFAULT_STYLE);
