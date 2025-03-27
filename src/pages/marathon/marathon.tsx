@@ -113,7 +113,7 @@ export const Marathon = () => {
     return (<>
             {/* Loading component... */}
             {isLoading && <Loading />}
-            {isFlyoutOpen && <MarathonFlyout onClose={closeFlyout} />}
+            <MarathonFlyout isOpen={isFlyoutOpen} onClose={closeFlyout} />
 
             {/* Content... */}
             <Container
@@ -155,7 +155,10 @@ export const Marathon = () => {
                         <Text fontSize="3rem" fontWeight="bold">{remainingTime} ⏳</Text>
                         <Text fontSize="1.75rem" fontWeight="normal">Tens um amigo que é de...</Text>
                         <UnderlinedTextInput onChange={handleChange} onKeyDown={handleKeyDown} />
-                        <HomeButton onClick={() => setIsFlyoutOpen(true)}>Ver detalhes</HomeButton>
+
+                        <HomeButton onClick={() => setIsFlyoutOpen(!isFlyoutOpen)}>
+                            {isFlyoutOpen ? 'Fechar detalhes' : 'Abrir detalhes'}
+                        </HomeButton>
                     </Container>
                 )}
 

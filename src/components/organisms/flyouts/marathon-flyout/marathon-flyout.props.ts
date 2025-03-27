@@ -1,3 +1,4 @@
 export type FlyoutProps = {
-    onClose: () => void;
+    isOpen: boolean;
+    onClose?: () => void;
 }
