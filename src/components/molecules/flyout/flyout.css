@@ -1,26 +1,40 @@
+/* TODO: understand how these nested divs affect the styles being applied to them. */
 .flyout-backdrop {
     position: fixed;
     right: 0;
     z-index: 1000;
-    height: 100vh;
     width: 50vw;
+    height: 100vh;
 }
 
 .flyout-container {
     background-color: #b13336;
+    overflow-y: hidden;
     height: 100%;
-    width: 50vw;
+    width: 100%;
     position: absolute;
     right: -50vw;
     transition: right 0.15s;
 }
 
-.flyout-content {
-    margin: 1rem;
-    padding: 1rem;
-    background-color: beige;
-}
-
 .flyout-container.open {
     right: 0;
 }
+
+.flyout-content {
+    margin: 1rem;
+    padding: 1.5rem;
+    background-color: beige;
+    overflow-y: scroll;
+    height: 90%;
+}
+
+.flyout-container h1 {
+    margin: 0;
+}
+
+.flyout-container p {
+    margin: 1em 0 2rem 0;
+    font-size: 0.9rem;
+}
+
