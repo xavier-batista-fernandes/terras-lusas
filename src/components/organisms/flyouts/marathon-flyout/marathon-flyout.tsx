@@ -9,11 +9,11 @@ export function MarathonFlyout({ isOpen }: FlyoutProps) {
     return (
         <Flyout isOpen={isOpen}>
             <h1>CONCELHOS POR DISTRITO</h1>
-            <p>Aqui podes ver que concelhos já acertaste para cada um dos 18 distritos.</p>
+            <p>Aqui podes ver que concelhos já acertaste por distrito.</p>
 
             <ul className="marathon-flyout-container">
-                {Array.from(districts).map((district) => <li className="marathon-flyout-item">{district}</li>)}
-
+                {Array.from(districts).map((district) =>
+                    <li key={district} className="marathon-flyout-item">{district}</li>)}
             </ul>
         </Flyout>
     );
