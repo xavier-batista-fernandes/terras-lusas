@@ -4,12 +4,43 @@
     gap: 16px;
     padding: 0;
     overflow: scroll;
+    font-size: 0.75rem;
 }
 
-li.marathon-flyout-item {
-    display: flex;
-    flex-wrap: wrap;
-    background-color: rgba(132, 165, 193, 0.41);
-    padding: 1em;
+.marathon-flyout-container h1,
+.marathon-flyout-container h2 {
+    margin: 1rem 0;
 }
+
+.marathon-flyout-container p {
+    margin: 1em 0 2rem 0;
+    font-size: 0.9rem;
+}
+
+.marathon-flyout-districts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 0;
+}
+
+.marathon-flyout-districts-item {
+    list-style: none;
+}
+
+.marathon-flyout-municipalities-list {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    padding: 0;
+
+}
+
+.marathon-flyout-municipalities-item {
+    padding: 5px;
+    width: 30%;
+    list-style: none;
+    border: 1px solid;
+}
+
 
