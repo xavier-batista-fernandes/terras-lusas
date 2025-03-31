@@ -6,12 +6,14 @@ import { GeoJSON } from 'ol/format';
 import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
 import { Fill, Stroke, Style } from 'ol/style';
+import { getRandomColor } from '../utilities/getRandomColor.ts';
+import { getMunicipalityCenter } from '../utilities/getMunicipalityCenter.ts';
 
 export function useMap() {
 
     useGeographic();
 
-    const mapElement = useRef(null);
+    const mapElement = useRef(null); // TODO: receive as input of hook instead?
     const mapInstance = useRef<Map>(null);
     const mapFeatures = useRef<Feature[]>(null);
 
@@ -33,6 +35,26 @@ export function useMap() {
         center: [-8, 39.5],
         zoom: 7.25,
     });
+
+    const paintMunicipality = (municipality: string) => {
+        const features: Feature[] = mapFeatures.current ?? [];
+
+        const guessedMunicipality = features.find(
+            (feature) => feature.getProperties()['Municipality'] === municipality.toUpperCase());
+        if (!guessedMunicipality) return;
+
+        guessedMunicipality.setStyle(
+            new Style({
+                fill: new Fill({ color: getRandomColor() }),
+                stroke: new Stroke({ width: 1 }),
+                zIndex: 10,
+            }),
+        );
+
+        // TODO: move mapInstance.current?.getView() to a variable
+        mapInstance.current?.getView()?.setCenter(getMunicipalityCenter(guessedMunicipality));
+        mapInstance.current?.getView()?.setZoom(9);
+    };
 
     useEffect(() => {
         if (!mapElement.current) throw new Error('Could not retrieve map reference from the component\'s view.');
@@ -71,5 +93,6 @@ export function useMap() {
         mapInstance: mapInstance.current,
         mapFeatures: mapFeatures.current,
         mapView: mapInstance.current?.getView(),
+        paintMunicipality,
     };
 }

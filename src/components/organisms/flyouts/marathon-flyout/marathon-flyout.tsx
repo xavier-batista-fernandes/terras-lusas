@@ -6,7 +6,6 @@ import { useEffect } from 'react';
 
 export function MarathonFlyout({ isOpen }: FlyoutProps) {
     const { districts, municipalities } = useMunicipalities();
-
     useEffect(() => {
         // TODO: protect component against data not being available
     }, []);
