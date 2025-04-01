@@ -17,7 +17,6 @@ export function useMap() {
     const mapInstance = useRef<Map>(null);
     const mapFeatures = useRef<Feature[]>(null);
 
-    // Get municipalities context
     const { isLoading, rawData } = useMunicipalities();
 
     const DEFAULT_STYLE = new Style({

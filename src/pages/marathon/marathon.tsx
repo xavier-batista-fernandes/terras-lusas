@@ -9,7 +9,7 @@ import { UnderlinedTextInput } from '../../components/molecules/inputs/underline
 import { ResultsModal } from '../../components/organisms/modals/results-modal/results-modal.tsx';
 import { MarathonFlyout } from '../../components/organisms/flyouts/marathon-flyout/marathon-flyout.tsx';
 import { useMarathon } from '../../hooks/useMarathon.ts';
-import { gameStates } from '../../models/gameStates.ts';
+import { gameStates } from '../../models/game-states.ts';
 
 export const Marathon = () => {
 
@@ -18,9 +18,12 @@ export const Marathon = () => {
         remainingTime,
         setGameState,
         gameState,
-        correctMunicipalities,
-        addMunicipality,
-        isMunicipalityCorrect,
+        guessedMunicipalities,
+        isGuessValid,
+        isGuessRepeated,
+        isGuessCorrect,
+        markCorrect,
+        marathonStart,
     } = useMarathon();
 
     const [isFlyoutOpen, setIsFlyoutOpen] = useState(false);
@@ -43,19 +46,20 @@ export const Marathon = () => {
         const input = event.target.value.trim().toLowerCase();
         if (!input) return;
 
-        const isCorrect = isMunicipalityCorrect(input);
-        if (isCorrect) {
-            addMunicipality(input);
+        if (!isGuessValid(input)) return;
+        if (isGuessRepeated(input)) return;
+
+        if (isGuessCorrect(input)) {
+            markCorrect(input);
             paintMunicipality(input);
-            // TODO: only clear the input if the municipality hasn't been guessed yet
-            event.target.value = '';
         }
+
+        event.target.value = '';
     }
 
     function onStartClick() {
-        setGameState(gameStates.IN_PROGRESS);
+        marathonStart();
     }
-
 
     return (<>
             {/* Loading component... */}
@@ -114,7 +118,7 @@ export const Marathon = () => {
                         <Container display={'flex'} justifyContent={'center'}
                                    flexDirection={'column'}>
                             <Text fontSize={'clamp(12px, 1.5rem, 26px)'}>
-                                Conseguiste escrever {correctMunicipalities.size} concelhos. Boa pá!
+                                Conseguiste escrever {guessedMunicipalities.size} concelhos. Boa pá!
                             </Text>
                         </Container>
                     </ResultsModal>}

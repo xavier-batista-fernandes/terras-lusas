@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { CountdownUpdates, useCountdown } from './useCountdown.ts';
 import { useMunicipalities } from '../providers/municipalities-provider.tsx';
-import { gameStates } from '../models/gameStates.ts';
+import { gameStates } from '../models/game-states.ts';
+import { useCountdown } from './useCountdown.ts';
+import { CountdownUpdates } from '../models/countdown-updates.ts';
 
 export function useMarathon() {
     const GAME_DURATION_IN_SECONDS = 180;
@@ -9,56 +10,78 @@ export function useMarathon() {
     const { municipalities } = useMunicipalities();
 
     const [gameState, setGameState] = useState(gameStates.NOT_STARTED);
-    const [correctMunicipalities, setCorrectMunicipalities] = useState(new Set<string>());
 
-    const { remainingTime, updateState } = useCountdown(GAME_DURATION_IN_SECONDS, onCountdownOver);
+    const [guessedMunicipalities, setGuessedMunicipalities] = useState(new Set<string>());
+    const [nonGuessedMunicipalities, setNonGuessedMunicipalities] = useState(new Set<string>());
+
+
+    const { remainingTime, updateCountdown } = useCountdown(GAME_DURATION_IN_SECONDS, onCountdownOver);
 
     function onCountdownOver() {
         setGameState(gameStates.GAME_OVER);
-        updateState(CountdownUpdates.RESET);
+        updateCountdown(CountdownUpdates.RESET);
     }
 
     useEffect(() => {
         switch (gameState) {
             case gameStates.IN_PROGRESS:
-                updateState(CountdownUpdates.START);
+                updateCountdown(CountdownUpdates.START);
                 break;
             case gameStates.GAME_OVER:
-                updateState(CountdownUpdates.RESET);
+                updateCountdown(CountdownUpdates.RESET);
                 break;
         }
     }, [gameState]);
 
-    function isMunicipalityCorrect(input: string) {
-        // TODO: refactor this into a single array? how to convert to a single array?
-        let isCorrect = false;
-        municipalities.forEach((municipalitySet) => {
-            municipalitySet.forEach((municipality) => {
-                if (input.toUpperCase() === municipality.toUpperCase()) {
-                    isCorrect = true;
-                }
-            });
-        });
+    function marathonStart() {
+        setGameState(gameStates.IN_PROGRESS);
+        setGuessedMunicipalities(new Set());
+        setNonGuessedMunicipalities(new Set(municipalities));
+    }
 
+    function isGuessValid(input: string) {
+        let isValid = false;
+        municipalities.forEach((municipality) => {
+            if (input.toUpperCase() === municipality.toUpperCase()) isValid = true;
+        });
+        return isValid;
+    }
+
+    function isGuessRepeated(input: string) {
+        let isRepeated = false;
+        guessedMunicipalities.forEach((municipality) => {
+            if (input.toUpperCase() === municipality.toUpperCase()) isRepeated = true;
+        });
+        return isRepeated;
+    }
+
+    function isGuessCorrect(input: string) {
+        let isCorrect = false;
+        nonGuessedMunicipalities.forEach((municipality) => {
+            if (input.toUpperCase() === municipality.toUpperCase()) isCorrect = true;
+        });
         return isCorrect;
     }
 
-    function addMunicipality(municipality: string) {
-        if (correctMunicipalities.has(municipality)) {
-            console.log('You already guessed this one...');
-            return;
-        }
+    function markCorrect(municipality: string) {
+        const newGuessedMunicipalities = new Set(guessedMunicipalities);
+        newGuessedMunicipalities.add(municipality);
+        setGuessedMunicipalities(new Set(newGuessedMunicipalities));
 
-        setCorrectMunicipalities(new Set([...correctMunicipalities, municipality]));
+        const newNonGuessedMunicipalities = new Set(nonGuessedMunicipalities);
+        newNonGuessedMunicipalities.delete(municipality);
+        setNonGuessedMunicipalities(new Set(newNonGuessedMunicipalities));
     }
 
     return {
         remainingTime,
-        updateState,
         gameState,
         setGameState,
-        correctMunicipalities,
-        addMunicipality,
-        isMunicipalityCorrect,
+        guessedMunicipalities,
+        isGuessValid,
+        isGuessRepeated,
+        isGuessCorrect,
+        markCorrect,
+        marathonStart,
     };
 }

@@ -8,7 +8,8 @@ export interface MunicipalitiesContextData {
     isLoading: boolean;
     rawData?: any; // TODO: abstract raw data from the rest of the app
     districts: Set<string>;
-    municipalities: Map<string, Set<string>>;
+    municipalities: Set<string>;
+    municipalitiesPerDistrict: Map<string, Set<string>>;
 }
 
 export const useMunicipalities = () => {
@@ -23,13 +24,15 @@ export const MunicipalitiesProvider = ({ children }: { children: ReactNode }) =>
     const [rawData, setRawData] = useState<{ type: string, features: any } | undefined>(undefined);
 
     const [districts, setDistricts] = useState(new Set<string>());
-    const [municipalities, setMunicipalities] = useState(new Map<string, Set<string>>());
+    const [municipalities, setMunicipalities] = useState(new Set<string>());
+    const [municipalitiesPerDistrict, setMunicipalitiesPerDistrict] = useState(new Map<string, Set<string>>());
 
     const data: MunicipalitiesContextData = {
         isLoading,
         rawData,
         districts,
         municipalities,
+        municipalitiesPerDistrict,
     };
 
     useEffect(() => {
@@ -41,7 +44,7 @@ export const MunicipalitiesProvider = ({ children }: { children: ReactNode }) =>
             setRawData(rawData);
 
             // Extract districts from the raw data
-            const newMunicipalities = new Map<string, Set<string>>();
+            const newMunicipalitiesPerDistrict = new Map<string, Set<string>>();
 
             rawData.features.forEach(
                 (feature: any) => {
@@ -49,17 +52,25 @@ export const MunicipalitiesProvider = ({ children }: { children: ReactNode }) =>
                     const municipality = toTitleCase(feature.properties['Municipality']);
 
                     // Create a set for the district if it doesn't exist
-                    if (!newMunicipalities.get(district)) {
-                        newMunicipalities.set(district, new Set<string>());
+                    if (!newMunicipalitiesPerDistrict.get(district)) {
+                        newMunicipalitiesPerDistrict.set(district, new Set<string>());
                     }
 
                     // Add municipality to the district set
-                    newMunicipalities.get(district)!.add(municipality);
+                    newMunicipalitiesPerDistrict.get(district)!.add(municipality);
                 },
             );
 
-            setDistricts(new Set(newMunicipalities.keys()));
-            setMunicipalities(new Map(newMunicipalities));
+            // 1. Create districts set
+            setDistricts(new Set((newMunicipalitiesPerDistrict.keys())));
+
+            // 2. Create municipalities set
+            setMunicipalities(new Set(Array.from(newMunicipalitiesPerDistrict.values()).flatMap((municipalitySet) => Array.from(municipalitySet))));
+
+            // 3. Save new municipalities per district set
+            setMunicipalitiesPerDistrict(new Map(newMunicipalitiesPerDistrict));
+
+
             setIsLoading(false);
 
             // TODO: handle errors and allow for page reloads

@@ -1,15 +1,11 @@
 import { useRef, useState } from 'react';
-
-export enum CountdownUpdates {
-    START,
-    RESET,
-}
+import { CountdownUpdates } from '../models/countdown-updates.ts';
 
 export function useCountdown(duration: number, callback: () => void) {
     const [remainingTime, setRemainingTime] = useState(duration);
     const interval = useRef<number>(0);
 
-    function updateState(update: CountdownUpdates) {
+    function updateCountdown(update: CountdownUpdates) {
         switch (update) {
             case CountdownUpdates.START:
                 const startTime = new Date().getTime();
@@ -26,12 +22,11 @@ export function useCountdown(duration: number, callback: () => void) {
                 break;
 
             case CountdownUpdates.RESET:
-                console.log('RESETTING TIMER', duration);
                 setRemainingTime(duration);
                 clearInterval(interval.current);
                 break;
         }
     }
 
-    return { remainingTime, updateState };
+    return { remainingTime, updateCountdown };
 }

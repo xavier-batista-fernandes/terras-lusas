@@ -5,7 +5,7 @@ import './marathon-flyout.css';
 import { useEffect } from 'react';
 
 export function MarathonFlyout({ isOpen }: FlyoutProps) {
-    const { districts, municipalities } = useMunicipalities();
+    const { districts, municipalitiesPerDistrict } = useMunicipalities();
     useEffect(() => {
         // TODO: protect component against data not being available
     }, []);
@@ -23,7 +23,7 @@ export function MarathonFlyout({ isOpen }: FlyoutProps) {
                         >
                             <h2>{district}</h2>
                             <ul className="marathon-flyout-municipalities-list">
-                                {Array.from(municipalities.get(district)!.values()).map(municipality =>
+                                {Array.from(municipalitiesPerDistrict.get(district)!.values()).map(municipality =>
                                     <li key={municipality}
                                         className="marathon-flyout-municipalities-item"
                                     >
