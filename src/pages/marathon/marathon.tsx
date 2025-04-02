@@ -47,8 +47,9 @@ export const Marathon = () => {
 
     function handleChange(event: any) {
         const input = event.target.value.trim().toLowerCase();
-        if (!input) return;
         setLatestGuess(input);
+
+        if (!input) return;
 
         if (!isGuessValid(input)) return;
         if (isGuessRepeated(input)) return;
