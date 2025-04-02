@@ -13,6 +13,7 @@ export const Text: FC<TextProps> = ({
     padding = '0',
     textAlign = 'start',
     display,
+    visibility,
 }) => {
     return (
         <p
@@ -26,6 +27,7 @@ export const Text: FC<TextProps> = ({
                 padding,
                 textAlign,
                 display,
+                visibility,
             }}
         >
             {children}

@@ -11,4 +11,5 @@ export interface TextProps {
     padding?: CSSProperties['padding'];
     textAlign?: CSSProperties['textAlign'];
     display?: CSSProperties['display'];
+    visibility?: CSSProperties['visibility'];
 }

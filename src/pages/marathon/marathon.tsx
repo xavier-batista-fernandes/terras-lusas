@@ -27,6 +27,9 @@ export const Marathon = () => {
     } = useMarathon();
 
     const [isFlyoutOpen, setIsFlyoutOpen] = useState(false);
+    const [latestGuess, setLatestGuess] = useState('');
+
+    const isRepeated = isGuessRepeated(latestGuess);
 
 
     function closeFlyout() {
@@ -45,6 +48,7 @@ export const Marathon = () => {
     function handleChange(event: any) {
         const input = event.target.value.trim().toLowerCase();
         if (!input) return;
+        setLatestGuess(input);
 
         if (!isGuessValid(input)) return;
         if (isGuessRepeated(input)) return;
@@ -55,6 +59,7 @@ export const Marathon = () => {
         }
 
         event.target.value = '';
+        setLatestGuess('');
     }
 
     function onStartClick() {
@@ -84,10 +89,6 @@ export const Marathon = () => {
                         alignItems="center"
                         gap="15px"
                     >
-                        <Text fontSize="1.75rem" margin="0 10%"
-                              textAlign={'center'}>
-                            Pronto?
-                        </Text>
                         <HomeButton onClick={onStartClick}>
                             Começar 🚀
                         </HomeButton>
@@ -106,6 +107,9 @@ export const Marathon = () => {
                         <Text fontSize="3rem" fontWeight="bold">{remainingTime} ⏳</Text>
                         <Text fontSize="1.75rem" fontWeight="normal">Tens um amigo que é de...</Text>
                         <UnderlinedTextInput onChange={handleChange} onKeyDown={handleKeyDown} />
+                        <Text fontSize="0.75rem" color="red" visibility={isRepeated ? 'visible' : 'hidden'}>
+                            Já adivinhaste este.
+                        </Text>
 
                         <HomeButton onClick={() => setIsFlyoutOpen(!isFlyoutOpen)}>
                             {isFlyoutOpen ? 'Fechar detalhes' : 'Abrir detalhes'}

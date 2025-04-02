@@ -4,9 +4,7 @@ import { MunicipalitiesProvider } from './providers/municipalities-provider.tsx'
 import { Marathon } from './pages/marathon/marathon.tsx';
 import { Explore } from './pages/explore/explore.tsx';
 
-
 export const App = () => {
-
     return (
         <>
             <MunicipalitiesProvider>
