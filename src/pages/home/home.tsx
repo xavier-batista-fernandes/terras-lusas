@@ -1,11 +1,9 @@
 import './home.css';
-import { Container } from '../../components/atoms/container/container.tsx';
 import { useEffect, useRef } from 'react';
 import { Map, View } from 'ol';
 import { useGeographic } from 'ol/proj';
 import { Select } from 'ol/interaction';
 import { always, pointerMove } from 'ol/events/condition';
-import { Text } from '../../components/atoms/text/text.tsx';
 import { HomeButton } from '../../components/atoms/buttons/home-button/home-button.tsx';
 import { Fill, Stroke, Style } from 'ol/style';
 import { useNavigate } from 'react-router-dom';
@@ -76,8 +74,6 @@ export const Home = () => {
                     zIndex: 10,
                 });
                 event.element.setStyle(selectedStyle);
-
-                console.log('geometry', event.element.getGeometry()?.getExtent());
             });
         };
 
@@ -93,41 +89,17 @@ export const Home = () => {
 
     }, []);
 
-    return <>
-        <Container
-            height={'100vh'}
-            width={'100vw'}
-            display={'flex'}
-            alignItems={'end'}
-            overflow={'hidden'}
-        >
-            <Container
-                display={'flex'}
-                flexDirection={'column'}
-                justifyContent={'center'}
-                alignItems={'center'}
-                height={'100vh'}
-                width={'50%'}
-            >
-                <Text fontSize={'5rem'} fontWeight={'bold'} margin={'10px 0'}>Terras
-                    Lusas</Text>
-                <Text fontSize={'1.15rem'} fontWeight={'lighter'} margin={'10px 0'}>Sabes onde
-                    é
-                    a
-                    tal terrinha do
-                    teu amigo António?</Text>
-                <Container display={'flex'} justifyContent={'center'} height={'100px'}>
-                    <HomeButton margin={'20px'} onClick={() => navigate('/marathon')}>Maratona</HomeButton>
-                    <HomeButton margin={'20px'} onClick={() => navigate('/explore')}>Explorar</HomeButton>
-                </Container>
-            </Container>
-            <Container
-                height={'100vh'}
-                width={'50%'}
-
-            >
-                <div id="map" ref={mapElement}></div>
-            </Container>
-        </Container>
-    </>;
+    return <div className={'home-page-container'}>
+        <div className={'home-page-menu'}>
+            <h1>Terras Lusas</h1>
+            <p>Sabes onde é a tal terrinha do teu amigo António?</p>
+            <div className={'home-page-actions'}>
+                <HomeButton onClick={() => navigate('/marathon')}>Maratona</HomeButton>
+                <HomeButton onClick={() => navigate('/explore')}>Explorar</HomeButton>
+            </div>
+        </div>
+        <div className={'home-page-map'}>
+            <div id="map" ref={mapElement}></div>
+        </div>
+    </div>;
 };

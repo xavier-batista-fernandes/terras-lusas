@@ -38,11 +38,11 @@ export function useMap() {
     const paintMunicipality = (municipality: string) => {
         const features: Feature[] = mapFeatures.current ?? [];
 
-        const guessedMunicipality = features.find(
+        const target = features.find(
             (feature) => feature.getProperties()['Municipality'] === municipality.toUpperCase());
-        if (!guessedMunicipality) return;
+        if (!target) return;
 
-        guessedMunicipality.setStyle(
+        target.setStyle(
             new Style({
                 fill: new Fill({ color: getRandomColor() }),
                 stroke: new Stroke({ width: 1 }),
@@ -51,7 +51,7 @@ export function useMap() {
         );
 
         // TODO: move mapInstance.current?.getView() to a variable
-        mapInstance.current?.getView()?.setCenter(getMunicipalityCenter(guessedMunicipality));
+        mapInstance.current?.getView()?.setCenter(getMunicipalityCenter(target));
         mapInstance.current?.getView()?.setZoom(9);
     };
 
