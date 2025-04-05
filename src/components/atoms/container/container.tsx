@@ -27,6 +27,7 @@ export const Container: FC<ContainerProps> = (
         border,
         borderRadius,
         transition,
+        visibility,
     },
 ) => {
     const style: CSSProperties = {
@@ -43,6 +44,7 @@ export const Container: FC<ContainerProps> = (
         border,
         borderRadius,
         transition,
+        visibility,
     };
 
     if (position !== 'static') {

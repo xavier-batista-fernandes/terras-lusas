@@ -1,5 +1,5 @@
-export enum gameStates {
+export enum GameStates {
     NOT_STARTED,
     IN_PROGRESS,
-    GAME_OVER
+    FINISHED
 }

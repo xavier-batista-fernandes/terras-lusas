@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useMunicipalities } from '../providers/municipalities-provider.tsx';
-import { gameStates } from '../models/game-states.ts';
+import { GameStates } from '../models/game-states.ts';
 import { useCountdown } from './useCountdown.ts';
 import { CountdownUpdates } from '../models/countdown-updates.ts';
 
@@ -9,7 +9,7 @@ export function useMarathon() {
 
     const { municipalities } = useMunicipalities();
 
-    const [gameState, setGameState] = useState(gameStates.NOT_STARTED);
+    const [gameState, setGameState] = useState(GameStates.NOT_STARTED);
 
     const [guessedMunicipalities, setGuessedMunicipalities] = useState(new Set<string>());
     const [nonGuessedMunicipalities, setNonGuessedMunicipalities] = useState(new Set<string>());
@@ -18,23 +18,23 @@ export function useMarathon() {
     const { remainingTime, updateCountdown } = useCountdown(GAME_DURATION_IN_SECONDS, onCountdownOver);
 
     function onCountdownOver() {
-        setGameState(gameStates.GAME_OVER);
+        setGameState(GameStates.FINISHED);
         updateCountdown(CountdownUpdates.RESET);
     }
 
     useEffect(() => {
         switch (gameState) {
-            case gameStates.IN_PROGRESS:
+            case GameStates.IN_PROGRESS:
                 updateCountdown(CountdownUpdates.START);
                 break;
-            case gameStates.GAME_OVER:
+            case GameStates.FINISHED:
                 updateCountdown(CountdownUpdates.RESET);
                 break;
         }
     }, [gameState]);
 
     function marathonStart() {
-        setGameState(gameStates.IN_PROGRESS);
+        setGameState(GameStates.IN_PROGRESS);
         setGuessedMunicipalities(new Set());
         setNonGuessedMunicipalities(new Set(municipalities));
     }

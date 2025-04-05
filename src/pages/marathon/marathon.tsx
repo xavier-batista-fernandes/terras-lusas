@@ -9,7 +9,7 @@ import { UnderlinedTextInput } from '../../components/molecules/inputs/underline
 import { ResultsModal } from '../../components/organisms/modals/results-modal/results-modal.tsx';
 import { MarathonFlyout } from '../../components/organisms/flyouts/marathon-flyout/marathon-flyout.tsx';
 import { useMarathon } from '../../hooks/useMarathon.ts';
-import { gameStates } from '../../models/game-states.ts';
+import { GameStates } from '../../models/game-states.ts';
 
 export const Marathon = () => {
 
@@ -37,7 +37,7 @@ export const Marathon = () => {
     }
 
     function closeResultsModal() {
-        setGameState(gameStates.NOT_STARTED);
+        setGameState(GameStates.NOT_STARTED);
     }
 
     function handleKeyDown(event: any) {
@@ -70,55 +70,46 @@ export const Marathon = () => {
     return (<>
             {/* Loading component... */}
             {isLoading && <Loading />}
-            <MarathonFlyout isOpen={isFlyoutOpen} onClose={closeFlyout} />
+
 
             {/* Content... */}
-            <Container
-                height="100vh"
-                width="100vw"
-                display={isLoading ? 'none' : 'flex'}
-                justifyContent="center"
-                alignItems="center"
-                overflow="hidden"
-            >
-                {gameState === gameStates.NOT_STARTED && (
-                    <Container
-                        width="50%"
-                        display="flex"
-                        flexDirection="column"
-                        justifyContent="center"
-                        alignItems="center"
-                        gap="15px"
-                    >
-                        <HomeButton onClick={onStartClick}>
-                            Começar 🚀
-                        </HomeButton>
-                    </Container>
-                )}
+            <div className={'marathon-page-container'}>
+                {gameState === GameStates.NOT_STARTED &&
+                    <div className={'marathon-page-section-start'}>
+                        <h1>Maratona de Municípios</h1>
+                        <p>Quantos municípios consegues adivinhar antes que o tempo acabe?</p>
+                        <ul>
+                            <li>🧠 Tens 3 minutos.</li>
+                            <li>📍 Vê os teus acertos no mapa e organiza-os por distrito.</li>
+                            <li>🔥 Prepara-te. A corrida começa quando carregares no botão.</li>
+                        </ul>
+                        <div className={'actions'}>
+                            <HomeButton onClick={onStartClick}>
+                                Vamos!
+                            </HomeButton>
+                        </div>
+                    </div>
+                }
 
-                {(gameState === gameStates.IN_PROGRESS &&
-                    <Container
-                        width="50%"
-                        display="flex"
-                        flexDirection="column"
-                        justifyContent="center"
-                        alignItems="center"
-                        gap="15px"
-                    >
-                        <Text fontSize="3rem" fontWeight="bold">{remainingTime} ⏳</Text>
-                        <Text fontSize="1.75rem" fontWeight="normal">Tens um amigo que é de...</Text>
-                        <UnderlinedTextInput onChange={handleChange} onKeyDown={handleKeyDown} />
-                        <Text fontSize="0.75rem" color="red" visibility={isRepeated ? 'visible' : 'hidden'}>
-                            Já adivinhaste este.
-                        </Text>
+                {gameState === GameStates.IN_PROGRESS &&
+                    <>
+                        <div className={'marathon-page-section-running'}>
+                            <Text fontSize="3rem" fontWeight="bold">{remainingTime} ⏳</Text>
+                            <Text fontSize="1.75rem" fontWeight="normal">Tens um amigo que é de...</Text>
+                            <UnderlinedTextInput onChange={handleChange} onKeyDown={handleKeyDown} />
+                            <Text fontSize="0.75rem" color="red" visibility={isRepeated ? 'visible' : 'hidden'}>
+                                Já adivinhaste este.
+                            </Text>
 
-                        <HomeButton onClick={() => setIsFlyoutOpen(!isFlyoutOpen)}>
-                            {isFlyoutOpen ? 'Fechar detalhes' : 'Abrir detalhes'}
-                        </HomeButton>
-                    </Container>
-                )}
+                            <HomeButton onClick={() => setIsFlyoutOpen(!isFlyoutOpen)}>
+                                {isFlyoutOpen ? 'Fechar detalhes' : 'Abrir detalhes'}
+                            </HomeButton>
+                        </div>
+                        <MarathonFlyout isOpen={isFlyoutOpen} onClose={closeFlyout} />
+                    </>
+                }
 
-                {gameState === gameStates.GAME_OVER &&
+                {gameState === GameStates.FINISHED &&
                     <ResultsModal onClose={closeResultsModal}>
                         <Container display={'flex'} justifyContent={'center'}
                                    flexDirection={'column'}>
@@ -128,11 +119,15 @@ export const Marathon = () => {
                         </Container>
                     </ResultsModal>}
 
-
-                <Container width="50%">
-                    <div id="map" ref={mapElement}></div>
-                </Container>
-            </Container>
+                <div className={'marathon-page-map' + `${gameState !== GameStates.IN_PROGRESS ? 'hidden' : ''}`}>
+                    <div
+                        className={gameState !== GameStates.IN_PROGRESS ? ' hidden' : ''}
+                        id="map"
+                        ref={mapElement}
+                        data-hidden={gameState !== GameStates.IN_PROGRESS}>
+                    </div>
+                </div>
+            </div>
         </>
     );
 };

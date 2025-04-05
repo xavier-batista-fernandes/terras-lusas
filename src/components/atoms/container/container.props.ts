@@ -24,4 +24,5 @@ export interface ContainerProps {
     borderRadius?: CSSProperties['borderRadius'];
     zIndex?: CSSProperties['zIndex'];
     transition?: CSSProperties['transition'];
+    visibility?: CSSProperties['visibility'];
 }

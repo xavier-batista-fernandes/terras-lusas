@@ -15,6 +15,10 @@
     box-shadow: #242424 5px 5px;
 }
 
+.home-button[disabled] {
+    pointer-events: none;
+}
+
 .home-button:hover {
     background-position: top;
     box-shadow: #242424 7px 7px;
