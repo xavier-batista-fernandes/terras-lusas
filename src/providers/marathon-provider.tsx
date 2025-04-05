@@ -1,10 +1,25 @@
-import { useEffect, useState } from 'react';
-import { useMunicipalities } from '../providers/municipalities-provider.tsx';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import { GameStates } from '../models/game-states.ts';
-import { useCountdown } from './useCountdown.ts';
+import { useMunicipalities } from './municipalities-provider.tsx';
+import { useCountdown } from '../hooks/useCountdown.ts';
 import { CountdownUpdates } from '../models/countdown-updates.ts';
 
-export function useMarathon() {
+type MarathonContextType = {
+    remainingTime: number;
+    gameState: GameStates;
+    setGameState: (state: GameStates) => void;
+    guessedMunicipalities: Set<string>;
+    isGuessValid: (input: string) => boolean;
+    isGuessRepeated: (input: string) => boolean;
+    isGuessCorrect: (input: string) => boolean;
+    markCorrect: (input: string) => void;
+    marathonStart: () => void;
+};
+
+const MarathonContext = createContext<MarathonContextType | undefined>(undefined);
+
+export function MarathonProvider({ children }: { children: ReactNode }) {
+
     const GAME_DURATION_IN_SECONDS = 180;
 
     const { municipalities } = useMunicipalities();
@@ -73,15 +88,28 @@ export function useMarathon() {
         setNonGuessedMunicipalities(new Set(newNonGuessedMunicipalities));
     }
 
-    return {
-        remainingTime,
-        gameState,
-        setGameState,
-        guessedMunicipalities,
-        isGuessValid,
-        isGuessRepeated,
-        isGuessCorrect,
-        markCorrect,
-        marathonStart,
-    };
+
+    return (
+        <MarathonContext.Provider
+            value={{
+                remainingTime,
+                gameState,
+                setGameState,
+                guessedMunicipalities,
+                isGuessValid,
+                isGuessRepeated,
+                isGuessCorrect,
+                markCorrect,
+                marathonStart,
+            }}
+        >
+            {children}
+        </MarathonContext.Provider>
+    );
+}
+
+export function useMarathon() {
+    const context = useContext(MarathonContext);
+    if (!context) throw new Error('useMarathon must be used within a MarathonProvider');
+    return context;
 }

@@ -1,19 +1,20 @@
+import './marathon-flyout.css';
 import { Flyout } from '../../../molecules/flyout/flyout.tsx';
 import { FlyoutProps } from './marathon-flyout.props.ts';
 import { useMunicipalities } from '../../../../providers/municipalities-provider.tsx';
-import './marathon-flyout.css';
 import { useEffect } from 'react';
 
 export function MarathonFlyout({ isOpen }: FlyoutProps) {
     const { districts, municipalitiesPerDistrict } = useMunicipalities();
     useEffect(() => {
         // TODO: protect component against data not being available
-    }, []);
+    }, [isOpen]);
 
     return (
         <Flyout isOpen={isOpen}>
             <h1>CONCELHOS POR DISTRITO</h1>
             <p>Aqui podes ver que concelhos já acertaste por distrito.</p>
+            <button onClick={() => isOpen}>X</button>
 
             <div className="marathon-flyout-container">
                 <ul className="marathon-flyout-districts-list">

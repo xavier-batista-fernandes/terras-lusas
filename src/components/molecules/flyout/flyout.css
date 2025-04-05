@@ -29,3 +29,14 @@
     height: 90%;
 }
 
+@media (max-width: 1024px) {
+    .flyout-backdrop {
+        width: 100vw;
+        display: none; /* FIXME: Update flyout so it doesn't block other components when hidden  */
+    }
+
+    .flyout-container {
+        right: -100vw;
+    }
+}
+

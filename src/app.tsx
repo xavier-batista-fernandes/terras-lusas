@@ -3,6 +3,7 @@ import { Home } from './pages/home/home.tsx';
 import { MunicipalitiesProvider } from './providers/municipalities-provider.tsx';
 import { Marathon } from './pages/marathon/marathon.tsx';
 import { Explore } from './pages/explore/explore.tsx';
+import { MarathonProvider } from './providers/marathon-provider.tsx';
 
 export const App = () => {
     return (
@@ -11,7 +12,13 @@ export const App = () => {
                 <BrowserRouter basename={'/TERRAS-LUSAS'}>
                     <Routes>
                         <Route path="/" element={<Home />} />
-                        <Route path="/marathon" element={<Marathon />} />
+                        <Route
+                            path="/marathon"
+                            element={
+                                <MarathonProvider>
+                                    <Marathon />
+                                </MarathonProvider>
+                            } />
                         <Route path="/explore" element={<Explore />} />
                     </Routes>
                 </BrowserRouter>

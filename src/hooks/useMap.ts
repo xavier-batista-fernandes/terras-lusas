@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { RefObject, useEffect, useRef } from 'react';
 import { useGeographic } from 'ol/proj';
 import { Feature, Map, View } from 'ol';
 import { useMunicipalities } from '../providers/municipalities-provider.tsx';
@@ -9,11 +9,10 @@ import { Fill, Stroke, Style } from 'ol/style';
 import { getRandomColor } from '../utilities/getRandomColor.ts';
 import { getMunicipalityCenter } from '../utilities/getMunicipalityCenter.ts';
 
-export function useMap() {
+export function useMap(mapElement: RefObject<any>) {
 
     useGeographic();
 
-    const mapElement = useRef(null); // TODO: receive as input of hook instead?
     const mapInstance = useRef<Map>(null);
     const mapFeatures = useRef<Feature[]>(null);
 
@@ -83,6 +82,7 @@ export function useMap() {
             if (!mapInstance.current) return;
             mapInstance.current.setTarget(undefined);
             mapInstance.current.dispose();
+            mapInstance.current = null;
         };
     }, [isLoading]);
 
