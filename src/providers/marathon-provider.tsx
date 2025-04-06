@@ -14,6 +14,7 @@ type MarathonContextType = {
     isGuessCorrect: (input: string) => boolean;
     markCorrect: (input: string) => void;
     marathonStart: () => void;
+    lastDistrict?: string;
 };
 
 const MarathonContext = createContext<MarathonContextType | undefined>(undefined);
@@ -22,12 +23,14 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
 
     const GAME_DURATION_IN_SECONDS = 180;
 
-    const { municipalities } = useMunicipalities();
+    const { municipalities, getDistrict } = useMunicipalities();
 
     const [gameState, setGameState] = useState(GameStates.NOT_STARTED);
 
     const [guessedMunicipalities, setGuessedMunicipalities] = useState(new Set<string>());
     const [nonGuessedMunicipalities, setNonGuessedMunicipalities] = useState(new Set<string>());
+
+    const [lastDistrict, setLastDistrict] = useState<string | undefined>(undefined);
 
 
     const { remainingTime, updateCountdown } = useCountdown(GAME_DURATION_IN_SECONDS, onCountdownOver);
@@ -79,6 +82,10 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
     }
 
     function markCorrect(municipality: string) {
+
+        console.log('getDistrict', getDistrict(municipality));
+        setLastDistrict(getDistrict(municipality));
+
         const newGuessedMunicipalities = new Set(guessedMunicipalities);
         newGuessedMunicipalities.add(municipality);
         setGuessedMunicipalities(new Set(newGuessedMunicipalities));
@@ -101,6 +108,7 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
                 isGuessCorrect,
                 markCorrect,
                 marathonStart,
+                lastDistrict,
             }}
         >
             {children}

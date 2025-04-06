@@ -2,14 +2,21 @@ import { createContext, ReactNode, useContext, useEffect, useState } from 'react
 import { fetchMunicipalities } from '../utilities/fetchMunicipalities.ts';
 import { toTitleCase } from '../utilities/toTitleCase.ts';
 
-const MunicipalitiesContext = createContext<MunicipalitiesContextData | undefined>(undefined);
+const MunicipalitiesContext = createContext<MunicipalitiesContextType | undefined>(undefined);
 
-export interface MunicipalitiesContextData {
+type MunicipalitiesContextType = {
     isLoading: boolean;
     rawData?: any; // TODO: abstract raw data from the rest of the app
     districts: Set<string>;
     municipalities: Set<string>;
     municipalitiesPerDistrict: Map<string, Set<string>>;
+    getDistrict(municipality: string): string | undefined;
+    // getMunicipalities(district: string): Set<string> | undefined; // TODO: implement me
+}
+
+type Details = {
+    municipality: string;
+    district: string;
 }
 
 export const useMunicipalities = () => {
@@ -20,6 +27,8 @@ export const useMunicipalities = () => {
 
 export const MunicipalitiesProvider = ({ children }: { children: ReactNode }) => {
 
+    const [details, setDetails] = useState<Details[]>([]);
+
     const [isLoading, setIsLoading] = useState(true);
     const [rawData, setRawData] = useState<{ type: string, features: any } | undefined>(undefined);
 
@@ -27,12 +36,18 @@ export const MunicipalitiesProvider = ({ children }: { children: ReactNode }) =>
     const [municipalities, setMunicipalities] = useState(new Set<string>());
     const [municipalitiesPerDistrict, setMunicipalitiesPerDistrict] = useState(new Map<string, Set<string>>());
 
-    const data: MunicipalitiesContextData = {
+    const getDistrict = (municipality: string) => {
+        const target = details.find((detail) => detail.municipality === toTitleCase(municipality));
+        return target?.district;
+    };
+
+    const data: MunicipalitiesContextType = {
         isLoading,
         rawData,
         districts,
         municipalities,
         municipalitiesPerDistrict,
+        getDistrict,
     };
 
     useEffect(() => {
@@ -42,6 +57,16 @@ export const MunicipalitiesProvider = ({ children }: { children: ReactNode }) =>
             // Fetch the raw data
             const rawData = await fetchMunicipalities();
             setRawData(rawData);
+
+            // Populate array of all municipality details
+            const details: Details[] = [];
+            rawData.features.forEach((feature: any) => {
+                const district = toTitleCase(feature.properties['District']);
+                const municipality = toTitleCase(feature.properties['Municipality']);
+
+                details.push({ municipality, district });
+            });
+            setDetails(details);
 
             // Extract districts from the raw data
             const newMunicipalitiesPerDistrict = new Map<string, Set<string>>();
