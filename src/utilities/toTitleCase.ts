@@ -4,8 +4,8 @@
  * Keeps certain words like "do", "da", "de" in lowercase.
  */
 export function toTitleCase(text: string): string {
-    const regex = /\S+/g;
-    const exceptions = ['do', 'da', 'de', 'e', 'a', 'o', 'à', 'é'];
+    const regex = /[çÇáÁéÉíÍóÓúÚàÀãÃâÂêÊôÔõÕüÜñÑA-Za-z]+-?/g;
+    const exceptions = ['do', 'da', 'de', 'e', 'a', 'o', 'à', 'é', 'a-', 'o-'];
 
     return text.replace(regex, (word) => {
         if (exceptions.includes(word.toLowerCase())) {
