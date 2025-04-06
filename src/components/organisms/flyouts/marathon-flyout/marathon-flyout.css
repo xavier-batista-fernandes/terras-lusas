@@ -39,6 +39,8 @@
 .marathon-flyout-municipalities-item {
     padding: 5px;
     width: 30%;
+    min-height: 26px; /* TODO: does this height have to be fixed? */
+    box-sizing: border-box;
     list-style: none;
     border: 1px solid;
 }
