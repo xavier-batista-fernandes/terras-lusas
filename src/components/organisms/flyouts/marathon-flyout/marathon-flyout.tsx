@@ -5,6 +5,9 @@ import { useMarathon } from '../../../../providers/marathon-provider.tsx';
 import { useEffect } from 'react';
 import { toTitleCase } from '../../../../utilities/toTitleCase.ts';
 
+
+// TODO: extract marathon flyout content to separate content component (molecule?)
+// TODO: render only that component in mobile view, forget the map
 export function MarathonFlyout({ isOpen }: FlyoutProps) {
     const { districts, municipalitiesPerDistrict } = useMunicipalities();
     const { guessedMunicipalities, lastDistrict } = useMarathon();

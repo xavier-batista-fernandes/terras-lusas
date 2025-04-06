@@ -16,4 +16,6 @@ FEATURES:
     3.1 Po ==> Pombal & Porto & Ponte de Lima
     3.2 Hovering the map shows the name of the municipality
 
-4. Have a custom hook for the marathon game  so game state can be centralized, maybe context?
+✅ Have a custom hook for the marathon game so game state can be centralized, maybe context?
+Extract marathon flyout content to separate content component (molecule?)
+Render only that component in mobile view, forget the map
