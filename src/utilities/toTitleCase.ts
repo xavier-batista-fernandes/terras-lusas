@@ -5,7 +5,7 @@
  */
 export function toTitleCase(text: string): string {
     const regex = /[çÇáÁéÉíÍóÓúÚàÀãÃâÂêÊôÔõÕüÜñÑA-Za-z]+-?/g;
-    const exceptions = ['do', 'da', 'de', 'e', 'a', 'o', 'à', 'é', 'a-', 'o-'];
+    const exceptions = ['o', 'do', 'dos', 'o-', 'a', 'da', 'das', 'à', 'a-', 'e', 'de', 'des', 'é'];
 
     return text.replace(regex, (word) => {
         if (exceptions.includes(word.toLowerCase())) {
