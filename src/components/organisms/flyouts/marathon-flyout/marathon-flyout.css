@@ -1,9 +1,10 @@
 .marathon-flyout-container {
     height: 100vh;
     width: 50vw;
-    position: fixed;
     right: -50vw;
-    transition: right 0.15s;
+    bottom: 0;
+    position: fixed;
+    transition: right 0.15s ease-out, bottom 0.15s ease-out;
     z-index: 600;
     background: #c7d5ff;
     overflow: hidden;
@@ -11,6 +12,16 @@
 
 .marathon-flyout-container.open {
     right: 0;
+    bottom: 0;
+}
+
+@media (max-width: 1024px) {
+    .marathon-flyout-container {
+        width: 100vw;
+        height: 100vh;
+        right: 0;
+        bottom: -100vh;
+    }
 }
 
 .marathon-flyout-content {
@@ -22,6 +33,13 @@
     font-size: 0.75rem;
     height: 100%;
     box-sizing: border-box;
+    position: relative;
+}
+
+.marathon-flyout-content > button {
+    position: absolute;
+    top: 5%;
+    right: 5%;
 }
 
 .marathon-flyout-content > h1,

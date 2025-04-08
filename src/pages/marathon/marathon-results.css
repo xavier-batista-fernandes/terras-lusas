@@ -1,0 +1,40 @@
+.marathon-finished-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.marathon-finished-container .header h1 {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    text-align: center;
+    margin: clamp(1rem, 2.5%, 5rem) 5%;
+}
+
+.marathon-finished-container .header p {
+    font-size: clamp(0.95rem, 2vw, 1.15rem);
+    text-align: center;
+    margin: 0 10% 5% 10%;
+}
+
+.marathon-finished-container .best-districts {
+
+}
+
+.marathon-finished-container .previous-results {
+
+}
+
+.marathon-finished-container .actions {
+    width: 75%;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.marathon-finished-container .actions button {
+    flex: 0 1 clamp(15rem, 20%, 50rem);
+}

@@ -5,7 +5,7 @@ import { useRef, useState } from 'react';
 import { Text } from '../../components/atoms/text/text.tsx';
 import { UnderlinedTextInput } from '../../components/molecules/inputs/underlined-text-input/underlined-text-input.tsx';
 import { HomeButton } from '../../components/atoms/buttons/home-button/home-button.tsx';
-import { MarathonFlyout } from '../../components/organisms/flyouts/marathon-flyout/marathon-flyout.tsx';
+import { useFlyout } from '../../providers/flyout-context/flyout-provider.tsx';
 
 export function MarathonRunning() {
     const mapElement = useRef<HTMLDivElement | null>(null);
@@ -17,15 +17,11 @@ export function MarathonRunning() {
         isGuessCorrect,
         markCorrect,
     } = useMarathon();
+    const { openFlyout } = useFlyout();
 
-    const [isFlyoutOpen, setIsFlyoutOpen] = useState(false);
     const [latestGuess, setLatestGuess] = useState('');
 
     const isRepeated = isGuessRepeated(latestGuess);
-
-    function closeFlyout() {
-        setIsFlyoutOpen(false);
-    }
 
     function handleKeyDown(event: any) {
         if (event.key !== 'Enter') return;
@@ -53,14 +49,13 @@ export function MarathonRunning() {
     return <>
         <div className={'marathon-running-container'}>
             <div className={'actions'}>
-                <MarathonFlyout isOpen={isFlyoutOpen} onClose={closeFlyout} />
                 <p>{remainingTime}</p>
                 <UnderlinedTextInput onChange={handleChange} onKeyDown={handleKeyDown} />
                 <Text fontSize="0.75rem" margin={'2%'} color="red" visibility={isRepeated ? 'visible' : 'hidden'}>
                     Já adivinhaste este.
                 </Text>
-                <HomeButton onClick={() => setIsFlyoutOpen(!isFlyoutOpen)}>
-                    {isFlyoutOpen ? 'Fechar detalhes' : 'Abrir detalhes'}
+                <HomeButton onClick={() => openFlyout()}>
+                    Abrir detalhes
                 </HomeButton>
             </div>
             <div className={'map'} ref={mapElement}></div>

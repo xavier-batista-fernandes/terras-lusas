@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import { fetchMunicipalities } from '../utilities/fetchMunicipalities.ts';
 import { toTitleCase } from '../utilities/toTitleCase.ts';
+import { Details } from '../models/details.ts';
 
 const MunicipalitiesContext = createContext<MunicipalitiesContextType | undefined>(undefined);
 
@@ -12,12 +13,6 @@ type MunicipalitiesContextType = {
     municipalitiesPerDistrict: Map<string, Set<string>>;
     getDistrict(municipality: string): string | undefined;
     // getMunicipalities(district: string): Set<string> | undefined; // TODO: implement me
-}
-
-type Details = {
-    id: number;
-    municipality: string;
-    district: string;
 }
 
 export const useMunicipalities = () => {

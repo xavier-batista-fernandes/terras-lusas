@@ -21,7 +21,7 @@ const MarathonContext = createContext<MarathonContextType | undefined>(undefined
 
 export function MarathonProvider({ children }: { children: ReactNode }) {
 
-    const GAME_DURATION_IN_SECONDS = 180;
+    const GAME_DURATION_IN_SECONDS = 300; //TODO: have options? make this configurable?
 
     const { municipalities, getDistrict } = useMunicipalities();
 
