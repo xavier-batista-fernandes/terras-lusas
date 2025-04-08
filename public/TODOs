@@ -19,3 +19,8 @@ FEATURES:
 ✅ Have a custom hook for the marathon game so game state can be centralized, maybe context?
 Extract marathon flyout content to separate content component (molecule?)
 Render only that component in mobile view, forget the map
+Have side navigation with different game modes, about page, technical details?
+
+A) At the end of the game, render a results map with the districts where
+they are colored according to the percentage of corrected municipalities
+for that district. Could also have hover interactions with more details.
