@@ -6,6 +6,7 @@ import { Text } from '../../components/atoms/text/text.tsx';
 import { UnderlinedTextInput } from '../../components/molecules/inputs/underlined-text-input/underlined-text-input.tsx';
 import { HomeButton } from '../../components/atoms/buttons/home-button/home-button.tsx';
 import { useFlyout } from '../../providers/flyout-context/flyout-provider.tsx';
+import { GameStates } from '../../models/game-states.ts';
 
 export function MarathonRunning() {
     const mapElement = useRef<HTMLDivElement | null>(null);
@@ -15,6 +16,7 @@ export function MarathonRunning() {
         isGuessValid,
         isGuessRepeated,
         isGuessCorrect,
+        setGameState,
         markCorrect,
     } = useMarathon();
     const { openFlyout } = useFlyout();
@@ -48,15 +50,19 @@ export function MarathonRunning() {
 
     return <>
         <div className={'marathon-running-container'}>
-            <div className={'actions'}>
+            <div className={'marathon-running-content'}>
                 <p>{remainingTime}</p>
                 <UnderlinedTextInput onChange={handleChange} onKeyDown={handleKeyDown} />
                 <Text fontSize="0.75rem" margin={'2%'} color="red" visibility={isRepeated ? 'visible' : 'hidden'}>
                     Já adivinhaste este.
                 </Text>
-                <HomeButton onClick={() => openFlyout()}>
-                    Abrir detalhes
-                </HomeButton>
+                <div className={'actions'}>
+                    <HomeButton fontSize={'0.75rem'} onClick={() => openFlyout()}>
+                        Abrir detalhes
+                    </HomeButton>
+                    <HomeButton fontSize={'0.75rem'}
+                                onClick={() => setGameState(GameStates.FINISHED)}>Terminar</HomeButton>
+                </div>
             </div>
             <div className={'map'} ref={mapElement}></div>
         </div>

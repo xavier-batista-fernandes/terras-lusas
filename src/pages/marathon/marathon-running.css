@@ -5,7 +5,7 @@
     flex-direction: row;
 }
 
-.marathon-running-container .actions {
+.marathon-running-content {
     height: 100vh;
     width: 50%;
     display: flex;
@@ -15,14 +15,26 @@
     align-items: center;
 }
 
-.actions > p {
-    font-size: clamp(3rem, 5vw, 4rem);
+.marathon-running-content > p {
+    font-size: clamp(3rem, 3vw, 4rem);
 }
 
 .marathon-running-container .map {
     height: 100vh;
     width: 50%;
     pointer-events: none;
+}
+
+.marathon-running-content .actions {
+    width: 75%;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.marathon-running-content .actions button {
+    flex: 0 1 clamp(15rem, 20%, 50rem);
 }
 
 @media (max-width: 1024px) {
@@ -33,7 +45,7 @@
         justify-content: center;
     }
 
-    .marathon-running-container .actions {
+    .marathon-running-content .actions {
         width: 100%;
     }
 

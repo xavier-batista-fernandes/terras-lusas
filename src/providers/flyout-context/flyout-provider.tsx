@@ -24,4 +24,4 @@ export function useFlyout() {
     const context = useContext(FlyoutContext);
     if (!context) throw new Error('useFlyout must be used within a FlyoutProvider');
     return context;
-};
+}
