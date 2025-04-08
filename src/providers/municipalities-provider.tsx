@@ -15,6 +15,7 @@ type MunicipalitiesContextType = {
 }
 
 type Details = {
+    id: number;
     municipality: string;
     district: string;
 }
@@ -60,11 +61,11 @@ export const MunicipalitiesProvider = ({ children }: { children: ReactNode }) =>
 
             // Populate array of all municipality details
             const details: Details[] = [];
-            rawData.features.forEach((feature: any) => {
+            rawData.features.forEach((feature: any, index: number) => {
                 const district = toTitleCase(feature.properties['District']);
                 const municipality = toTitleCase(feature.properties['Municipality']);
 
-                details.push({ municipality, district });
+                details.push({ id: index, municipality, district });
             });
             setDetails(details);
 
@@ -97,7 +98,6 @@ export const MunicipalitiesProvider = ({ children }: { children: ReactNode }) =>
 
 
             setIsLoading(false);
-
             // TODO: handle errors and allow for page reloads
         };
 
