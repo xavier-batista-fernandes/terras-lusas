@@ -10,7 +10,7 @@ export const App = () => {
     return (
         <>
             <MunicipalitiesProvider>
-                <BrowserRouter basename={'/TERRAS-LUSAS'}>
+                <BrowserRouter>
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route
