@@ -9,14 +9,12 @@
 
 
 FEATURES:
-1. In the clock game mode, have a details section so the player can track which municipalities have been guessed already that opens when clicked.
 2. Create daily achievements for the player to complete (like guessing 5 municipalities that start with A in a row)
 
 3. Have a learning mode where use can start type municipalities and they are highlighted in the map
     3.1 Po ==> Pombal & Porto & Ponte de Lima
     3.2 Hovering the map shows the name of the municipality
 
-✅ Have a custom hook for the marathon game so game state can be centralized, maybe context?
 Extract marathon flyout content to separate content component (molecule?)
 Render only that component in mobile view, forget the map
 Have side navigation with different game modes, about page, technical details?
@@ -24,3 +22,6 @@ Have side navigation with different game modes, about page, technical details?
 A) At the end of the game, render a results map with the districts where
 they are colored according to the percentage of corrected municipalities
 for that district. Could also have hover interactions with more details.
+
+✅ Have a custom hook for the marathon game so game state can be centralized, maybe context?
+✅ In the clock game mode, have a details section so the player can track which municipalities have been guessed already that opens when clicked.

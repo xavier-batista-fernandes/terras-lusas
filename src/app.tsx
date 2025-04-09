@@ -5,6 +5,7 @@ import { Marathon } from './pages/marathon/marathon.tsx';
 import { Explore } from './pages/explore/explore.tsx';
 import { MarathonProvider } from './providers/marathon-provider.tsx';
 import { FlyoutProvider } from './providers/flyout-context/flyout-provider.tsx';
+import { NotFound } from './pages/not-found/not-found.tsx';
 
 export const App = () => {
     return (
@@ -23,6 +24,7 @@ export const App = () => {
                                 </MarathonProvider>
                             } />
                         <Route path="/explore" element={<Explore />} />
+                        <Route path="*" element={<NotFound />} />
                     </Routes>
                 </BrowserRouter>
             </MunicipalitiesProvider>
