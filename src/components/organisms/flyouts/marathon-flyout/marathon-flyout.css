@@ -29,7 +29,7 @@
     flex-direction: column;
     gap: 16px;
     padding: 3%;
-    overflow: scroll;
+    overflow: auto;
     font-size: 0.75rem;
     height: 100%;
     box-sizing: border-box;
