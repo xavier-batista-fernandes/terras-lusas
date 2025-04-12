@@ -1,32 +1,75 @@
 import { useRef, useState } from 'react';
-import { CountdownUpdates } from '../models/countdown-updates.ts';
+import { Duration, intervalToDuration } from 'date-fns';
 
-export function useCountdown(duration: number, callback: () => void) {
-    const [remainingTime, setRemainingTime] = useState(duration);
-    const interval = useRef<number>(0);
+/**
+ * Custom countdown hook that counts down from a given duration.
+ * Ignores years, months, and weeks in the Duration object.
+ *
+ * @param duration - The duration to count down from (hours, minutes, seconds).
+ * @param callback - Function to call when the countdown reaches zero.
+ * @returns An object with:
+ *   - countdown: A formatted string in "MM:SS" format.
+ *   - startCountdown: Function to start the countdown.
+ *   - resetCountdown: Function to reset and stop the countdown.
+ */
+export function useCountdown(duration: Duration, callback: () => void) {
+    const intervalRef = useRef<number | null>(null);
+    const [countdown, setCountdown] = useState('⏰');
 
-    function updateCountdown(update: CountdownUpdates) {
-        switch (update) {
-            case CountdownUpdates.START:
-                const startTime = new Date().getTime();
-                interval.current = setInterval(() => {
-                    const elapsedTime = new Date().getTime() - startTime;
-                    if (elapsedTime >= duration * 1000) {
-                        callback();
-                        // setRemainingTime(duration);
-                        clearInterval(interval.current);
-                    }
-                    setRemainingTime(duration - Math.floor(elapsedTime / 1000));
+    const totalSeconds = getTotalSeconds(duration);
 
-                }, 500);
-                break;
+    /**
+     * Starts the countdown timer. Calls the callback when time runs out.
+     */
+    function startCountdown() {
+        const startTime = Date.now();
 
-            case CountdownUpdates.RESET:
-                setRemainingTime(duration);
-                clearInterval(interval.current);
-                break;
-        }
+        intervalRef.current = setInterval(() => {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const remaining = totalSeconds - elapsed;
+
+            console.log('iterating countdown', remaining);
+            if (remaining <= 0) {
+                resetCountdown();
+                callback();
+                return;
+            }
+
+            setCountdown(formatCountdown(remaining));
+        }, 250);
     }
 
-    return { remainingTime, updateCountdown };
+    /**
+     * Resets the countdown and clears the interval.
+     */
+    function resetCountdown() {
+        clearInterval(intervalRef.current!);
+        setCountdown('');
+    }
+
+    return { countdown, startCountdown, resetCountdown };
+}
+
+/**
+ * Converts total seconds to a "Minutes:Seconds" string.
+ *
+ * @param secondsLeft - Time left in seconds.
+ * @returns A formatted string like "03:45".
+ */
+function formatCountdown(secondsLeft: number): string {
+    const duration = intervalToDuration({ start: 0, end: secondsLeft * 1000 });
+    const minutes = String(duration.minutes ?? '0').padStart(2, '0');
+    const seconds = String(duration.seconds ?? '0').padStart(2, '0');
+    return `${minutes}:${seconds}`;
+}
+
+/**
+ * Converts a Duration object into total seconds.
+ * Ignores years, months, weeks and days.
+ *
+ * @param duration - The Duration object (hours, minutes, seconds).
+ * @returns The total duration in seconds.
+ */
+function getTotalSeconds({ hours = 0, minutes = 0, seconds = 0 }: Duration): number {
+    return hours * 3600 + minutes * 60 + seconds;
 }
