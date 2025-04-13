@@ -21,8 +21,8 @@ export const Home = () => {
                 </div>
                 <div className="quote">
                     <p>
-                        Este é o <strong>Terras Lusas</strong> — uma aplicação para todos os que já disseram, com
-                        confiança:
+                        Estas são as <strong>Terras Lusas</strong>.
+                        Um jogo para todos aqueles que com toda a confiança disseram:
                     </p>
                     <span>"Ah, isso? Fácil! Fica no distrito de Aveiro, pá. De certeza!"</span>
                     <p>
@@ -35,7 +35,7 @@ export const Home = () => {
                 <p className="subheading">Preparado para mostrar que sabes mais do que o teu tio nas festas de
                     família?</p>
                 <ul>
-                    <li role="button" tabIndex={0} onClick={() => navigate('/explore')}>
+                    <li role="button" tabIndex={0} onClick={() => navigate('/404')}>
                         <h3>Exploração</h3>
                         <p>Descobre os municípios ao teu ritmo. Navega pelo mapa, aprende onde ficam, e fica a conhecer
                             melhor Portugal.</p>
@@ -47,7 +47,7 @@ export const Home = () => {
                             reflexos geográficos!</p>
                         <HomeButton onClick={(event) => onKnowMore(event, 'Maratona')}>Saber mais</HomeButton>
                     </li>
-                    <li role="button" tabIndex={0} onClick={() => navigate('/daily')}>
+                    <li role="button" tabIndex={0} onClick={() => navigate('/404')}>
                         <h3>Diário</h3>
                         <p>Todos os dias um novo desafio para manter a tua pontaria afinada. Bora lá começar o dia com
                             um pouco de geografia!</p>
