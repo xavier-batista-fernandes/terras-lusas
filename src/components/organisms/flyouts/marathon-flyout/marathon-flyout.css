@@ -30,6 +30,7 @@
     gap: 16px;
     padding: 3%;
     overflow: auto;
+    scrollbar-width: none;
     font-size: 0.75rem;
     height: 100%;
     box-sizing: border-box;
@@ -64,6 +65,7 @@
     list-style: none;
 }
 
+/* TODO: convert it into a grid */
 .marathon-flyout-municipalities-list {
     display: flex;
     gap: 0.5rem;
@@ -80,5 +82,3 @@
     list-style: none;
     border: 1px solid;
 }
-
-
