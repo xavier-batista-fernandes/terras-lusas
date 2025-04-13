@@ -19,7 +19,8 @@
     pointer-events: none;
 }
 
-.home-button:hover {
+.home-button:hover,
+.home-button:focus {
     background-position: top;
     box-shadow: #242424 7px 7px;
     transform: translate(-1px, -1px);

@@ -28,7 +28,6 @@ export function useCountdown(duration: Duration, callback: () => void) {
             const elapsed = Math.floor((Date.now() - startTime) / 1000);
             const remaining = totalSeconds - elapsed;
 
-            console.log('iterating countdown', remaining);
             if (remaining <= 0) {
                 resetCountdown();
                 callback();

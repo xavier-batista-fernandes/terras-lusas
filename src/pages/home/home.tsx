@@ -1,105 +1,61 @@
 import './home.css';
-import { useEffect, useRef } from 'react';
-import { Map, View } from 'ol';
-import { useGeographic } from 'ol/proj';
-import { Select } from 'ol/interaction';
-import { always, pointerMove } from 'ol/events/condition';
 import { HomeButton } from '../../components/atoms/buttons/home-button/home-button.tsx';
-import { Fill, Stroke, Style } from 'ol/style';
 import { useNavigate } from 'react-router-dom';
-import { getMunicipalitiesLayer } from '../../utilities/getMunicipalitiesLayer.ts';
 
 
 export const Home = () => {
-
-    useGeographic();
     const navigate = useNavigate();
-    const mapElement = useRef(null);
 
-    const unselectedStyle = new Style({
-        stroke: new Stroke({
-            color: 'black',
-            width: 1,
-        }),
-        fill: new Fill({
-            color: 'rgba(211,211,211,0.66)',
-        }),
-        zIndex: 5,
-    });
+    function onKnowMore(event: any, text: string) {
+        event.stopPropagation();
+        console.log(event);
+        alert(text);
+    }
 
-
-    const selectInteraction = new Select({
-        condition: pointerMove,
-        addCondition: always,
-    });
-
-    useEffect(() => {
-
-        const mapInstance = new Map();
-
-        const init = async () => {
-            if (!mapElement.current) throw new Error('Map element not found.');
-
-            const municipalitiesLayer = getMunicipalitiesLayer();
-            municipalitiesLayer.setStyle(unselectedStyle);
-
-
-            console.log('Setting target...');
-            mapInstance.setTarget(mapElement.current);
-
-            console.log('Setting view...');
-            const view = new View({
-                center: [-8.35, 39.35],
-                zoom: 8.75,
-
-            });
-            mapInstance.setView(view);
-
-            console.log('Adding layer...');
-            mapInstance.addLayer(municipalitiesLayer);
-
-            console.log('Adding interaction...');
-            mapInstance.addInteraction(selectInteraction);
-
-            selectInteraction.getFeatures().on('add', (event) => {
-                const colors = ['#386641', '#6a994e', '#a7c957', '#f2e8cf', '#fb8b24'];
-                const selectedStyle = new Style({
-                    stroke: new Stroke({
-                        color: 'black',
-                        width: 1,
-                    }),
-                    fill: new Fill({
-                        color: colors[Math.floor(Math.random() * colors.length)],
-                    }),
-                    zIndex: 10,
-                });
-                event.element.setStyle(selectedStyle);
-            });
-        };
-
-        init().then(() => console.log('Setup complete.'));
-
-        return () => {
-            console.log('Disposing...');
-            console.log('\n');
-
-            mapInstance.setTarget(undefined);
-            mapInstance.dispose();
-        };
-
-    }, []);
-
-    return <div className={'home-page-container'}>
-        <div className={'home-page-menu'}>
-            <h1>Terras Lusas</h1>
-            <p>Sabes onde é a tal terrinha do teu amigo António?</p>
-            <div className={'home-page-actions'}>
-                <HomeButton onClick={() => navigate('/marathon')}>Maratona</HomeButton>
-                <HomeButton onClick={() => navigate('/explore')}>Explorar</HomeButton>
+    return <div className={'home'}>
+        <div className={'content'}>
+            <div className="hero">
+                <div className={'title'}>
+                    <h1>Terras Lusas</h1>
+                    <img src="/favicon.svg" alt={'FIXME'} />
+                </div>
+                <div className="quote">
+                    <p>
+                        Este é o <strong>Terras Lusas</strong> — uma aplicação para todos os que já disseram, com
+                        confiança:
+                    </p>
+                    <span>"Ah, isso? Fácil! Fica no distrito de Aveiro, pá. De certeza!"</span>
+                    <p>
+                        ... e depois afinal é em Beja.
+                    </p>
+                </div>
             </div>
-        </div>
-        <div className={'home-page-map'}>
-            <div id="map" ref={mapElement}></div>
+            <div className="actions">
+                <h2>Modos de Jogo</h2>
+                <p className="subheading">Preparado para mostrar que sabes mais do que o teu tio nas festas de
+                    família?</p>
+                <ul>
+                    <li role="button" tabIndex={0} onClick={() => navigate('/explore')}>
+                        <h3>Exploração</h3>
+                        <p>Descobre os municípios ao teu ritmo. Navega pelo mapa, aprende onde ficam, e fica a conhecer
+                            melhor Portugal.</p>
+                        <HomeButton onClick={(event) => onKnowMore(event, 'Exploração')}>Saber mais</HomeButton>
+                    </li>
+                    <li role="button" tabIndex={0} onClick={() => navigate('/marathon')}>
+                        <h3>Maratona</h3>
+                        <p>Escreve o máximo de municípios num tempo limitado. Rápido, divertido e ótimo para testar
+                            reflexos geográficos!</p>
+                        <HomeButton onClick={(event) => onKnowMore(event, 'Maratona')}>Saber mais</HomeButton>
+                    </li>
+                    <li role="button" tabIndex={0} onClick={() => navigate('/daily')}>
+                        <h3>Diário</h3>
+                        <p>Todos os dias um novo desafio para manter a tua pontaria afinada. Bora lá começar o dia com
+                            um pouco de geografia!</p>
+                        <HomeButton onClick={(event) => onKnowMore(event, 'Diário')}>Saber mais</HomeButton>
+                    </li>
+                </ul>
+
+            </div>
         </div>
     </div>;
 };

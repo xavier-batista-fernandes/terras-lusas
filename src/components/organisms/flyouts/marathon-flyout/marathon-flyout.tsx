@@ -15,7 +15,6 @@ export function MarathonFlyout() {
 
     useEffect(() => {
         document.onkeydown = (event) => {
-            console.log('event', isFlyoutOpen);
             if (event.key === 'Shift' && !isFlyoutOpen) openFlyout();
             if (event.key === 'Shift' && isFlyoutOpen) closeFlyout();
             if (event.key === 'Escape') closeFlyout();

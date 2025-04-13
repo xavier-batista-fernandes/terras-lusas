@@ -8,7 +8,7 @@ export const HomeButton: FC<HomeButtonProps> = ({
                                                     onClick,
                                                     primaryColor = '#efefef',
                                                     secondaryColor = '#e6e6e6',
-                                                    fontSize = '1.25rem',
+                                                    fontSize = '0.85rem',
                                                     width,
                                                     margin,
                                                 }) => {
