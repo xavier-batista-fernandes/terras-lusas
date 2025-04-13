@@ -1,12 +1,6 @@
-import { FC } from 'react';
 import { IconProps } from './icon.props.ts';
 
-export const UserIcon: FC<IconProps> = ({
-    width,
-    height,
-    fill = 'none',
-    color,
-}) => {
+export function UserIcon({ width = '100%', height = '100%', fill = 'none', color }: IconProps) {
     return (
         <svg
             width={width}

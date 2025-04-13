@@ -1,12 +1,6 @@
-import { FC } from 'react';
 import { IconProps } from './icon.props.ts';
 
-export const InfoIcon: FC<IconProps> = ({
-    width,
-    height,
-    fill = 'none',
-    color,
-}) => {
+export function InfoIcon({ width, height, fill = 'none', color }: IconProps) {
     return (
         <svg
             width={width}
