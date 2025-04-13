@@ -1,18 +1,15 @@
 import './marathon-results.css';
 import { useMarathon } from '../../providers/marathon-provider.tsx';
 import { HomeButton } from '../../components/atoms/buttons/home-button/home-button.tsx';
-import { GameStates } from '../../models/game-states.ts';
 import { useNavigate } from 'react-router-dom';
-import { useFlyout } from '../../providers/flyout-context/flyout-provider.tsx';
 
 export function MarathonResults() {
 
     const navigate = useNavigate();
     const {
-        setGameState,
+        marathonStart,
         guessedMunicipalities,
     } = useMarathon();
-    const { openFlyout } = useFlyout();
 
     function getTitle(score: number): string {
         if (score <= 50) return 'Turista da Aldeia 🏘️';
@@ -47,9 +44,9 @@ export function MarathonResults() {
                 <p>Melhor score:</p>
             </div>
             <div className={'actions'}>
-                <HomeButton fontSize={'0.75rem'} onClick={() => openFlyout()}>Ver detalhes</HomeButton>
-                <HomeButton fontSize={'0.75rem'} onClick={() => setGameState(GameStates.NOT_STARTED)}>
-                    Jogar de novo
+                <HomeButton fontSize={'0.75rem'} isDisabled={true}>Ver detalhes</HomeButton>
+                <HomeButton fontSize={'0.75rem'} onClick={marathonStart}>
+                    Jogar novamente
                 </HomeButton>
                 <HomeButton fontSize={'0.75rem'} onClick={() => navigate('/')}>Sair</HomeButton>
             </div>

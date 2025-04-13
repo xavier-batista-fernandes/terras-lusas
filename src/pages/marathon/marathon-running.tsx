@@ -6,7 +6,6 @@ import { Text } from '../../components/atoms/text/text.tsx';
 import { UnderlinedTextInput } from '../../components/molecules/inputs/underlined-text-input/underlined-text-input.tsx';
 import { HomeButton } from '../../components/atoms/buttons/home-button/home-button.tsx';
 import { useFlyout } from '../../providers/flyout-context/flyout-provider.tsx';
-import { GameStates } from '../../models/game-states.ts';
 
 export function MarathonRunning() {
     const mapElement = useRef<HTMLDivElement | null>(null);
@@ -16,8 +15,8 @@ export function MarathonRunning() {
         isGuessValid,
         isGuessRepeated,
         isGuessCorrect,
-        setGameState,
         markCorrect,
+        marathonStop,
     } = useMarathon();
     const { openFlyout } = useFlyout();
 
@@ -57,11 +56,10 @@ export function MarathonRunning() {
                     Já adivinhaste este.
                 </Text>
                 <div className={'actions'}>
-                    <HomeButton fontSize={'0.75rem'} onClick={() => openFlyout()}>
+                    <HomeButton fontSize={'0.75rem'} onClick={openFlyout}>
                         Abrir detalhes
                     </HomeButton>
-                    <HomeButton fontSize={'0.75rem'}
-                                onClick={() => setGameState(GameStates.FINISHED)}>Terminar</HomeButton>
+                    <HomeButton fontSize={'0.75rem'} onClick={marathonStop}>Desistir</HomeButton>
                 </div>
             </div>
             <div className={'map'} ref={mapElement}></div>

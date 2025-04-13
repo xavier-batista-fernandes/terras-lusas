@@ -6,13 +6,13 @@ import { useCountdown } from '../hooks/useCountdown.ts';
 type MarathonContextType = {
     remainingTime: string;
     gameState: GameStates;
-    setGameState: (state: GameStates) => void;
     guessedMunicipalities: Set<string>;
     isGuessValid: (input: string) => boolean;
     isGuessRepeated: (input: string) => boolean;
     isGuessCorrect: (input: string) => boolean;
     markCorrect: (input: string) => void;
     marathonStart: () => void;
+    marathonStop: () => void;
     lastDistrict?: string;
 };
 
@@ -40,6 +40,11 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
         startCountdown();
         setGuessedMunicipalities(new Set());
         setNonGuessedMunicipalities(new Set(municipalities));
+    }
+
+    function marathonStop() {
+        setGameState(GameStates.FINISHED);
+        resetCountdown();
     }
 
     function isGuessValid(input: string) {
@@ -86,13 +91,13 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
             value={{
                 remainingTime: countdown,
                 gameState,
-                setGameState,
                 guessedMunicipalities,
                 isGuessValid,
                 isGuessRepeated,
                 isGuessCorrect,
                 markCorrect,
                 marathonStart,
+                marathonStop,
                 lastDistrict,
             }}
         >

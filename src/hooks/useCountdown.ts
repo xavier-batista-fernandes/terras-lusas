@@ -13,8 +13,8 @@ import { Duration, intervalToDuration } from 'date-fns';
  *   - resetCountdown: Function to reset and stop the countdown.
  */
 export function useCountdown(duration: Duration, callback: () => void) {
-    const intervalRef = useRef<number | null>(null);
-    const [countdown, setCountdown] = useState('⏰');
+    const intervalRef = useRef(0);
+    const [countdown, setCountdown] = useState(getInitialCountdown(duration));
 
     const totalSeconds = getTotalSeconds(duration);
 
@@ -43,7 +43,7 @@ export function useCountdown(duration: Duration, callback: () => void) {
      */
     function resetCountdown() {
         clearInterval(intervalRef.current!);
-        setCountdown('');
+        setCountdown(getInitialCountdown(duration));
     }
 
     return { countdown, startCountdown, resetCountdown };
@@ -71,4 +71,16 @@ function formatCountdown(secondsLeft: number): string {
  */
 function getTotalSeconds({ hours = 0, minutes = 0, seconds = 0 }: Duration): number {
     return hours * 3600 + minutes * 60 + seconds;
+}
+
+
+/**
+ * Returns the initial countdown string based on the given duration.
+ *
+ * @param duration
+ * @returns A string in the "Minutes:Seconds" format.
+ */
+function getInitialCountdown(duration: Duration): string {
+    const totalSeconds = getTotalSeconds(duration);
+    return formatCountdown(totalSeconds);
 }
