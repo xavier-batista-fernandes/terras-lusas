@@ -1,6 +1,6 @@
 import './marathon.css';
 import { GameStates } from '../../models/game-states.ts';
-import { useMarathon } from '../../providers/marathon-provider.tsx';
+import { useMarathon } from '../../providers/marathon-context/marathon-provider.tsx';
 import { MarathonRunning } from './marathon-running.tsx';
 import { MarathonResults } from './marathon-results.tsx';
 import { MarathonStart } from './marathon-start.tsx';

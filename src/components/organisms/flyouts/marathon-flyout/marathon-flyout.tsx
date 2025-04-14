@@ -1,6 +1,6 @@
 import './marathon-flyout.css';
 import { useMunicipalities } from '../../../../providers/municipalities-provider.tsx';
-import { useMarathon } from '../../../../providers/marathon-provider.tsx';
+import { useMarathon } from '../../../../providers/marathon-context/marathon-provider.tsx';
 import { useEffect } from 'react';
 import { toTitleCase } from '../../../../utilities/toTitleCase.ts';
 import { useFlyout } from '../../../../providers/flyout-context/flyout-provider.tsx';

@@ -1,5 +1,5 @@
 import './marathon-results.css';
-import { useMarathon } from '../../providers/marathon-provider.tsx';
+import { useMarathon } from '../../providers/marathon-context/marathon-provider.tsx';
 import { HomeButton } from '../../components/atoms/buttons/home-button/home-button.tsx';
 import { useNavigate } from 'react-router-dom';
 

@@ -1,20 +1,8 @@
 import { createContext, ReactNode, useContext, useState } from 'react';
-import { GameStates } from '../models/game-states.ts';
-import { useMunicipalities } from './municipalities-provider.tsx';
-import { useCountdown } from '../hooks/useCountdown.ts';
-
-type MarathonContextType = {
-    remainingTime: string;
-    gameState: GameStates;
-    guessedMunicipalities: Set<string>;
-    isGuessValid: (input: string) => boolean;
-    isGuessRepeated: (input: string) => boolean;
-    isGuessCorrect: (input: string) => boolean;
-    markCorrect: (input: string) => void;
-    marathonStart: () => void;
-    marathonStop: () => void;
-    lastDistrict?: string;
-};
+import { GameStates } from '../../models/game-states.ts';
+import { useMunicipalities } from '../municipalities-provider.tsx';
+import { useCountdown } from '../../hooks/useCountdown.ts';
+import { MarathonContextType } from './marathon-context-type.ts';
 
 const MarathonContext = createContext<MarathonContextType | undefined>(undefined);
 
@@ -71,9 +59,8 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
         return isCorrect;
     }
 
+    // TODO: only save ids in the municipalities array? easier to compare
     function markCorrect(municipality: string) {
-
-        console.log('getDistrict', getDistrict(municipality));
         setLastDistrict(getDistrict(municipality));
 
         const newGuessedMunicipalities = new Set(guessedMunicipalities);
@@ -83,6 +70,19 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
         const newNonGuessedMunicipalities = new Set(nonGuessedMunicipalities);
         newNonGuessedMunicipalities.delete(municipality);
         setNonGuessedMunicipalities(new Set(newNonGuessedMunicipalities));
+
+        console.log('newGuessedMunicipalities', {
+            guessedMunicipalities: newGuessedMunicipalities,
+            nonGuessedMunicipalities: newNonGuessedMunicipalities,
+        });
+        console.log('stringify', JSON.stringify({
+            guessedMunicipalities: newGuessedMunicipalities,
+            nonGuessedMunicipalities: newNonGuessedMunicipalities,
+        }));
+        window.localStorage.setItem(new Date().toISOString().slice(0, 10), JSON.stringify({
+            guessedMunicipalities: Array.from(newGuessedMunicipalities),
+            nonGuessedMunicipalities: Array.from(newNonGuessedMunicipalities),
+        }));
     }
 
 

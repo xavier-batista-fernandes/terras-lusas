@@ -1,6 +1,6 @@
 import './marathon-running.css';
 import { useMap } from '../../hooks/useMap.ts';
-import { useMarathon } from '../../providers/marathon-provider.tsx';
+import { useMarathon } from '../../providers/marathon-context/marathon-provider.tsx';
 import { useRef, useState } from 'react';
 import { Text } from '../../components/atoms/text/text.tsx';
 import { UnderlinedTextInput } from '../../components/molecules/inputs/underlined-text-input/underlined-text-input.tsx';
