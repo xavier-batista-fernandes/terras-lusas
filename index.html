@@ -3,23 +3,50 @@
 <head>
     <meta charset="UTF-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+    <!-- SEO Meta Tags -->
+    <title>Terras Lusas</title>
     <meta
-        content="Um jogo sobre os municípios de Portugal. Adivinha, aprende e diverte-te!"
+        content="Joga Terras Lusas e desafia os teus conhecimentos sobre os municípios de Portugal. Adivinha, aprende e diverte-te com este jogo interativo!"
         name="description"
     />
     <meta
-        content="Portugal, geografia, jogo, terras lusas, municipios, municípios, concelhos, concelhos de portugal"
-        name="keywords" />
+        content="terras lusas, municípios de Portugal, jogo de geografia, jogo educativo, adivinhar municípios, jogo interativo"
+        name="keywords"
+    />
     <meta content="Xavier Fernandes" name="author" />
 
-    <title>Terras Lusas</title>
-    <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+    <!-- Open Graph (for social media sharing) -->
+    <meta content="Terras Lusas - Descobre os Municípios de Portugal" property="og:title" />
+    <meta content="Joga Terras Lusas e desafia os teus conhecimentos sobre os municípios de Portugal!"
+          property="og:description" />
+    <meta content="https://terras-lusas.vercel.app/og-image.jpg" property="og:image" />
+    <meta content="https://terras-lusas.vercel.app/" property="og:url" />
+    <meta content="website" property="og:type" />
+
+    <!-- Canonical URL -->
+    <link href="https://terras-lusas.vercel.app/" rel="canonical" />
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap" rel="stylesheet">
+
+    <!-- Structured Data (Schema.org - Game) -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Game",
+            "name": "Terras Lusas",
+            "description": "Joga Terras Lusas e desafia os teus conhecimentos sobre os municípios de Portugal.",
+            "url": "https://terras-lusas.vercel.app/"
+        }
+    </script>
+
+    <!-- Optional: Favicon and CSS -->
+    <link href="/favicon.ico" rel="icon" type="image/x-icon" />
+    <link href="/style.css" rel="stylesheet" />
 </head>
 <body>
 <div id="root"></div>
