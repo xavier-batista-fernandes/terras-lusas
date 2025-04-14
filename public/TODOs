@@ -23,5 +23,10 @@ A) At the end of the game, render a results map with the districts where
 they are colored according to the percentage of corrected municipalities
 for that district. Could also have hover interactions with more details.
 
+A statistics page
+    A) Show the number of municipalities guessed, the number of districts completed, the number of unknown guesses
+    B) Show a map with the districts where they are colored according to the percentage of corrected municipalities for that district.
+        Could also have hover interactions with more details.
+
 ✅ Have a custom hook for the marathon game so game state can be centralized, maybe context?
 ✅ In the clock game mode, have a details section so the player can track which municipalities have been guessed already that opens when clicked.

@@ -4,8 +4,8 @@ import { useCountdown } from '../../../core/hooks/useCountdown.ts';
 import { MarathonContextType } from './marathon-context-type.ts';
 import { areMunicipalitiesEqual } from '../../../core/utilities/are-municipalities-equal.ts';
 import { addToMarathonHistory } from '../statistics/add-to-marathon-history.ts';
-import { useMunicipalities } from '../../../core/providers/municipalities-context/municipalities-provider.tsx';
 import { Details } from '../../../core/models/details.ts';
+import { useMunicipalities } from '../../../core/providers/municipalities-context/use-municipalities.ts';
 
 const MarathonContext = createContext<MarathonContextType | undefined>(undefined);
 
@@ -76,6 +76,7 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
             value={{
                 remainingTime: countdown,
                 gameState,
+                setGameState,
                 guessedMunicipalities,
                 lastGuess,
                 getMunicipalityId,

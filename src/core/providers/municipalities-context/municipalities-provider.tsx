@@ -1,26 +1,18 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { createContext, ReactNode, useEffect, useState } from 'react';
 import { fetchMunicipalities } from '../../utilities/fetchMunicipalities.ts';
 import { stringToTitleCase } from '../../utilities/string-to-title-case.ts';
 import { Details } from '../../models/details.ts';
 import { MunicipalitiesContextType } from './municipalities-context-type.ts';
 
-const MunicipalitiesContext = createContext<MunicipalitiesContextType | undefined>(undefined);
+export const MunicipalitiesContext = createContext<MunicipalitiesContextType | undefined>(undefined);
 
-export const useMunicipalities = () => {
-    const context = useContext(MunicipalitiesContext);
-    if (!context) throw new Error('useMunicipalities must be used within a MunicipalitiesProvider');
-    return context;
-};
-
-export const MunicipalitiesProvider = ({ children }: { children: ReactNode }) => {
-
-    const [details, setDetails] = useState<Details[]>([]);
+export function MunicipalitiesProvider({ children }: { children: ReactNode }) {
 
     const [isLoading, setIsLoading] = useState(true);
     const [rawData, setRawData] = useState<{ type: string, features: any } | undefined>(undefined);
+    const [details, setDetails] = useState<Details[]>([]);
 
-
-    const data: MunicipalitiesContextType = {
+    const context: MunicipalitiesContextType = {
         isLoading,
         rawData,
         details,
@@ -66,7 +58,7 @@ export const MunicipalitiesProvider = ({ children }: { children: ReactNode }) =>
     }
 
     return (
-        <MunicipalitiesContext.Provider value={data}>
+        <MunicipalitiesContext.Provider value={context}>
             {children}
         </MunicipalitiesContext.Provider>
     );

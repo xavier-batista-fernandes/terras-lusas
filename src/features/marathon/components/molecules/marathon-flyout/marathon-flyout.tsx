@@ -1,8 +1,8 @@
 import './marathon-flyout.css';
-import { useMunicipalities } from '../../../../../core/providers/municipalities-context/municipalities-provider.tsx';
 import { useMarathon } from '../../../providers/marathon-provider.tsx';
 import { useEffect } from 'react';
 import { useFlyout } from '../../../../../core/providers/flyout-context/flyout-provider.tsx';
+import { useMunicipalities } from '../../../../../core/providers/municipalities-context/use-municipalities.ts';
 
 
 // TODO: extract marathon flyout content to separate content component (molecule?) (no flyout, just the table?)

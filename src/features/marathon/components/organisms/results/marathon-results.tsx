@@ -1,6 +1,6 @@
 import './marathon-results.css';
-import { useMarathon } from '../../providers/marathon-provider.tsx';
-import { HomeButton } from '../../../../core/components/atoms/buttons/home-button/home-button.tsx';
+import { useMarathon } from '../../../providers/marathon-provider.tsx';
+import { HomeButton } from '../../../../../core/components/atoms/buttons/home-button/home-button.tsx';
 import { useNavigate } from 'react-router-dom';
 
 export function MarathonResults() {

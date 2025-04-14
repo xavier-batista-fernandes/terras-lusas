@@ -1,7 +1,6 @@
 import { RefObject, useEffect, useRef } from 'react';
 import { useGeographic } from 'ol/proj';
 import { Feature, Map, View } from 'ol';
-import { useMunicipalities } from '../providers/municipalities-context/municipalities-provider.tsx';
 import { GeoJSON } from 'ol/format';
 import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
@@ -9,6 +8,7 @@ import { Fill, Stroke, Style } from 'ol/style';
 import { getRandomColor } from '../utilities/getRandomColor.ts';
 import { getMunicipalityCenter } from '../utilities/getMunicipalityCenter.ts';
 import { stringToTitleCase } from '../utilities/string-to-title-case.ts';
+import { useMunicipalities } from '../providers/municipalities-context/use-municipalities.ts';
 
 export function useMap(mapElement: RefObject<any>) {
 
@@ -38,7 +38,6 @@ export function useMap(mapElement: RefObject<any>) {
     const paintMunicipality = (id: number) => {
         const features: Feature[] = mapFeatures.current ?? [];
         const municipality = details.find((detail) => detail.id === id)?.municipality;
-        console.log('municipality', municipality);
         const target = features.find(
             (feature) => stringToTitleCase(feature.getProperties()['Municipality']) === municipality);
         if (!target) return;

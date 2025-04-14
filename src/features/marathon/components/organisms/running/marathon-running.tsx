@@ -1,11 +1,12 @@
 import './marathon-running.css';
-import { useMarathon } from '../../providers/marathon-provider.tsx';
+import { useMarathon } from '../../../providers/marathon-provider.tsx';
 import { useRef, useState } from 'react';
-import { Text } from '../../../../core/components/atoms/text/text.tsx';
-import { HomeButton } from '../../../../core/components/atoms/buttons/home-button/home-button.tsx';
-import { useFlyout } from '../../../../core/providers/flyout-context/flyout-provider.tsx';
-import { UnderlinedTextInput } from '../atoms/underlined-text-input/underlined-text-input.tsx';
-import { useMap } from '../../../../core/hooks/useMap.ts';
+import { Text } from '../../../../../core/components/atoms/text/text.tsx';
+import { HomeButton } from '../../../../../core/components/atoms/buttons/home-button/home-button.tsx';
+import { useFlyout } from '../../../../../core/providers/flyout-context/flyout-provider.tsx';
+import { UnderlinedTextInput } from '../../atoms/underlined-text-input/underlined-text-input.tsx';
+import { useMap } from '../../../../../core/hooks/useMap.ts';
+import { MarathonFlyout } from '../../molecules/marathon-flyout/marathon-flyout.tsx';
 
 export function MarathonRunning() {
     const mapElement = useRef<HTMLDivElement | null>(null);
@@ -51,6 +52,7 @@ export function MarathonRunning() {
     }
 
     return <>
+        <MarathonFlyout />
         <div className={'marathon-running-container'}>
             <div className={'marathon-running-content'}>
                 <p>{remainingTime}</p>
