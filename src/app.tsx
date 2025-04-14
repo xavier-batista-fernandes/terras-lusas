@@ -1,11 +1,11 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { Home } from './pages/home/home.tsx';
-import { MunicipalitiesProvider } from './providers/municipalities-provider.tsx';
-import { Marathon } from './pages/marathon/marathon.tsx';
-import { Explore } from './pages/explore/explore.tsx';
-import { MarathonProvider } from './providers/marathon-context/marathon-provider.tsx';
-import { FlyoutProvider } from './providers/flyout-context/flyout-provider.tsx';
-import { NotFound } from './pages/not-found/not-found.tsx';
+import { Home } from './core/pages/home/home.tsx';
+import { MunicipalitiesProvider } from './core/providers/municipalities-context/municipalities-provider.tsx';
+import { MarathonPage } from './features/marathon/pages/marathon-page.tsx';
+import { Explore } from './core/pages/explore/explore.tsx';
+import { MarathonProvider } from './features/marathon/providers/marathon-provider.tsx';
+import { FlyoutProvider } from './core/providers/flyout-context/flyout-provider.tsx';
+import { NotFound } from './core/pages/not-found/not-found.tsx';
 
 export const App = () => {
     return (
@@ -19,7 +19,7 @@ export const App = () => {
                             element={
                                 <MarathonProvider>
                                     <FlyoutProvider>
-                                        <Marathon />
+                                        <MarathonPage />
                                     </FlyoutProvider>
                                 </MarathonProvider>
                             } />
