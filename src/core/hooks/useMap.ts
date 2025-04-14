@@ -8,6 +8,7 @@ import VectorLayer from 'ol/layer/Vector';
 import { Fill, Stroke, Style } from 'ol/style';
 import { getRandomColor } from '../utilities/getRandomColor.ts';
 import { getMunicipalityCenter } from '../utilities/getMunicipalityCenter.ts';
+import { stringToTitleCase } from '../utilities/string-to-title-case.ts';
 
 export function useMap(mapElement: RefObject<any>) {
 
@@ -16,7 +17,7 @@ export function useMap(mapElement: RefObject<any>) {
     const mapInstance = useRef<Map>(null);
     const mapFeatures = useRef<Feature[]>(null);
 
-    const { isLoading, rawData } = useMunicipalities();
+    const { isLoading, rawData, details } = useMunicipalities();
 
     const DEFAULT_STYLE = new Style({
         stroke: new Stroke({
@@ -34,11 +35,12 @@ export function useMap(mapElement: RefObject<any>) {
         zoom: 7.25,
     });
 
-    const paintMunicipality = (municipality: string) => {
+    const paintMunicipality = (id: number) => {
         const features: Feature[] = mapFeatures.current ?? [];
-
+        const municipality = details.find((detail) => detail.id === id)?.municipality;
+        console.log('municipality', municipality);
         const target = features.find(
-            (feature) => feature.getProperties()['Municipality'] === municipality.toUpperCase());
+            (feature) => stringToTitleCase(feature.getProperties()['Municipality']) === municipality);
         if (!target) return;
 
         target.setStyle(

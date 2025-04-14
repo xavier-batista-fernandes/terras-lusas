@@ -1,3 +1,4 @@
 export interface MarathonStatistics {
-    date: string;
+    date: Date;
+    municipalities: number[];
 }

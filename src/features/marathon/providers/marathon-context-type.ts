@@ -1,14 +1,20 @@
 import { GameStates } from '../../../core/models/game-states.ts';
+import { Details } from '../../../core/models/details.ts';
 
 export type MarathonContextType = {
-    remainingTime: string;
     gameState: GameStates;
-    guessedMunicipalities: Set<string>;
-    isGuessValid: (input: string) => boolean;
-    isGuessRepeated: (input: string) => boolean;
-    isGuessCorrect: (input: string) => boolean;
-    markCorrect: (input: string) => void;
+    remainingTime: string;
+    guessedMunicipalities: Set<number>;
+    lastGuess?: Details;
+
+    getMunicipalityId: (input: string) => number | undefined;
+
+    isGuessRepeated: (id: number) => boolean;
+    isGuessCorrect: (id: number) => boolean;
+
+    markCorrect: (id: number) => void;
+
     marathonStart: () => void;
     marathonStop: () => void;
-    lastDistrict?: string;
+
 };

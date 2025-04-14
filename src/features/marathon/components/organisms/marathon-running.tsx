@@ -1,18 +1,18 @@
 import './marathon-running.css';
-import { useMap } from '../../../../core/hooks/useMap.ts';
 import { useMarathon } from '../../providers/marathon-provider.tsx';
 import { useRef, useState } from 'react';
 import { Text } from '../../../../core/components/atoms/text/text.tsx';
-import { UnderlinedTextInput } from '../atoms/underlined-text-input/underlined-text-input.tsx';
 import { HomeButton } from '../../../../core/components/atoms/buttons/home-button/home-button.tsx';
 import { useFlyout } from '../../../../core/providers/flyout-context/flyout-provider.tsx';
+import { UnderlinedTextInput } from '../atoms/underlined-text-input/underlined-text-input.tsx';
+import { useMap } from '../../../../core/hooks/useMap.ts';
 
 export function MarathonRunning() {
     const mapElement = useRef<HTMLDivElement | null>(null);
     const { paintMunicipality } = useMap(mapElement);
     const {
         remainingTime,
-        isGuessValid,
+        getMunicipalityId,
         isGuessRepeated,
         isGuessCorrect,
         markCorrect,
@@ -20,9 +20,8 @@ export function MarathonRunning() {
     } = useMarathon();
     const { openFlyout } = useFlyout();
 
-    const [latestGuess, setLatestGuess] = useState('');
+    const [isRepeated, setIsRepeated] = useState(false);
 
-    const isRepeated = isGuessRepeated(latestGuess);
 
     function handleKeyDown(event: any) {
         if (event.key !== 'Enter') return;
@@ -31,20 +30,24 @@ export function MarathonRunning() {
 
     function handleChange(event: any) {
         const input = event.target.value.trim().toLowerCase();
-        setLatestGuess(input);
 
-        if (!input) return;
+        const municipalityId = getMunicipalityId(input);
+        if (!municipalityId) {
+            setIsRepeated(false);
+            return;
+        }
 
-        if (!isGuessValid(input)) return;
-        if (isGuessRepeated(input)) return;
+        if (isGuessRepeated(municipalityId)) {
+            setIsRepeated(true);
+            return;
+        }
 
-        if (isGuessCorrect(input)) {
-            markCorrect(input);
-            paintMunicipality(input);
+        if (isGuessCorrect(municipalityId)) {
+            markCorrect(municipalityId);
+            paintMunicipality(municipalityId);
         }
 
         event.target.value = '';
-        setLatestGuess('');
     }
 
     return <>

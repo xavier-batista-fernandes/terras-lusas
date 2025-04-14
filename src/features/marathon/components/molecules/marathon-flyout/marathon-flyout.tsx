@@ -2,15 +2,14 @@ import './marathon-flyout.css';
 import { useMunicipalities } from '../../../../../core/providers/municipalities-context/municipalities-provider.tsx';
 import { useMarathon } from '../../../providers/marathon-provider.tsx';
 import { useEffect } from 'react';
-import { toTitleCase } from '../../../../../core/utilities/toTitleCase.ts';
 import { useFlyout } from '../../../../../core/providers/flyout-context/flyout-provider.tsx';
 
 
 // TODO: extract marathon flyout content to separate content component (molecule?) (no flyout, just the table?)
 // TODO: render only that component in mobile view, forget the map
 export function MarathonFlyout() {
-    const { districts, municipalitiesPerDistrict } = useMunicipalities();
-    const { guessedMunicipalities, lastDistrict } = useMarathon();
+    const { getDistricts, getDetailsForDistrict } = useMunicipalities();
+    const { guessedMunicipalities, lastGuess } = useMarathon();
     const { isFlyoutOpen, openFlyout, closeFlyout } = useFlyout();
 
     useEffect(() => {
@@ -22,14 +21,12 @@ export function MarathonFlyout() {
     }, [isFlyoutOpen]);
 
     useEffect(() => {
-        if (!lastDistrict) return;
+        if (!lastGuess) return;
 
-        const target = toTitleCase(lastDistrict);
-        console.log('target', target);
-        const element = document.querySelector(`[data-district="${target}"]`);
+        const element = document.querySelector(`[data-district="${lastGuess.district}"]`);
         element?.scrollIntoView({ behavior: 'smooth', 'block': 'center' });
 
-    }, [lastDistrict]);
+    }, [lastGuess]);
 
 
     return (
@@ -41,20 +38,20 @@ export function MarathonFlyout() {
                 <button onClick={() => closeFlyout()}>X</button>
 
                 <ul className="marathon-flyout-districts-list">
-                    {Array.from(districts).map((district) =>
+                    {getDistricts().map((district) =>
                         <li key={district}
                             data-district={district}
                             className="marathon-flyout-districts-item"
                         >
                             <h2>{district}</h2>
                             <ul className="marathon-flyout-municipalities-list">
-                                {Array.from(municipalitiesPerDistrict.get(district)!.values()).map(
-                                    municipality =>
-                                        <li key={municipality}
-                                            data-municipality={municipality}
+                                {getDetailsForDistrict(district).map(
+                                    details =>
+                                        <li key={details.id}
+                                            data-municipality={details.id}
                                             className="marathon-flyout-municipalities-item"
                                         >
-                                            {guessedMunicipalities.has(municipality.toLowerCase()) && municipality}
+                                            {guessedMunicipalities.has(details.id) && details.municipality}
                                         </li>,
                                 )}
                             </ul>

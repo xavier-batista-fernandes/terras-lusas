@@ -3,7 +3,7 @@
  * making the rest of the word lowercase.
  * Keeps certain words like "do", "da", "de" in lowercase.
  */
-export function toTitleCase(text: string): string {
+export function stringToTitleCase(text: string): string {
     const regex = /[çÇáÁéÉíÍóÓúÚàÀãÃâÂêÊôÔõÕüÜñÑA-Za-z]+-?/g;
     const exceptions = ['o', 'do', 'dos', 'o-', 'a', 'da', 'das', 'à', 'a-', 'e', 'de', 'des', 'é'];
 

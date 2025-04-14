@@ -8,7 +8,6 @@ export const Home = () => {
 
     function onKnowMore(event: any, text: string) {
         event.stopPropagation();
-        console.log(event);
         alert(text);
     }
 
