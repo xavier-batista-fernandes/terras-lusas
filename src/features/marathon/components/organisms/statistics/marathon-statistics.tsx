@@ -21,7 +21,8 @@ export function MarathonStatistics() {
     const unknownMunicipalities = getNumberUnknownMunicipalities();
     const lisboaComplete = getNumberUnknownMunicipalitiesPerDistrict('Lisboa') === 0;
     const completeDistricts = getNumberCompleteDistricts();
-
+    // TODO: makes this component have cards with icons, minimalistic front page design
+    // TODO: then move into a more detailed section (map of portugal with districts, etc)
     return (
         <div className="marathon-stats__container">
             <h1 className="marathon-stats__title">📊 Estatísticas da Maratona</h1>
