@@ -8,47 +8,50 @@ export function MarathonResults() {
     const navigate = useNavigate();
     const {
         marathonStart,
-        guessedMunicipalities,
     } = useMarathon();
 
-    function getTitle(score: number): string {
-        if (score <= 50) return 'Turista da Aldeia 🏘️';
-        if (score <= 150) return 'Explorador de Municípios 📍';
-        if (score <= 250) return 'Dominador de Distritos 🧭';
-        return 'Senhor da Lusitânia 👑';
-    }
 
     return <>
-        <div className={'marathon-finished-container'}>
-            <div className={'header'}>
-                <h1>Resultados</h1>
-                <p>{getTitle(guessedMunicipalities.size)}</p>
-            </div>
-            <div>
-                <p>🏆 Final Score: {guessedMunicipalities.size} / 308 municipalities </p>
-                <p>⏱️ Time Left: 0:00 </p>
-                <p>🔥 Longest Streak: 23</p>
-                <p>🪼 Distritos desconhecidos: 34</p>
-            </div>
-            <div className={'best-districts'}>
-                <h2>Melhores distritos:</h2>
-                <ol>
-                    <li>Braga: 12/14</li>
-                    <li>Lisboa: 14/16</li>
-                    <li>Faro: 9/16</li>
-                </ol>
-            </div>
-            <div className={'previous-results'}>
-                <h3>Resultados anteriores:</h3>
-                <p>Último score:</p>
-                <p>Melhor score:</p>
-            </div>
-            <div className={'actions'}>
-                <HomeButton fontSize={'0.75rem'} isDisabled={true}>Ver detalhes</HomeButton>
-                <HomeButton fontSize={'0.75rem'} onClick={marathonStart}>
-                    Jogar novamente
-                </HomeButton>
-                <HomeButton fontSize={'0.75rem'} onClick={() => navigate('/')}>Sair</HomeButton>
+        <div className="marathon-results">
+            <div className="container">
+                <div className="header">
+                    <h1>Resultados</h1>
+                </div>
+                <div className="metrics">
+                    <table>
+                        <thead></thead>
+                        <tbody>
+                        <tr>
+                            <td>Novos municípios descobertos</td>
+                            <td>32</td>
+                        </tr>
+                        <tr>
+                            <td>Distritos afetados</td>
+                            <td>8</td>
+                        </tr>
+                        <tr>
+                            <td>Distritos concluídos</td>
+                            <td>8</td>
+                        </tr>
+                        <tr>
+                            <td>Total de municípios</td>
+                            <td>32/278</td>
+                        </tr>
+                        <tr>
+                            <td>Tempo usado</td>
+                            <td>2:53</td>
+                        </tr>
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+                </div>
+                <div className="best-districts">
+                </div>
+                <div className={'actions'}>
+                    <HomeButton primaryColor="#black" fontSize={'0.75rem'} onClick={marathonStart}>Jogar</HomeButton>
+                    <HomeButton fontSize={'0.75rem'} isDisabled={true}>Partilhar</HomeButton>
+                    <HomeButton fontSize={'0.75rem'} onClick={() => navigate('/')}>Sair</HomeButton>
+                </div>
             </div>
         </div>
     </>;

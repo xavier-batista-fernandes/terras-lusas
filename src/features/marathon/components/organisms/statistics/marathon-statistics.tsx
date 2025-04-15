@@ -26,7 +26,7 @@ export function MarathonStatistics() {
 
     return (
         <div className="marathon-statistics">
-            <div className="hero">
+            <div className="header">
                 <img src="/assets/icons/bar-chart-sharp-svgrepo-com.svg" alt="An icon of a bar chart." />
                 <div className="title">
                     <h1>Estatísticas da Maratona</h1>
@@ -38,7 +38,7 @@ export function MarathonStatistics() {
                 <div className="card">
                     {/*TODO: create icon and alt enum or object and import it*/}
                     <div className="title">
-                        <img src="/assets/icons/hand-right-sharp-svgrepo-com.svg" alt="FIXME" />
+                        <img src="/assets/icons/dice-sharp-svgrepo-com.svg" alt="FIXME" />
                         <h2>Jogadas</h2>
                     </div>
                     <p>
@@ -61,18 +61,18 @@ export function MarathonStatistics() {
                 </div>
                 <div className="card">
                     <div className="title">
-                        <img src="/assets/icons/person-sharp-svgrepo-com.svg" alt="FIXME" />
-                        <h2>Média</h2>
+                        <img src="/assets/icons/analytics-sharp-svgrepo-com.svg" alt="FIXME" />
+                        <h2>Concelhos</h2>
                     </div>
                     <p>
                         {averageScore > 0
-                            ? `Estás a acertar em média ${averageScore.toFixed(2)} municípios por jogo.`
+                            ? `Acertaste em média ${averageScore.toFixed(2)} municípios por jogo.`
                             : 'Ainda não jogaste nenhuma maratona.'}
                     </p>
                 </div>
                 <div className="card">
                     <div className="title">
-                        <img src="/assets/icons/book-sharp-svgrepo-com.svg" alt="FIXME" />
+                        <img src="/assets/icons/telescope-sharp-svgrepo-com.svg" alt="FIXME" />
                         <h2>Por descobrir</h2>
                     </div>
                     <p>
@@ -83,7 +83,7 @@ export function MarathonStatistics() {
                 </div>
                 <div className="card">
                     <div className="title">
-                        <img src="/assets/icons/hourglass-sharp-svgrepo-com.svg" alt="FIXME" />
+                        <img src="/assets/icons/earth-sharp-svgrepo-com.svg" alt="FIXME" />
                         <h2>Distritos</h2>
                     </div>
                     <p>
@@ -94,12 +94,34 @@ export function MarathonStatistics() {
                 </div>
                 <div className="card">
                     <div className="title">
-                        <img src="/assets/icons/cafe-sharp-svgrepo-com.svg" alt="FIXME" />
-                        <h2>Concelho Favorito</h2>
+                        <img src="/assets/icons/sparkles-sharp-svgrepo-com.svg" alt="FIXME" />
+                        <h2>Favoritos</h2>
                     </div>
                     <p>
                         {marathonsPlayed > 0
-                            ? `O concelho que mais escreves é ${bestMunicipality}.`
+                            ? `Escreveste ${bestMunicipality} nas maratonas 63.24% das vezes.`
+                            : 'Ainda não jogaste nenhuma maratona.'}
+                    </p>
+                </div>
+                <div className="card">
+                    <div className="title">
+                        <img src="/assets/icons/hand-right-sharp-svgrepo-com.svg" alt="FIXME" />
+                        <h2>Desistências</h2>
+                    </div>
+                    <p>
+                        {marathonsPlayed > 0
+                            ? `Terminaste antes do tempo 53.86% das vezes.`
+                            : 'Ainda não jogaste nenhuma maratona.'}
+                    </p>
+                </div>
+                <div className="card">
+                    <div className="title">
+                        <img src="/assets/icons/timer-sharp-svgrepo-com.svg" alt="FIXME" />
+                        <h2>Duração</h2>
+                    </div>
+                    <p>
+                        {marathonsPlayed > 0
+                            ? `Os teus jogos duraram em média 5 minutos e 38 segundos.`
                             : 'Ainda não jogaste nenhuma maratona.'}
                     </p>
                 </div>

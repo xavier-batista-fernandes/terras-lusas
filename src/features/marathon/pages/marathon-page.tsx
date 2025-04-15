@@ -5,6 +5,7 @@ import { MarathonRunning } from '../components/organisms/running/marathon-runnin
 import { MarathonResults } from '../components/organisms/results/marathon-results.tsx';
 import { MarathonStart } from '../components/organisms/start/marathon-start.tsx';
 import { MarathonStatistics } from '../components/organisms/statistics/marathon-statistics.tsx';
+import { MarathonHistory } from '../components/organisms/history/marathon-history.tsx';
 
 export const MarathonPage = () => {
 
@@ -15,5 +16,6 @@ export const MarathonPage = () => {
         {gameState === GameStates.IN_PROGRESS && <MarathonRunning />}
         {gameState === GameStates.FINISHED && <MarathonResults />}
         {gameState === GameStates.STATISTICS && <MarathonStatistics />}
+        {gameState === GameStates.HISTORY && <MarathonHistory />}
     </>;
 };

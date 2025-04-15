@@ -14,6 +14,10 @@ export function MarathonStart() {
         setGameState(GameStates.STATISTICS);
     }
 
+    function onHistoryClick() {
+        setGameState(GameStates.HISTORY);
+    }
+
     return <div className={'marathon-start-container'}>
         <h1>Maratona de Municípios</h1>
         <p>Quantos municípios consegues adivinhar antes que o tempo acabe?</p>
@@ -23,6 +27,9 @@ export function MarathonStart() {
             </HomeButton>
             <HomeButton onClick={onStatisticsClick}>
                 Estatísticas
+            </HomeButton>
+            <HomeButton onClick={onHistoryClick}>
+                Histórico
             </HomeButton>
         </div>
     </div>;
