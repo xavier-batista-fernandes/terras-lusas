@@ -1,9 +1,28 @@
 import { getMarathonHistory } from '../statistics/get-marathon-history.ts';
 import { useMunicipalities } from '../../../core/providers/municipalities-context/use-municipalities.ts';
+import { useEffect, useState } from 'react';
 
 export function useMetrics() {
 
     const { details, getDistricts, getDetailsForDistrict } = useMunicipalities();
+    const [municipalitiesHistogram, setMunicipalitiesHistogram] = useState<[number, number][]>([]);
+
+    useEffect(() => {
+        const history = getMarathonHistory();
+
+        // Create a histogram of municipalities
+        const unsortedHistogram = new Map();
+        history.forEach(stats => {
+            stats.municipalities.forEach(id => {
+                unsortedHistogram.set(id, (unsortedHistogram.get(id) || 0) + 1);
+            });
+        });
+
+        // Convert the map into a sorted array
+        const sortedHistogram = Array.from(unsortedHistogram.entries()).sort((a, b) => b[1] - a[1]);
+
+        setMunicipalitiesHistogram(sortedHistogram);
+    }, []);
 
     function getNumberMarathonsPlayed() {
         const history = getMarathonHistory();
@@ -17,7 +36,7 @@ export function useMetrics() {
 
     function getAverageScore() {
         const history = getMarathonHistory();
-        return (history.reduce((acc, stats) => acc + stats.municipalities.length, 0) / history.length).toFixed(2);
+        return history.reduce((acc, stats) => acc + stats.municipalities.length, 0) / history.length;
     }
 
     function getNumberUnknownMunicipalities() {
@@ -49,6 +68,12 @@ export function useMetrics() {
             0);
     }
 
+    function getBestMunicipality() {
+        if (municipalitiesHistogram.length === 0) return undefined;
+        const id = municipalitiesHistogram[0][0];
+        return details.find(detail => detail.id === id)?.municipality;
+    }
+
     return {
         getNumberMarathonsPlayed,
         getBestScore,
@@ -56,5 +81,6 @@ export function useMetrics() {
         getNumberUnknownMunicipalities,
         getNumberUnknownMunicipalitiesPerDistrict,
         getNumberCompleteDistricts,
+        getBestMunicipality,
     };
 }

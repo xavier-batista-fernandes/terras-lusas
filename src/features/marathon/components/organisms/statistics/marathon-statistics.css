@@ -1,51 +1,85 @@
-.marathon-stats__container {
-    max-width: 800px;
+.marathon-statistics {
     margin: 0 auto;
-    padding: 24px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1rem, 2vw, 2rem);
 }
 
-.marathon-stats__title {
-    font-size: 28px;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 32px;
+.marathon-statistics .hero {
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-block: 2rem;
 }
 
-.marathon-stats__grid {
+.marathon-statistics .hero .title h1 {
+    margin-block-end: 0;
+}
+
+.marathon-statistics .hero .title p {
+    margin-block-start: 0.5rem;
+}
+
+.marathon-statistics .hero img {
+    height: clamp(4rem, 5vw, 6rem);
+}
+
+.marathon-statistics .general-stats {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-gap: 8px;
     justify-content: center;
 }
 
-.marathon-stats__card {
-    background-color: #fefefe;
-    border-radius: 16px;
+.marathon-statistics .general-stats .card {
+    background-color: white;
+    border-radius: 8px;
     padding: 16px 20px;
-    border: 1px solid #e2e2e2;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.marathon-stats__card:hover {
+.marathon-statistics .card:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
 }
 
-.marathon-stats__card h2 {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 6px;
+.marathon-statistics .card .title {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.5rem, 1vw, 2rem);
 }
 
-.marathon-stats__card p {
-    font-size: 16px;
-    color: #444;
+.marathon-statistics .card .title img {
+    height: clamp(1rem, 2vw, 3rem);
+    pointer-events: none;
+}
+
+.marathon-statistics .card .title h2 {
+    text-transform: uppercase;
+    font-size: clamp(1rem, 1vw, 3rem);
+    font-weight: 600;
+    margin-inline: 0;
+}
+
+.marathon-statistics .card p {
+    color: #474747;
     margin: 0;
 }
 
-.marathon-stats__button {
-    margin-top: 32px;
+.marathon-statistics .actions {
     display: flex;
     justify-content: center;
+}
+
+@media (max-width: 860px) {
+    .marathon-statistics .general-stats {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto auto;
+        column-gap: 8px;
+        justify-content: center;
+    }
 }
