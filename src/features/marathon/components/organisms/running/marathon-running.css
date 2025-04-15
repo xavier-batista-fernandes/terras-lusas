@@ -45,6 +45,10 @@
         justify-content: center;
     }
 
+    .marathon-running-content {
+        width: 100%;
+    }
+
     .marathon-running-content .actions {
         width: 100%;
     }

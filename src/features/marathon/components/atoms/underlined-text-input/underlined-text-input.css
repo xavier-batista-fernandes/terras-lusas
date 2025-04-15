@@ -1,11 +1,12 @@
 .underlined-text-input {
-    width: 50%;
+    width: clamp(10rem, 70%, 100rem);
     border: none;
     border-bottom: 1px solid black;
     font-size: 2rem;
     text-transform: uppercase;
     padding: 0.15em 0.5em;
     font-family: monospace;
+    background-color: transparent;
 }
 
 .underlined-text-input:focus {

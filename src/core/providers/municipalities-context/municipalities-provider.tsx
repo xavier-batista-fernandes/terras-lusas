@@ -62,4 +62,4 @@ export function MunicipalitiesProvider({ children }: { children: ReactNode }) {
             {children}
         </MunicipalitiesContext.Provider>
     );
-};
+}
