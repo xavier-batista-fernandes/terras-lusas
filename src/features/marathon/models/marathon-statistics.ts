@@ -1,4 +1,7 @@
+import { MarathonGuess } from './marathon-guess.ts';
+
 export interface MarathonStatistics {
     date: Date;
-    municipalities: number[];
+    duration: string;
+    guesses: MarathonGuess[];
 }

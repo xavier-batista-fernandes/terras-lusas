@@ -27,7 +27,20 @@
     height: clamp(4rem, 5vw, 6rem);
 }
 
-.marathon-history .history {
+.marathon-history .empty-content {
+    display: grid;
+    place-items: center;
+}
+
+.marathon-history .empty-content img {
+    height: clamp(4rem, 5vw, 6rem);
+}
+
+.marathon-history .empty-content .title {
+    text-align: center;
+}
+
+.marathon-history .not-empty-container {
     display: flex;
     flex-direction: column;
     row-gap: clamp(0.75rem, 2vw, 1rem);

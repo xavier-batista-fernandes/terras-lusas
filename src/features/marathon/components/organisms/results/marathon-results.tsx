@@ -1,13 +1,13 @@
 import './marathon-results.css';
 import { useMarathon } from '../../../providers/marathon-provider.tsx';
 import { HomeButton } from '../../../../../core/components/atoms/buttons/home-button/home-button.tsx';
-import { useNavigate } from 'react-router-dom';
+import { GameStates } from '../../../../../core/models/game-states.ts';
 
 export function MarathonResults() {
 
-    const navigate = useNavigate();
     const {
         marathonStart,
+        setGameState,
     } = useMarathon();
 
 
@@ -50,7 +50,8 @@ export function MarathonResults() {
                 <div className={'actions'}>
                     <HomeButton primaryColor="#black" fontSize={'0.75rem'} onClick={marathonStart}>Jogar</HomeButton>
                     <HomeButton fontSize={'0.75rem'} isDisabled={true}>Partilhar</HomeButton>
-                    <HomeButton fontSize={'0.75rem'} onClick={() => navigate('/')}>Sair</HomeButton>
+                    <HomeButton fontSize={'0.75rem'}
+                                onClick={() => setGameState(GameStates.NOT_STARTED)}>Sair</HomeButton>
                 </div>
             </div>
         </div>

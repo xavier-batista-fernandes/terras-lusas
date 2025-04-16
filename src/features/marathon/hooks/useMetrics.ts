@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 export function useMetrics() {
 
     const { details, getDistricts, getDetailsForDistrict } = useMunicipalities();
+
     const [municipalitiesHistogram, setMunicipalitiesHistogram] = useState<[number, number][]>([]);
 
     useEffect(() => {
@@ -13,8 +14,8 @@ export function useMetrics() {
         // Create a histogram of municipalities
         const unsortedHistogram = new Map();
         history.forEach(stats => {
-            stats.municipalities.forEach(id => {
-                unsortedHistogram.set(id, (unsortedHistogram.get(id) || 0) + 1);
+            stats.guesses.forEach(guess => {
+                unsortedHistogram.set(guess.municipality, (unsortedHistogram.get(guess.municipality) || 0) + 1);
             });
         });
 
@@ -31,19 +32,19 @@ export function useMetrics() {
 
     function getBestScore() {
         const history = getMarathonHistory();
-        return Math.max(...history.map(stats => stats.municipalities.length));
+        return Math.max(...history.map(stats => stats.guesses.length));
     }
 
     function getAverageScore() {
         const history = getMarathonHistory();
-        return history.reduce((acc, stats) => acc + stats.municipalities.length, 0) / history.length;
+        return history.reduce((acc, stats) => acc + stats.guesses.length, 0) / history.length;
     }
 
     function getNumberUnknownMunicipalities() {
         const history = getMarathonHistory();
         const knownMunicipalities = new Set<number>();
         history.forEach(stats => {
-            stats.municipalities.forEach(municipality => knownMunicipalities.add(municipality));
+            stats.guesses.forEach(guess => knownMunicipalities.add(guess.municipality));
         });
         return details.length - knownMunicipalities.size;
     }
@@ -53,7 +54,7 @@ export function useMetrics() {
         const details = getDetailsForDistrict(district);
         const knownMunicipalities = new Set<number>(details.map(detail => detail.id));
         history.forEach(stats => {
-            stats.municipalities.forEach(id => knownMunicipalities.delete(id));
+            stats.guesses.forEach(guess => knownMunicipalities.delete(guess.municipality));
         });
         return knownMunicipalities.size;
     }
@@ -68,10 +69,24 @@ export function useMetrics() {
             0);
     }
 
+    function getMunicipalityParticipation(id: number) {
+        // TODO: save histogram as pairs of {id, count}
+        const history = getMarathonHistory();
+        const target = municipalitiesHistogram.find(municipality => municipality[0] === id);
+        return target ? (target[1] / history.length) * 100 : undefined;
+    }
+
+    // BEST MUNICIPALITY
     function getBestMunicipality() {
         if (municipalitiesHistogram.length === 0) return undefined;
         const id = municipalitiesHistogram[0][0];
         return details.find(detail => detail.id === id)?.municipality;
+    }
+
+    function getBestMunicipalityParticipation() {
+        if (municipalitiesHistogram.length === 0) return undefined;
+        const id = municipalitiesHistogram[0][0];
+        return getMunicipalityParticipation(id);
     }
 
     return {
@@ -82,5 +97,6 @@ export function useMetrics() {
         getNumberUnknownMunicipalitiesPerDistrict,
         getNumberCompleteDistricts,
         getBestMunicipality,
+        getBestMunicipalityParticipation,
     };
 }

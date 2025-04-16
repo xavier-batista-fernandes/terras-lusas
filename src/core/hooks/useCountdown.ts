@@ -1,20 +1,22 @@
 import { useRef, useState } from 'react';
 import { Duration, intervalToDuration } from 'date-fns';
+import { CountdownState } from '../models/countdown-state.ts';
 
 /**
  * Custom countdown hook that counts down from a given duration.
  * Ignores years, months, and weeks in the Duration object.
  *
  * @param duration - The duration to count down from (hours, minutes, seconds).
- * @param callback - Function to call when the countdown reaches zero.
  * @returns An object with:
  *   - countdown: A formatted string in "MM:SS" format.
+ *   - countdownState: An enum of which state countdown is in.
  *   - startCountdown: Function to start the countdown.
  *   - resetCountdown: Function to reset and stop the countdown.
  */
-export function useCountdown(duration: Duration, callback: () => void) {
+export function useCountdown(duration: Duration) {
     const intervalRef = useRef(0);
     const [countdown, setCountdown] = useState(getInitialCountdown(duration));
+    const [countdownState, setCountdownState] = useState(CountdownState.OFF);
 
     const totalSeconds = getTotalSeconds(duration);
 
@@ -22,6 +24,7 @@ export function useCountdown(duration: Duration, callback: () => void) {
      * Starts the countdown timer. Calls the callback when time runs out.
      */
     function startCountdown() {
+        setCountdownState(CountdownState.ON);
         const startTime = Date.now();
 
         intervalRef.current = setInterval(() => {
@@ -30,7 +33,6 @@ export function useCountdown(duration: Duration, callback: () => void) {
 
             if (remaining <= 0) {
                 resetCountdown();
-                callback();
                 return;
             }
 
@@ -42,11 +44,12 @@ export function useCountdown(duration: Duration, callback: () => void) {
      * Resets the countdown and clears the interval.
      */
     function resetCountdown() {
+        setCountdownState(CountdownState.OFF);
         clearInterval(intervalRef.current!);
         setCountdown(getInitialCountdown(duration));
     }
 
-    return { countdown, startCountdown, resetCountdown };
+    return { countdown, countdownState, startCountdown, resetCountdown };
 }
 
 /**

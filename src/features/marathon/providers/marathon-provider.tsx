@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useState } from 'react';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import { GameStates } from '../../../core/models/game-states.ts';
 import { useCountdown } from '../../../core/hooks/useCountdown.ts';
 import { MarathonContextType } from './marathon-context-type.ts';
@@ -6,6 +6,7 @@ import { areMunicipalitiesEqual } from '../../../core/utilities/are-municipaliti
 import { addToMarathonHistory } from '../statistics/add-to-marathon-history.ts';
 import { Details } from '../../../core/models/details.ts';
 import { useMunicipalities } from '../../../core/providers/municipalities-context/use-municipalities.ts';
+import { CountdownState } from '../../../core/models/countdown-state.ts';
 
 const MarathonContext = createContext<MarathonContextType | undefined>(undefined);
 
@@ -13,7 +14,7 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
 
     const GAME_DURATION = { minutes: 3, seconds: 15 }; //TODO: have options? make this configurable?
 
-    const { countdown, startCountdown, resetCountdown } = useCountdown(GAME_DURATION, onCountdownOver);
+    const { countdown, countdownState, startCountdown, resetCountdown } = useCountdown(GAME_DURATION);
     const { details } = useMunicipalities();
 
     const [gameState, setGameState] = useState(GameStates.NOT_STARTED);
@@ -30,13 +31,12 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
 
     function marathonStop() {
         setGameState(GameStates.FINISHED);
-        console.log('Adding to Marathon History:', {
-            date: new Date(),
-            municipalities: Array.from(guessedMunicipalities),
-        });
         addToMarathonHistory({
             date: new Date(),
-            municipalities: Array.from(guessedMunicipalities),
+            duration: 'FIXME_DURATION',
+            guesses: Array.from(guessedMunicipalities).map(municipality => {
+                return { municipality };
+            }),
         });
         resetCountdown();
     }
@@ -54,21 +54,18 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
         return nonGuessedMunicipalities.has(id);
     }
 
-    function onCountdownOver() {
-        marathonStop();
-    }
-
     function markCorrect(id: number) {
         setLastGuess(details.find(detail => detail.id === id));
 
-        const newGuessedMunicipalities = new Set(guessedMunicipalities);
-        newGuessedMunicipalities.add(id);
-        setGuessedMunicipalities(new Set(newGuessedMunicipalities));
-
-        const newNonGuessedMunicipalities = new Set(nonGuessedMunicipalities);
-        newNonGuessedMunicipalities.delete(id);
-        setNonGuessedMunicipalities(new Set(newNonGuessedMunicipalities));
+        guessedMunicipalities.add(id); // TODO: why are components reacting to changes?
+        nonGuessedMunicipalities.delete(id);
     }
+
+    useEffect(() => {
+        if (countdownState === CountdownState.ON) return;
+        if (gameState !== GameStates.IN_PROGRESS) return;
+        marathonStop();
+    }, [countdownState]);
 
 
     return (
