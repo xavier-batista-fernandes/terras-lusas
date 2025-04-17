@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useEffect, useState } from 'react';
-import { fetchMunicipalities } from '../../utilities/fetchMunicipalities.ts';
-import { stringToTitleCase } from '../../utilities/string-to-title-case.ts';
+import { fetchMunicipalities } from '../../utils/fetchMunicipalities.ts';
+import { stringToTitleCase } from '../../utils/string-to-title-case.ts';
 import { Details } from '../../models/details.ts';
 import { MunicipalitiesContextType } from './municipalities-context-type.ts';
 

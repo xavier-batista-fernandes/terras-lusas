@@ -3,15 +3,16 @@ import { useMetrics } from '../../../hooks/useMetrics.ts';
 import { HomeButton } from '../../../../../core/components/atoms/buttons/home-button/home-button.tsx';
 import { useMarathon } from '../../../providers/marathon-provider.tsx';
 import { GameStates } from '../../../../../core/models/game-states.ts';
-import { getMarathonHistory } from '../../../statistics/get-marathon-history.ts';
+import { getMarathonHistory } from '../../../utils/get-marathon-history.ts';
 
 export function MarathonStatistics() {
     const {
         getNumberMarathonsPlayed,
-        getBestScore,
-        getAverageScore,
         getNumberUnknownMunicipalities,
         getNumberCompleteDistricts,
+        getAverageScore,
+        getAverageDuration,
+        getBestScore,
         getBestMunicipality,
         getBestMunicipalityParticipation,
     } = useMetrics();
@@ -25,13 +26,33 @@ export function MarathonStatistics() {
     const completeDistricts = getNumberCompleteDistricts();
     const bestMunicipality = getBestMunicipality();
     const bestMunicipalityParticipation = getBestMunicipalityParticipation();
+    const averageDuration = getAverageDuration();
+
+    const getAverageDurationText = () => {
+        if (marathonsPlayed <= 0) return 'Ainda não descobriste nenhum município.';
+
+        let minutesPart = undefined;
+        let secondsPart = undefined;
+
+        if (averageDuration.minutes! > 0) {
+            minutesPart = ` ${averageDuration.minutes} minuto${averageDuration.minutes! > 1 ? 's' : ''}`;
+        }
+
+        if (averageDuration.seconds! > 0) {
+            secondsPart = ` ${averageDuration.seconds} segundo${averageDuration.seconds! > 1 ? 's' : ''}`;
+        }
+        return 'As tuas maratonas duraram em média' +
+            `${minutesPart ?? ''}` +
+            `${minutesPart && secondsPart ? ' e' : ''}` +
+            `${secondsPart ?? ''}.`;
+    };
 
     const stats = [
         {
             svgSrc: '/assets/icons/dice-sharp-svgrepo-com.svg',
             svgAlt: 'Uma imagem de um dado',
             title: 'Maratonas',
-            getText: () =>
+            description: () =>
                 marathonsPlayed > 0
                     ? `Participaste em ${marathonsPlayed} maratona${marathonsPlayed > 1 ? 's' : ''}.`
                     : 'Ainda não descobriste nenhum município.',
@@ -40,16 +61,16 @@ export function MarathonStatistics() {
             svgSrc: '/assets/icons/rocket-sharp-svgrepo-com.svg',
             svgAlt: 'Uma imagem de um foguete',
             title: 'Recorde',
-            getText: () =>
+            description: () =>
                 bestScore > 0
                     ? `A tua melhor pontuação foi de ${bestScore} municípios certos.`
                     : 'Ainda não descobriste nenhum município.',
         },
         {
-            svgSrc: '/assets/icons/analytics-sharp-svgrepo-com.svg',
+            svgSrc: '/assets/icons/map-sharp-svgrepo-com.svg',
             svgAlt: 'Uma imagem de um gráfico de barras',
             title: 'Municípios',
-            getText: () =>
+            description: () =>
                 averageScore > 0
                     ? `Acertaste em média ${averageScore.toFixed(2)} municípios por maratona.`
                     : 'Ainda não descobriste nenhum município.',
@@ -58,7 +79,7 @@ export function MarathonStatistics() {
             svgSrc: '/assets/icons/telescope-sharp-svgrepo-com.svg',
             svgAlt: 'Uma imagem de um telescópio',
             title: 'Por descobrir',
-            getText: () =>
+            description: () =>
                 unknownMunicipalities > 0
                     ? `Ainda tens ${unknownMunicipalities} municípios por desvendar.`
                     : `Já exploraste todos os município${unknownMunicipalities > 1 ? 's' : ''}!`,
@@ -67,7 +88,7 @@ export function MarathonStatistics() {
             svgSrc: '/assets/icons/earth-sharp-svgrepo-com.svg',
             svgAlt: 'Uma imagem de um globo terrestre',
             title: 'Distritos',
-            getText: () =>
+            description: () =>
                 completeDistricts > 0
                     ? `Já completaste ${completeDistricts} distrito${completeDistricts > 1 ? 's' : ''}.`
                     : 'Ainda não completaste nenhum distrito.',
@@ -76,7 +97,7 @@ export function MarathonStatistics() {
             svgSrc: '/assets/icons/sparkles-sharp-svgrepo-com.svg',
             svgAlt: 'Uma imagem de brilhos',
             title: 'Favoritos',
-            getText: () =>
+            description: () =>
                 marathonsPlayed > 0 && bestMunicipality
                     ? `Escreveste ${bestMunicipality} nas maratonas ${bestMunicipalityParticipation?.toFixed(2)}% das vezes.`
                     : 'Ainda não descobriste nenhum município.',
@@ -85,7 +106,7 @@ export function MarathonStatistics() {
             svgSrc: '/assets/icons/hand-right-sharp-svgrepo-com.svg',
             svgAlt: 'Uma imagem de uma mão direita com a palma virada para o utilizador',
             title: 'Desistências',
-            getText: () =>
+            description: () =>
                 marathonsPlayed > 0
                     ? 'Terminaste antes do tempo 53.86% das vezes.'
                     : 'Ainda não descobriste nenhum município.',
@@ -94,12 +115,10 @@ export function MarathonStatistics() {
             svgSrc: '/assets/icons/timer-sharp-svgrepo-com.svg',
             svgAlt: 'Uma imagem de um cronómetro',
             title: 'Duração',
-            getText: () =>
-                marathonsPlayed > 0
-                    ? 'As tuas maratonas duraram em média 5 minutos e 38 segundos.'
-                    : 'Ainda não descobriste nenhum município.',
+            description: () => getAverageDurationText(),
         },
     ];
+
 
     const isEmpty = getMarathonHistory().length === 0;
 
@@ -133,7 +152,7 @@ export function MarathonStatistics() {
                                 <img src={stat.svgSrc} alt={stat.svgAlt} />
                                 <h2>{stat.title}</h2>
                             </div>
-                            <p>{stat.getText()}</p>
+                            <p>{stat.description()}</p>
                         </div>
                     ))}
                 </div>

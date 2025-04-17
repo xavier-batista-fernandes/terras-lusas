@@ -2,25 +2,30 @@ import { createContext, ReactNode, useContext, useEffect, useState } from 'react
 import { GameStates } from '../../../core/models/game-states.ts';
 import { useCountdown } from '../../../core/hooks/useCountdown.ts';
 import { MarathonContextType } from './marathon-context-type.ts';
-import { areMunicipalitiesEqual } from '../../../core/utilities/are-municipalities-equal.ts';
-import { addToMarathonHistory } from '../statistics/add-to-marathon-history.ts';
+import { areMunicipalitiesEqual } from '../../../core/utils/are-municipalities-equal.ts';
+import { addToMarathonHistory } from '../utils/add-to-marathon-history.ts';
 import { Details } from '../../../core/models/details.ts';
 import { useMunicipalities } from '../../../core/providers/municipalities-context/use-municipalities.ts';
 import { CountdownState } from '../../../core/models/countdown-state.ts';
+import { durationToString } from '../../../core/utils/duration-to-string.ts';
+import { subtractDurations } from '../../../core/utils/subtract-durations.ts';
+import { durationToSeconds } from '../../../core/utils/duration-to-seconds.ts';
 
 const MarathonContext = createContext<MarathonContextType | undefined>(undefined);
 
 export function MarathonProvider({ children }: { children: ReactNode }) {
 
-    const GAME_DURATION = { minutes: 3, seconds: 15 }; //TODO: have options? make this configurable?
+    const GAME_DURATION = { minutes: 10, seconds: 0 }; //TODO: have options? make this configurable?
 
-    const { countdown, countdownState, startCountdown, resetCountdown } = useCountdown(GAME_DURATION);
+    const { countdown, countdownState, startCountdown, stopCountdown } = useCountdown(GAME_DURATION);
     const { details } = useMunicipalities();
 
     const [gameState, setGameState] = useState(GameStates.NOT_STARTED);
     const [guessedMunicipalities, setGuessedMunicipalities] = useState(new Set<number>());
     const [nonGuessedMunicipalities, setNonGuessedMunicipalities] = useState(new Set<number>());
     const [lastGuess, setLastGuess] = useState<Details | undefined>(undefined);
+
+    const countdownString = durationToString(countdown);
 
     function marathonStart() {
         setGameState(GameStates.IN_PROGRESS);
@@ -31,14 +36,16 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
 
     function marathonStop() {
         setGameState(GameStates.FINISHED);
+        stopCountdown();
         addToMarathonHistory({
             date: new Date(),
-            duration: 'FIXME_DURATION',
+            duration: subtractDurations(GAME_DURATION, countdown),
             guesses: Array.from(guessedMunicipalities).map(municipality => {
                 return { municipality };
             }),
+            didQuit: durationToSeconds(countdown) !== 0,
         });
-        resetCountdown();
+
     }
 
     function getMunicipalityId(municipality: string) {
@@ -71,7 +78,7 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
     return (
         <MarathonContext.Provider
             value={{
-                remainingTime: countdown,
+                remainingTime: countdownString,
                 gameState,
                 setGameState,
                 guessedMunicipalities,

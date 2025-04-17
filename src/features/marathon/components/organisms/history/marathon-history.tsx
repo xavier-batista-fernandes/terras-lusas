@@ -2,7 +2,7 @@ import './marathon-history.css';
 import { HomeButton } from '../../../../../core/components/atoms/buttons/home-button/home-button.tsx';
 import { useMarathon } from '../../../providers/marathon-provider.tsx';
 import { GameStates } from '../../../../../core/models/game-states.ts';
-import { getMarathonHistory } from '../../../statistics/get-marathon-history.ts';
+import { getMarathonHistory } from '../../../utils/get-marathon-history.ts';
 
 export function MarathonHistory() {
     const { setGameState } = useMarathon();

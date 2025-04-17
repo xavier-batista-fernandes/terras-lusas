@@ -1,47 +1,50 @@
-import { getMarathonHistory } from '../statistics/get-marathon-history.ts';
+import { getMarathonHistory } from '../utils/get-marathon-history.ts';
 import { useMunicipalities } from '../../../core/providers/municipalities-context/use-municipalities.ts';
 import { useEffect, useState } from 'react';
+import { durationToSeconds } from '../../../core/utils/duration-to-seconds.ts';
+import { secondsToDuration } from '../../../core/utils/seconds-to-duration.ts';
 
 export function useMetrics() {
 
+    const history = getMarathonHistory();
     const { details, getDistricts, getDetailsForDistrict } = useMunicipalities();
 
-    const [municipalitiesHistogram, setMunicipalitiesHistogram] = useState<[number, number][]>([]);
+    const [histogram, setHistogram] = useState<{ id: number, count: number }[]>([]);
+
 
     useEffect(() => {
-        const history = getMarathonHistory();
 
         // Create a histogram of municipalities
-        const unsortedHistogram = new Map();
+        const unsorted = new Map<number, number>();
         history.forEach(stats => {
             stats.guesses.forEach(guess => {
-                unsortedHistogram.set(guess.municipality, (unsortedHistogram.get(guess.municipality) || 0) + 1);
+                unsorted.set(guess.municipality, (unsorted.get(guess.municipality) || 0) + 1);
             });
         });
 
         // Convert the map into a sorted array
-        const sortedHistogram = Array.from(unsortedHistogram.entries()).sort((a, b) => b[1] - a[1]);
-
-        setMunicipalitiesHistogram(sortedHistogram);
+        const sorted = Array.from(unsorted.entries()).sort((a, b) => b[1] - a[1]);
+        const histogram = sorted.map(([id, count]) => {
+            return {
+                id, count,
+            };
+        });
+        setHistogram(histogram);
     }, []);
 
     function getNumberMarathonsPlayed() {
-        const history = getMarathonHistory();
         return history.length;
     }
 
     function getBestScore() {
-        const history = getMarathonHistory();
         return Math.max(...history.map(stats => stats.guesses.length));
     }
 
     function getAverageScore() {
-        const history = getMarathonHistory();
         return history.reduce((acc, stats) => acc + stats.guesses.length, 0) / history.length;
     }
 
     function getNumberUnknownMunicipalities() {
-        const history = getMarathonHistory();
         const knownMunicipalities = new Set<number>();
         history.forEach(stats => {
             stats.guesses.forEach(guess => knownMunicipalities.add(guess.municipality));
@@ -50,7 +53,6 @@ export function useMetrics() {
     }
 
     function getNumberUnknownMunicipalitiesPerDistrict(district: string) {
-        const history = getMarathonHistory();
         const details = getDetailsForDistrict(district);
         const knownMunicipalities = new Set<number>(details.map(detail => detail.id));
         history.forEach(stats => {
@@ -70,32 +72,34 @@ export function useMetrics() {
     }
 
     function getMunicipalityParticipation(id: number) {
-        // TODO: save histogram as pairs of {id, count}
-        const history = getMarathonHistory();
-        const target = municipalitiesHistogram.find(municipality => municipality[0] === id);
-        return target ? (target[1] / history.length) * 100 : undefined;
+        const target = histogram.find(municipality => municipality.id === id);
+        return target ? (target.count / history.length) * 100 : undefined;
     }
 
-    // BEST MUNICIPALITY
     function getBestMunicipality() {
-        if (municipalitiesHistogram.length === 0) return undefined;
-        const id = municipalitiesHistogram[0][0];
-        return details.find(detail => detail.id === id)?.municipality;
+        if (histogram.length === 0) return undefined;
+        return details.find(detail => detail.id === histogram[0].id)?.municipality;
     }
 
     function getBestMunicipalityParticipation() {
-        if (municipalitiesHistogram.length === 0) return undefined;
-        const id = municipalitiesHistogram[0][0];
-        return getMunicipalityParticipation(id);
+        if (histogram.length === 0) return undefined;
+        return getMunicipalityParticipation(histogram[0].id);
+    }
+
+    function getAverageDuration() {
+        const totalSeconds = history.reduce((acc, stats) => acc + durationToSeconds(stats.duration), 0);
+        const averageSeconds = totalSeconds / history.length;
+        return secondsToDuration(averageSeconds);
     }
 
     return {
         getNumberMarathonsPlayed,
-        getBestScore,
-        getAverageScore,
         getNumberUnknownMunicipalities,
         getNumberUnknownMunicipalitiesPerDistrict,
         getNumberCompleteDistricts,
+        getAverageScore,
+        getAverageDuration,
+        getBestScore,
         getBestMunicipality,
         getBestMunicipalityParticipation,
     };

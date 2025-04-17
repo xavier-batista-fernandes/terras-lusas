@@ -5,9 +5,9 @@ import { GeoJSON } from 'ol/format';
 import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
 import { Fill, Stroke, Style } from 'ol/style';
-import { getRandomColor } from '../utilities/getRandomColor.ts';
-import { getMunicipalityCenter } from '../utilities/getMunicipalityCenter.ts';
-import { stringToTitleCase } from '../utilities/string-to-title-case.ts';
+import { getRandomColor } from '../utils/getRandomColor.ts';
+import { getMunicipalityCenter } from '../utils/getMunicipalityCenter.ts';
+import { stringToTitleCase } from '../utils/string-to-title-case.ts';
 import { useMunicipalities } from '../providers/municipalities-context/use-municipalities.ts';
 
 export function useMap(mapElement: RefObject<any>) {
@@ -60,7 +60,6 @@ export function useMap(mapElement: RefObject<any>) {
     }, []);
 
     useEffect(() => {
-        console.log('Mounting map...');
         if (isLoading) return;
         if (mapInstance.current) return;
         if (!mapElement.current) return;
@@ -79,7 +78,6 @@ export function useMap(mapElement: RefObject<any>) {
         mapFeatures.current = features;
 
         return () => {
-            console.log('Dismounting map...');
             if (!mapInstance.current) return;
             mapInstance.current.setTarget(undefined);
             mapInstance.current.dispose();
