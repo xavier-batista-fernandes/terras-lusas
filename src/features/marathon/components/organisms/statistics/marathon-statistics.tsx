@@ -1,5 +1,5 @@
 import './marathon-statistics.css';
-import { useMetrics } from '../../../hooks/useMetrics.ts';
+import { useStatistics } from '../../../hooks/useStatistics.ts';
 import { HomeButton } from '../../../../../core/components/atoms/buttons/home-button/home-button.tsx';
 import { useMarathon } from '../../../providers/marathon-provider.tsx';
 import { GameStates } from '../../../../../core/models/game-states.ts';
@@ -14,8 +14,9 @@ export function MarathonStatistics() {
         getAverageDuration,
         getBestScore,
         getBestMunicipality,
-        getBestMunicipalityParticipation,
-    } = useMetrics();
+        getBestMunicipalityPercentage,
+        getQuitsPercentage,
+    } = useStatistics();
 
     const { setGameState } = useMarathon();
 
@@ -25,8 +26,9 @@ export function MarathonStatistics() {
     const unknownMunicipalities = getNumberUnknownMunicipalities();
     const completeDistricts = getNumberCompleteDistricts();
     const bestMunicipality = getBestMunicipality();
-    const bestMunicipalityParticipation = getBestMunicipalityParticipation();
     const averageDuration = getAverageDuration();
+    const bestMunicipalityParticipation = getBestMunicipalityPercentage();
+    const quitsPercentage = getQuitsPercentage();
 
     const getAverageDurationText = () => {
         if (marathonsPlayed <= 0) return 'Ainda não descobriste nenhum município.';
@@ -108,7 +110,7 @@ export function MarathonStatistics() {
             title: 'Desistências',
             description: () =>
                 marathonsPlayed > 0
-                    ? 'Terminaste antes do tempo 53.86% das vezes.'
+                    ? `Desististe antes do tempo terminar ${quitsPercentage.toFixed(2)}% das vezes.`
                     : 'Ainda não descobriste nenhum município.',
         },
         {

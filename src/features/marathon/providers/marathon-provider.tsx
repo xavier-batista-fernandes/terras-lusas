@@ -43,7 +43,7 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
             guesses: Array.from(guessedMunicipalities).map(municipality => {
                 return { municipality };
             }),
-            didQuit: durationToSeconds(countdown) !== 0,
+            didQuit: durationToSeconds(countdown) > 0,
         });
 
     }

@@ -1,5 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { Home } from './core/pages/home/home.tsx';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { MarathonPage } from './features/marathon/pages/marathon-page.tsx';
 import { Explore } from './core/pages/explore/explore.tsx';
 import { MarathonProvider } from './features/marathon/providers/marathon-provider.tsx';
@@ -13,7 +12,7 @@ export const App = () => {
             <MunicipalitiesProvider>
                 <BrowserRouter>
                     <Routes>
-                        <Route path="/" element={<Home />} />
+                        <Route path="/" element={<Navigate to="/marathon" replace />} />
                         <Route
                             path="/marathon"
                             element={

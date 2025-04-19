@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { durationToSeconds } from '../../../core/utils/duration-to-seconds.ts';
 import { secondsToDuration } from '../../../core/utils/seconds-to-duration.ts';
 
-export function useMetrics() {
+export function useStatistics() {
 
     const history = getMarathonHistory();
     const { details, getDistricts, getDetailsForDistrict } = useMunicipalities();
@@ -13,7 +13,6 @@ export function useMetrics() {
 
 
     useEffect(() => {
-
         // Create a histogram of municipalities
         const unsorted = new Map<number, number>();
         history.forEach(stats => {
@@ -29,6 +28,7 @@ export function useMetrics() {
                 id, count,
             };
         });
+
         setHistogram(histogram);
     }, []);
 
@@ -38,10 +38,6 @@ export function useMetrics() {
 
     function getBestScore() {
         return Math.max(...history.map(stats => stats.guesses.length));
-    }
-
-    function getAverageScore() {
-        return history.reduce((acc, stats) => acc + stats.guesses.length, 0) / history.length;
     }
 
     function getNumberUnknownMunicipalities() {
@@ -71,7 +67,11 @@ export function useMetrics() {
             0);
     }
 
-    function getMunicipalityParticipation(id: number) {
+    function getQuitsPercentage() {
+        return history.reduce((acc, stats) => acc + (stats.didQuit ? 1 : 0), 0) / history.length * 100;
+    }
+
+    function getMunicipalityPercentage(id: number) {
         const target = histogram.find(municipality => municipality.id === id);
         return target ? (target.count / history.length) * 100 : undefined;
     }
@@ -81,9 +81,13 @@ export function useMetrics() {
         return details.find(detail => detail.id === histogram[0].id)?.municipality;
     }
 
-    function getBestMunicipalityParticipation() {
+    function getBestMunicipalityPercentage() {
         if (histogram.length === 0) return undefined;
-        return getMunicipalityParticipation(histogram[0].id);
+        return getMunicipalityPercentage(histogram[0].id);
+    }
+
+    function getAverageScore() {
+        return history.reduce((acc, stats) => acc + stats.guesses.length, 0) / history.length;
     }
 
     function getAverageDuration() {
@@ -101,6 +105,7 @@ export function useMetrics() {
         getAverageDuration,
         getBestScore,
         getBestMunicipality,
-        getBestMunicipalityParticipation,
+        getBestMunicipalityPercentage,
+        getQuitsPercentage,
     };
 }

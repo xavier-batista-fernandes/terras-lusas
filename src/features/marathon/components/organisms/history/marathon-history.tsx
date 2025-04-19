@@ -12,10 +12,10 @@ export function MarathonHistory() {
     return (
         <div className="marathon-history">
             <div className="header">
-                <img src="/assets/icons/receipt-sharp-svgrepo-com.svg" alt="An icon of a bar chart." />
+                <img src="/assets/icons/file-tray-stacked-sharp-svgrepo-com.svg" alt="FIXME" />
                 <div className="title">
                     <h1>Histórico de Maratonas</h1>
-                    <p>Recorda todos as maratonas que já jogaste.</p>
+                    <p>Recorda todas as maratonas que já jogaste.</p>
                 </div>
 
             </div>

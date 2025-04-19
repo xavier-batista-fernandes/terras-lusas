@@ -16,11 +16,9 @@ export function useCountdown(duration: Duration) {
 
         intervalRef.current = setInterval(() => {
             const elapsed = Math.floor((Date.now() - startTime) / 1000);
-            const remaining = durationToSeconds(duration) - elapsed;
+            const remaining = Math.max(durationToSeconds(duration) - elapsed, 0);
             setCountdown(secondsToDuration(remaining));
-
-            if (remaining <= 0)
-                stopCountdown();
+            if (remaining === 0) stopCountdown();
         }, 250);
     }
 
