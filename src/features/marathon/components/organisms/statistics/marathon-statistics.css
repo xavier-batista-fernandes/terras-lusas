@@ -87,7 +87,6 @@
 
 .marathon-statistics .actions {
     display: flex;
-    justify-content: center;
 }
 
 @media (max-width: 860px) {

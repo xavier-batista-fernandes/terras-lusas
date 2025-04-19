@@ -10,6 +10,7 @@ export function useCountdown(duration: Duration) {
     const [countdownState, setCountdownState] = useState(CountdownState.OFF);
 
     function startCountdown() {
+        clearInterval(intervalRef.current);
         setCountdown(duration);
         setCountdownState(CountdownState.ON);
         const startTime = Date.now();
@@ -23,8 +24,8 @@ export function useCountdown(duration: Duration) {
     }
 
     function stopCountdown() {
+        clearInterval(intervalRef.current);
         setCountdownState(CountdownState.OFF);
-        clearInterval(intervalRef.current!);
     }
 
     return { countdown, countdownState, startCountdown, stopCountdown };

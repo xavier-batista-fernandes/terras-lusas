@@ -1,16 +1,14 @@
 import './marathon-results.css';
-import { useMarathon } from '../../../providers/marathon-provider.tsx';
 import { HomeButton } from '../../../../../core/components/atoms/buttons/home-button/home-button.tsx';
-import { GameStates } from '../../../../../core/models/game-states.ts';
 import { useMunicipalities } from '../../../../../core/providers/municipalities-context/use-municipalities.ts';
 import { getLastMarathon } from '../../../utils/get-last-marathon.ts';
 import { useResults } from '../../../hooks/useResults.ts';
+import { useNavigate } from 'react-router-dom';
 
 // TODO: make this page use an id to get the marathon results (id of the marathon?)
 export function MarathonResults() {
+    const navigate = useNavigate();
     const { getDistricts } = useMunicipalities();
-    const { marathonStart, setGameState } = useMarathon();
-
     const {
         getDuration,
         getNumberMunicipalitiesGuessed,
@@ -26,6 +24,16 @@ export function MarathonResults() {
     const numberDistrictsPartiallyCompleted = getNumberDistrictsPartiallyCompleted();
     const numberDistrictsFullyCompleted = getNumberDistrictsFullyCompleted();
     const municipalitiesDiscovered = getMunicipalitiesDiscovered();
+
+    if (false) {
+        console.log('lastMarathon', getLastMarathon());
+        console.log('duration', duration);
+        console.log('numberMunicipalitiesGuessed', numberMunicipalitiesGuessed);
+        console.log('numberMunicipalitiesDiscovered', numberMunicipalitiesDiscovered);
+        console.log('numberDistrictsPartiallyCompleted', numberDistrictsPartiallyCompleted);
+        console.log('numberDistrictsFullyCompleted', numberDistrictsFullyCompleted);
+        console.log('municipalitiesDiscovered', municipalitiesDiscovered);
+    }
 
     return (
         <div className="marathon-results">
@@ -103,9 +111,8 @@ export function MarathonResults() {
             </section>
 
             <div className="actions">
-                <HomeButton onClick={marathonStart}>Jogar Novamente</HomeButton>
                 <HomeButton isDisabled>Partilhar</HomeButton>
-                <HomeButton onClick={() => setGameState(GameStates.NOT_STARTED)}>
+                <HomeButton onClick={() => navigate('/marathon')}>
                     Sair
                 </HomeButton>
             </div>

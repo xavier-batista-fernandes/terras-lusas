@@ -42,7 +42,7 @@
 
 .marathon-history .not-empty-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     row-gap: clamp(0.75rem, 2vw, 1rem);
     align-items: center;
 }

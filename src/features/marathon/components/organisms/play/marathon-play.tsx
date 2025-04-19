@@ -1,6 +1,6 @@
-import './marathon-running.css';
+import './marathon-play.css';
 import { useMarathon } from '../../../providers/marathon-provider.tsx';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Text } from '../../../../../core/components/atoms/text/text.tsx';
 import { HomeButton } from '../../../../../core/components/atoms/buttons/home-button/home-button.tsx';
 import { useFlyout } from '../../../../../core/providers/flyout-context/flyout-provider.tsx';
@@ -8,7 +8,7 @@ import { UnderlinedTextInput } from '../../atoms/underlined-text-input/underline
 import { useMap } from '../../../../../core/hooks/useMap.ts';
 import { MarathonFlyout } from '../../molecules/marathon-flyout/marathon-flyout.tsx';
 
-export function MarathonRunning() {
+export function MarathonPlay() {
     const mapElement = useRef<HTMLDivElement | null>(null);
     const { paintMunicipality } = useMap(mapElement);
     const {
@@ -17,11 +17,16 @@ export function MarathonRunning() {
         isGuessRepeated,
         isGuessCorrect,
         markCorrect,
+        marathonStart,
         marathonStop,
     } = useMarathon();
     const { openFlyout } = useFlyout();
 
     const [isRepeated, setIsRepeated] = useState(false);
+
+    useEffect(() => {
+        marathonStart();
+    }, []);
 
 
     function handleKeyDown(event: any) {

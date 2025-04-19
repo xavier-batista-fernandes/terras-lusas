@@ -1,11 +1,11 @@
 import './marathon-statistics.css';
 import { useStatistics } from '../../../hooks/useStatistics.ts';
 import { HomeButton } from '../../../../../core/components/atoms/buttons/home-button/home-button.tsx';
-import { useMarathon } from '../../../providers/marathon-provider.tsx';
-import { GameStates } from '../../../../../core/models/game-states.ts';
 import { getMarathonHistory } from '../../../utils/get-marathon-history.ts';
+import { useNavigate } from 'react-router-dom';
 
 export function MarathonStatistics() {
+    const navigate = useNavigate();
     const {
         getNumberMarathonsPlayed,
         getNumberUnknownMunicipalities,
@@ -18,8 +18,6 @@ export function MarathonStatistics() {
         getQuitsPercentage,
     } = useStatistics();
 
-    const { setGameState } = useMarathon();
-
     const marathonsPlayed = getNumberMarathonsPlayed();
     const bestScore = getBestScore();
     const averageScore = getAverageScore();
@@ -29,6 +27,18 @@ export function MarathonStatistics() {
     const averageDuration = getAverageDuration();
     const bestMunicipalityParticipation = getBestMunicipalityPercentage();
     const quitsPercentage = getQuitsPercentage();
+
+    if (false) {
+        console.log('marathonsPlayed', marathonsPlayed);
+        console.log('bestScore', bestScore);
+        console.log('averageScore', averageScore);
+        console.log('unknownMunicipalities', unknownMunicipalities);
+        console.log('completeDistricts', completeDistricts);
+        console.log('bestMunicipality', bestMunicipality);
+        console.log('averageDuration', averageDuration);
+        console.log('bestMunicipalityParticipation', bestMunicipalityParticipation);
+        console.log('quitsPercentage', quitsPercentage);
+    }
 
     const getAverageDurationText = () => {
         if (marathonsPlayed <= 0) return 'Ainda não descobriste nenhum município.';
@@ -161,7 +171,7 @@ export function MarathonStatistics() {
             }
 
             <div className="actions">
-                <HomeButton onClick={() => setGameState(GameStates.NOT_STARTED)}>
+                <HomeButton onClick={() => navigate('/marathon')}>
                     Voltar
                 </HomeButton>
             </div>

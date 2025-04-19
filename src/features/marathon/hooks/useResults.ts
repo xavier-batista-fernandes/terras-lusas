@@ -1,14 +1,19 @@
-import { MarathonStatistics } from '../models/marathon-statistics.ts';
 import { durationToString } from '../../../core/utils/duration-to-string.ts';
 import { useMunicipalities } from '../../../core/providers/municipalities-context/use-municipalities.ts';
 import { getMarathonHistory } from '../utils/get-marathon-history.ts';
 import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { MarathonGuess } from '../models/marathon-guess.ts';
+import { MarathonStatistics } from '../models/marathon-statistics.ts';
 
 export function useResults(stats: MarathonStatistics) {
     const { details, getDistricts, getDetailsForDistrict } = useMunicipalities();
+    const { marathonId } = useParams();
 
     useEffect(() => {
         const history = getMarathonHistory();
+        console.log('marathonId', marathonId);
+        // const stats = history[Number(marathonId!)] as MarathonStatistics;
         if (history.length === 0) {
             throw new Error('No marathon history found.');
         }
@@ -33,7 +38,9 @@ export function useResults(stats: MarathonStatistics) {
      */
     function getNumberMunicipalitiesDiscovered() {
         const history = getMarathonHistory();
+
         if (history.length === 0) return 0;
+        if (history.length === 1) return stats.guesses.length;
 
         const oldGuesses = history
             .slice(0, -1)
@@ -79,7 +86,12 @@ export function useResults(stats: MarathonStatistics) {
      */
     function getMunicipalitiesDiscovered() {
         const history = getMarathonHistory();
+        const toMunicipalityName = (guess: MarathonGuess) =>
+            details.find(detail => detail.id === guess.municipality)!;
+
+        if (details.length === 0) return [];
         if (history.length === 0) return [];
+        if (history.length === 1) return stats.guesses.map(toMunicipalityName);
 
         const oldGuesses = history
             .slice(0, -1)
@@ -89,7 +101,7 @@ export function useResults(stats: MarathonStatistics) {
             .slice(-1)[0].guesses
             .filter((guess) => !oldGuesses.includes(guess.municipality));
 
-        return uniqueGuesses.map((guess) => details.find((detail => detail.id === guess.municipality))!);
+        return uniqueGuesses.map(toMunicipalityName);
     }
 
 

@@ -1,13 +1,21 @@
 import './marathon-history.css';
 import { HomeButton } from '../../../../../core/components/atoms/buttons/home-button/home-button.tsx';
-import { useMarathon } from '../../../providers/marathon-provider.tsx';
-import { GameStates } from '../../../../../core/models/game-states.ts';
 import { getMarathonHistory } from '../../../utils/get-marathon-history.ts';
+import { durationToString } from '../../../../../core/utils/duration-to-string.ts';
+import { format } from 'date-fns';
+import { pt } from 'date-fns/locale';
+import { useNavigate } from 'react-router-dom';
 
 export function MarathonHistory() {
-    const { setGameState } = useMarathon();
+    const navigate = useNavigate();
+    const history = getMarathonHistory();
+    const isEmpty = history.length === 0;
 
-    const isEmpty = getMarathonHistory().length === 0;
+
+    function onClick(id: number) {
+        console.log('Clicked on marathon', id);
+        navigate(`/marathon/results/${id}`);
+    }
 
     return (
         <div className="marathon-history">
@@ -33,20 +41,19 @@ export function MarathonHistory() {
 
             {!isEmpty &&
                 <div className="not-empty-container">
-                    <div className="card">
-                        <h2>Maratona #2</h2>
-                        <img src="/assets/icons/chevron-down-sharp-svgrepo-com.svg"
-                             alt="A chevron arrow pointing downwards." />
-                    </div>
-                    <div className="card">
-                        <h2>Maratona #1</h2>
-                        <img src="/assets/icons/chevron-down-sharp-svgrepo-com.svg"
-                             alt="A chevron arrow pointing downwards." />
-                    </div>
+                    {history.map((marathon, index) => (
+                        <div className="card" key={index} onClick={() => onClick(index)}>
+                            <h2>{`Maratona #${index + 1}`}</h2>
+                            <p>{format(marathon.date, 'd \'de\' MMMM \'de\' yyyy', { locale: pt })}</p>
+                            <div>{durationToString(marathon.duration)}</div>
+                            <img src="/assets/icons/chevron-down-sharp-svgrepo-com.svg"
+                                 alt="A chevron arrow pointing downwards." />
+                        </div>
+                    ))}
                 </div>}
 
             <div className="actions">
-                <HomeButton onClick={() => setGameState(GameStates.NOT_STARTED)}>
+                <HomeButton onClick={() => navigate('/marathon')}>
                     Voltar
                 </HomeButton>
             </div>

@@ -1,24 +1,23 @@
-import { useMarathon } from '../../../providers/marathon-provider.tsx';
-import { HomeButton } from '../../../../../core/components/atoms/buttons/home-button/home-button.tsx';
-import './marathon-home.css';
-import { GameStates } from '../../../../../core/models/game-states.ts';
+import './marathon-page.css';
+import { HomeButton } from '../../../../core/components/atoms/buttons/home-button/home-button.tsx';
+import { useNavigate } from 'react-router-dom';
 
-export function MarathonHome() {
-    const { marathonStart, setGameState } = useMarathon();
+export function MarathonPage() {
+    const navigate = useNavigate();
 
     function onStartClick() {
-        marathonStart();
+        navigate('/marathon/play');
     }
 
     function onStatisticsClick() {
-        setGameState(GameStates.STATISTICS);
+        navigate('/marathon/statistics');
     }
 
     function onHistoryClick() {
-        setGameState(GameStates.HISTORY);
+        navigate('/marathon/history');
     }
 
-    return <div className={'marathon-home'}>
+    return <div className={'marathon-page'}>
         <h1>Maratona de Municípios</h1>
         <p>Quantos municípios consegues adivinhar antes que o tempo acabe?</p>
         <div className={'actions'}>

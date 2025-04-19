@@ -1,15 +1,16 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
-import { GameStates } from '../../../core/models/game-states.ts';
 import { useCountdown } from '../../../core/hooks/useCountdown.ts';
 import { MarathonContextType } from './marathon-context-type.ts';
 import { areMunicipalitiesEqual } from '../../../core/utils/are-municipalities-equal.ts';
-import { addToMarathonHistory } from '../utils/add-to-marathon-history.ts';
 import { Details } from '../../../core/models/details.ts';
 import { useMunicipalities } from '../../../core/providers/municipalities-context/use-municipalities.ts';
 import { CountdownState } from '../../../core/models/countdown-state.ts';
 import { durationToString } from '../../../core/utils/duration-to-string.ts';
+import { useNavigate } from 'react-router-dom';
+import { addToMarathonHistory } from '../utils/add-to-marathon-history.ts';
 import { subtractDurations } from '../../../core/utils/subtract-durations.ts';
 import { durationToSeconds } from '../../../core/utils/duration-to-seconds.ts';
+import { GameStates } from '../../../core/models/game-states.ts';
 
 const MarathonContext = createContext<MarathonContextType | undefined>(undefined);
 
@@ -17,6 +18,7 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
 
     const GAME_DURATION = { minutes: 10, seconds: 0 }; //TODO: have options? make this configurable?
 
+    const navigate = useNavigate();
     const { countdown, countdownState, startCountdown, stopCountdown } = useCountdown(GAME_DURATION);
     const { details } = useMunicipalities();
 
@@ -28,15 +30,16 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
     const countdownString = durationToString(countdown);
 
     function marathonStart() {
-        setGameState(GameStates.IN_PROGRESS);
-        startCountdown();
         setGuessedMunicipalities(new Set());
         setNonGuessedMunicipalities(new Set(details.map((detail) => detail.id)));
+        startCountdown();
+        setGameState(GameStates.IN_PROGRESS);
+        navigate('/marathon/play');
     }
 
     function marathonStop() {
-        setGameState(GameStates.FINISHED);
         stopCountdown();
+        setGameState(GameStates.FINISHED);
         addToMarathonHistory({
             date: new Date(),
             duration: subtractDurations(GAME_DURATION, countdown),
@@ -45,7 +48,7 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
             }),
             didQuit: durationToSeconds(countdown) > 0,
         });
-
+        navigate('/marathon/results/1');
     }
 
     function getMunicipalityId(municipality: string) {
@@ -71,6 +74,7 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         if (countdownState === CountdownState.ON) return;
         if (gameState !== GameStates.IN_PROGRESS) return;
+        console.log('Marathon countdown finished');
         marathonStop();
     }, [countdownState]);
 
@@ -79,8 +83,6 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
         <MarathonContext.Provider
             value={{
                 remainingTime: countdownString,
-                gameState,
-                setGameState,
                 guessedMunicipalities,
                 lastGuess,
                 getMunicipalityId,
