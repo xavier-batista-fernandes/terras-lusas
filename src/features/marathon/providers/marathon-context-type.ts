@@ -14,5 +14,4 @@ export type MarathonContextType = {
 
     marathonStart: () => void;
     marathonStop: () => void;
-
 };

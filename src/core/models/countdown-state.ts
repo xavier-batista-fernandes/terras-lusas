@@ -1,4 +1,4 @@
 export enum CountdownState {
-    OFF,
-    ON
+    Activated,
+    Deactivated,
 }

@@ -36,7 +36,12 @@
 .marathon-results .summary {
     width: 50%;
     font-size: 0.8rem;
-    margin-inline: auto;
+}
+
+@media (max-width: 768px) {
+    .marathon-results .summary {
+        width: 100%;
+    }
 }
 
 .marathon-results .summary table {

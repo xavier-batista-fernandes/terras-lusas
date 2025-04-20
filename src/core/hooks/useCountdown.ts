@@ -7,12 +7,12 @@ import { durationToSeconds } from '../utils/duration-to-seconds.ts';
 export function useCountdown(duration: Duration) {
     const intervalRef = useRef(0);
     const [countdown, setCountdown] = useState(duration);
-    const [countdownState, setCountdownState] = useState(CountdownState.OFF);
+    const [countdownState, setCountdownState] = useState(CountdownState.Deactivated);
 
     function startCountdown() {
         clearInterval(intervalRef.current);
         setCountdown(duration);
-        setCountdownState(CountdownState.ON);
+        setCountdownState(CountdownState.Activated);
         const startTime = Date.now();
 
         intervalRef.current = setInterval(() => {
@@ -25,7 +25,7 @@ export function useCountdown(duration: Duration) {
 
     function stopCountdown() {
         clearInterval(intervalRef.current);
-        setCountdownState(CountdownState.OFF);
+        setCountdownState(CountdownState.Deactivated);
     }
 
     return { countdown, countdownState, startCountdown, stopCountdown };

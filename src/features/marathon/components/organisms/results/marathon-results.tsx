@@ -1,14 +1,19 @@
 import './marathon-results.css';
 import { HomeButton } from '../../../../../core/components/atoms/buttons/home-button/home-button.tsx';
 import { useMunicipalities } from '../../../../../core/providers/municipalities-context/use-municipalities.ts';
-import { getLastMarathon } from '../../../utils/get-last-marathon.ts';
 import { useResults } from '../../../hooks/useResults.ts';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { getMarathonHistory } from '../../../utils/get-marathon-history.ts';
+import { format } from 'date-fns';
+import { pt } from 'date-fns/locale';
 
-// TODO: make this page use an id to get the marathon results (id of the marathon?)
 export function MarathonResults() {
+
     const navigate = useNavigate();
+    const { id } = useParams();
     const { getDistricts } = useMunicipalities();
+
+    const stats = getMarathonHistory()[Number(id)];
     const {
         getDuration,
         getNumberMunicipalitiesGuessed,
@@ -16,7 +21,7 @@ export function MarathonResults() {
         getNumberDistrictsPartiallyCompleted,
         getNumberDistrictsFullyCompleted,
         getMunicipalitiesDiscovered,
-    } = useResults(getLastMarathon());
+    } = useResults(stats);
 
     const duration = getDuration();
     const numberMunicipalitiesGuessed = getNumberMunicipalitiesGuessed();
@@ -24,16 +29,6 @@ export function MarathonResults() {
     const numberDistrictsPartiallyCompleted = getNumberDistrictsPartiallyCompleted();
     const numberDistrictsFullyCompleted = getNumberDistrictsFullyCompleted();
     const municipalitiesDiscovered = getMunicipalitiesDiscovered();
-
-    if (false) {
-        console.log('lastMarathon', getLastMarathon());
-        console.log('duration', duration);
-        console.log('numberMunicipalitiesGuessed', numberMunicipalitiesGuessed);
-        console.log('numberMunicipalitiesDiscovered', numberMunicipalitiesDiscovered);
-        console.log('numberDistrictsPartiallyCompleted', numberDistrictsPartiallyCompleted);
-        console.log('numberDistrictsFullyCompleted', numberDistrictsFullyCompleted);
-        console.log('municipalitiesDiscovered', municipalitiesDiscovered);
-    }
 
     return (
         <div className="marathon-results">
@@ -47,7 +42,7 @@ export function MarathonResults() {
                     <p>Um relatório detalhado dos munícipios que escreveste.</p>
                 </div>
             </header>
-
+            <p>{format(stats.date, 'd \'de\' MMMM \'de\' yyyy', { locale: pt })}</p>
             <section id="summary">
                 <h2>Sumário</h2>
                 <div className="summary">
@@ -56,6 +51,10 @@ export function MarathonResults() {
                         <tr>
                             <td>Tempo usado</td>
                             <td>{duration}</td>
+                        </tr>
+                        <tr>
+                            <td>Desististe antes do tempo terminar</td>
+                            <td>{stats.didQuit ? 'Sim' : 'Não'}</td>
                         </tr>
                         <tr>
                             <td>Municípios certos</td>
@@ -80,8 +79,8 @@ export function MarathonResults() {
 
             <section id="municipalities">
                 <h2>Municípios</h2>
+                <h3>Municípios Descobertos</h3>
                 <div className="municipalities">
-                    <h3>Municípios Descobertos</h3>
                     <ul>
                         {municipalitiesDiscovered.map((municipality) => (
                             <li key={municipality.id}>

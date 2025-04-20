@@ -37,7 +37,6 @@ export function MunicipalitiesProvider({ children }: { children: ReactNode }) {
             });
             setDetails(details);
             setIsLoading(false);
-            // TODO: handle errors and allow for page reloads
         };
 
         init();

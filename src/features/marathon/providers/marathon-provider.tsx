@@ -10,7 +10,8 @@ import { useNavigate } from 'react-router-dom';
 import { addToMarathonHistory } from '../utils/add-to-marathon-history.ts';
 import { subtractDurations } from '../../../core/utils/subtract-durations.ts';
 import { durationToSeconds } from '../../../core/utils/duration-to-seconds.ts';
-import { GameStates } from '../../../core/models/game-states.ts';
+import { GameState } from '../../../core/models/game-states.ts';
+import { getMarathonHistory } from '../utils/get-marathon-history.ts';
 
 const MarathonContext = createContext<MarathonContextType | undefined>(undefined);
 
@@ -22,7 +23,7 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
     const { countdown, countdownState, startCountdown, stopCountdown } = useCountdown(GAME_DURATION);
     const { details } = useMunicipalities();
 
-    const [gameState, setGameState] = useState(GameStates.NOT_STARTED);
+    const [gameState, setGameState] = useState(GameState.Idle);
     const [guessedMunicipalities, setGuessedMunicipalities] = useState(new Set<number>());
     const [nonGuessedMunicipalities, setNonGuessedMunicipalities] = useState(new Set<number>());
     const [lastGuess, setLastGuess] = useState<Details | undefined>(undefined);
@@ -33,13 +34,13 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
         setGuessedMunicipalities(new Set());
         setNonGuessedMunicipalities(new Set(details.map((detail) => detail.id)));
         startCountdown();
-        setGameState(GameStates.IN_PROGRESS);
+        setGameState(GameState.Playing);
         navigate('/marathon/play');
     }
 
     function marathonStop() {
         stopCountdown();
-        setGameState(GameStates.FINISHED);
+        setGameState(GameState.Completed);
         addToMarathonHistory({
             date: new Date(),
             duration: subtractDurations(GAME_DURATION, countdown),
@@ -48,7 +49,9 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
             }),
             didQuit: durationToSeconds(countdown) > 0,
         });
-        navigate('/marathon/results/1');
+
+        const history = getMarathonHistory();
+        navigate(`/marathon/results/${history.length - 1}`);
     }
 
     function getMunicipalityId(municipality: string) {
@@ -72,8 +75,8 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
     }
 
     useEffect(() => {
-        if (countdownState === CountdownState.ON) return;
-        if (gameState !== GameStates.IN_PROGRESS) return;
+        if (countdownState === CountdownState.Activated) return;
+        if (gameState !== GameState.Playing) return;
         console.log('Marathon countdown finished');
         marathonStop();
     }, [countdownState]);

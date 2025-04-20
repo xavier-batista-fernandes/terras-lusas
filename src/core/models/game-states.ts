@@ -1,7 +1,7 @@
-export enum GameStates {
-    NOT_STARTED,
-    IN_PROGRESS,
-    FINISHED,
-    STATISTICS,
-    HISTORY
+export enum GameState {
+    Idle,
+    Playing,
+    Paused,
+    Completed,
+    Quit,
 }
