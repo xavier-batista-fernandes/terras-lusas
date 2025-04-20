@@ -7,24 +7,28 @@ import { MarathonStatistics } from './features/marathon/components/organisms/sta
 import { MarathonHistory } from './features/marathon/components/organisms/history/marathon-history.tsx';
 import { MarathonPlay } from './features/marathon/components/organisms/play/marathon-play.tsx';
 import { MarathonPage } from './features/marathon/components/pages/marathon-page.tsx';
+import { ErrorBoundary } from 'react-error-boundary';
+import { ErrorPage } from './core/pages/error-page/error-page.tsx';
 
 export const App = () => {
     return (
         <>
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/" element={<Navigate to="/marathon" replace />} />
-                    <Route path="/marathon" element={<MarathonLayout />}>
-                        <Route index element={<MarathonPage />} />
-                        <Route path="play" element={<MarathonPlay />} />
-                        <Route path="statistics" element={<MarathonStatistics />} />
-                        <Route path="history" element={<MarathonHistory />} />
-                        <Route path="results/:id" element={<MarathonResults />} />
-                    </Route>
-                    <Route path="/explore" element={<Explore />} />
-                    <Route path="*" element={<NotFound />} />
-                </Routes>
-            </BrowserRouter>
+            <ErrorBoundary fallback={<ErrorPage />}>
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/" element={<Navigate to="/marathon" replace />} />
+                        <Route path="/marathon" element={<MarathonLayout />}>
+                            <Route index element={<MarathonPage />} />
+                            <Route path="play" element={<MarathonPlay />} />
+                            <Route path="statistics" element={<MarathonStatistics />} />
+                            <Route path="history" element={<MarathonHistory />} />
+                            <Route path="results/:id" element={<MarathonResults />} />
+                        </Route>
+                        <Route path="/explore" element={<Explore />} />
+                        <Route path="*" element={<NotFound />} />
+                    </Routes>
+                </BrowserRouter>
+            </ErrorBoundary>
         </>
     );
 };
