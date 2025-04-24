@@ -1,9 +1,10 @@
 .marathon-results {
+    width: 95vw;
     display: flex;
     flex-direction: column;
     gap: clamp(2rem, 3vw, 5rem);
-    padding: 32px;
     box-sizing: border-box;
+    padding: 32px;
 }
 
 .marathon-results h2 {
@@ -85,6 +86,7 @@
 
 .marathon-results .districts {
     display: flex;
+    width: 100%;
     overflow-x: auto;
     scrollbar-width: none;
     gap: 1rem;

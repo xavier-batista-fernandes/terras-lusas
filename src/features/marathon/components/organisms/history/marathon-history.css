@@ -1,9 +1,11 @@
 .marathon-history {
+    width: 100%;
     margin: 0 auto;
-    padding: 32px;
     display: flex;
     flex-direction: column;
     gap: clamp(1rem, 2vw, 2rem);
+    box-sizing: border-box;
+    padding: 32px;
 }
 
 .marathon-history .header {
