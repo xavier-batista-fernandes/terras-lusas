@@ -51,12 +51,12 @@
 
     a {
         background: white;
-        min-width: 260px;
         padding: 2.5rem;
         padding-inline: 2rem;
 
-        display: flex;
         flex: 0 1 30%;
+
+        display: flex;
         align-items: center;
         gap: 1rem;
 
@@ -124,6 +124,8 @@
 
         a {
             margin-inline: 20px;
+            text-align: center;
+            flex-direction: column;
         }
 
     }

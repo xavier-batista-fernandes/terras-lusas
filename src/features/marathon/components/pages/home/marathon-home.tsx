@@ -57,7 +57,6 @@ export function MarathonHome() {
                                 <h2>Estatísticas</h2>
                                 <p>Acompanha o teu progresso e troféus das várias maratonas.</p>
                             </div>
-                            <img src="/assets/icons/return-up-back-sharp-svgrepo-com.svg" alt="FIXME" />
                         </a>
                         <a href="/marathon/history">
                             <img src="/assets/icons/file-tray-stacked-sharp-svgrepo-com.svg"
@@ -66,7 +65,6 @@ export function MarathonHome() {
                                 <h2>Histórico</h2>
                                 <p>Recorda todas as maratonas que já jogaste.</p>
                             </div>
-                            <img src="/assets/icons/return-up-back-sharp-svgrepo-com.svg" alt="FIXME" />
                         </a>
                     </div>
 
