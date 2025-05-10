@@ -29,18 +29,6 @@ export function MarathonStatistics() {
     const bestMunicipalityParticipation = getBestMunicipalityPercentage();
     const quitsPercentage = getQuitsPercentage();
 
-    if (false) {
-        console.log('marathonsPlayed', marathonsPlayed);
-        console.log('bestScore', bestScore);
-        console.log('averageScore', averageScore);
-        console.log('unknownMunicipalities', unknownMunicipalities);
-        console.log('completeDistricts', completeDistricts);
-        console.log('bestMunicipality', bestMunicipality);
-        console.log('averageDuration', averageDuration);
-        console.log('bestMunicipalityParticipation', bestMunicipalityParticipation);
-        console.log('quitsPercentage', quitsPercentage);
-    }
-
     const getAverageDurationText = () => {
         if (marathonsPlayed <= 0) return 'Ainda não descobriste nenhum município.';
 

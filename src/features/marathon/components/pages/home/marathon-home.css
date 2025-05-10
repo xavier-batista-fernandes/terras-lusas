@@ -66,6 +66,7 @@
         cursor: pointer;
         font-family: inherit;
         text-decoration: none;
+        color: inherit;
         position: relative;
         transition: transform 0.2s ease;
 
