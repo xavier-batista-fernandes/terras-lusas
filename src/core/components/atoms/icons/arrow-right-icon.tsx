@@ -1,4 +1,4 @@
-import { IconProps } from './icon.props.ts';
+import { IconProps } from '../../../models/icon.props.ts';
 
 export function ArrowRightIcon({ fill = 'none', stroke = 'white', strokeWidth = 14 }: IconProps) {
     return (

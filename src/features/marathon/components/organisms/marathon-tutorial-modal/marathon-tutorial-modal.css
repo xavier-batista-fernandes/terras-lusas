@@ -1,0 +1,119 @@
+dialog {
+    height: 80vh;
+    width: max(30rem, 40vw);
+
+    border: none;
+    box-sizing: border-box;
+    padding: 2rem;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    overflow-x: hidden;
+    transition: opacity 0.5s;
+    opacity: 0;
+
+    .close-button {
+        position: absolute;
+        background: transparent;
+        border: none;
+        padding: 0;
+        top: 1rem;
+        right: 1rem;
+        height: 2rem;
+        cursor: pointer;
+    }
+
+    .header {
+        flex: 1 1 20%;
+
+        h2 {
+            font-size: 1rem;
+            color: #474747;
+            width: fit-content;
+            margin: 0;
+            margin-inline: auto;
+        }
+    }
+
+    .content {
+        display: flex;
+        justify-content: space-between;
+
+        transition: transform 0.25s ease-in-out;
+        max-height: 80%;
+
+        .card {
+            width: 100%;
+
+            box-sizing: border-box;
+            padding: 3rem;
+
+            flex-shrink: 0;
+
+            text-align: center;
+
+            .card-icon {
+                height: 40%;
+            }
+        }
+    }
+
+    .footer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-inline: 3rem;
+
+        flex: 1 1 20%;
+
+        button {
+            position: absolute;
+            right: 3rem;
+            height: 2rem;
+            width: 2rem;
+            padding: 0;
+            margin: 0;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+    }
+}
+
+dialog::backdrop {
+    backdrop-filter: blur(50px);
+}
+
+
+dialog .stepper {
+    flex-shrink: 0;
+    height: 0.5rem;
+    display: flex;
+    gap: 0.75rem;
+}
+
+dialog .stepper div {
+    border-radius: 8px;
+    display: block;
+    background: #494949;
+    width: 0.5rem;
+    transition: width 0.25s ease-in-out;
+}
+
+dialog .stepper div.active {
+    width: 1.25rem;
+    background: #205bc5;
+}
+
+@media (max-width: 759px) {
+    dialog {
+        min-height: 100%;
+        min-width: 100%;
+    }
+
+    dialog::backdrop {
+        display: none;
+    }
+}

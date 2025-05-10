@@ -27,6 +27,8 @@ A statistics page
     A) Show the number of municipalities guessed, the number of districts completed, the number of unknown guesses
     B) Show a map with the districts where they are colored according to the percentage of corrected municipalities for that district.
         Could also have hover interactions with more details.
+    C) When the user hover one of the cards, more context is displayed on the a side panel.
+        For example, the favorite municipalities could be more than just one. Could be a detailed list of the top 3 in percentage.
 
 ✅ Have a custom hook for the marathon game so game state can be centralized, maybe context?
 ✅ In the clock game mode, have a details section so the player can track which municipalities have been guessed already that opens when clicked.

@@ -1,35 +1,41 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { Explore } from './core/pages/explore/explore.tsx';
-import { NotFound } from './core/pages/not-found/not-found.tsx';
+import { Explore } from './core/components/pages/explore/explore.tsx';
+import { NotFound } from './core/components/pages/not-found/not-found.tsx';
 import { MarathonLayout } from './features/marathon/components/templates/marathon-layout.tsx';
-import { MarathonResults } from './features/marathon/components/organisms/results/marathon-results.tsx';
-import { MarathonStatistics } from './features/marathon/components/organisms/statistics/marathon-statistics.tsx';
-import { MarathonHistory } from './features/marathon/components/organisms/history/marathon-history.tsx';
-import { MarathonPlay } from './features/marathon/components/organisms/play/marathon-play.tsx';
-import { MarathonPage } from './features/marathon/components/pages/marathon-page.tsx';
+import { MarathonResults } from './features/marathon/components/pages/marathon-results/marathon-results.tsx';
+import { MarathonStatistics } from './features/marathon/components/pages/marathon-statistics/marathon-statistics.tsx';
+import { MarathonHistory } from './features/marathon/components/pages/marathon-history/marathon-history.tsx';
+import { MarathonHome } from './features/marathon/components/pages/home/marathon-home.tsx';
 import { ErrorBoundary } from 'react-error-boundary';
-import { ErrorPage } from './core/pages/error-page/error-page.tsx';
+import { ErrorPage } from './core/components/pages/error-page/error-page.tsx';
+import { useEffect } from 'react';
+import { RootLayout } from './core/components/templates/root-layout.tsx';
 
 export const App = () => {
+
+    useEffect(() => {
+        // @ts-ignore
+        console.log('process.env.NODE_ENV:', process.env.NODE_ENV);
+    }, []);
+
     return (
-        <>
-            <ErrorBoundary fallback={<ErrorPage />}>
-                <BrowserRouter>
-                    <Routes>
-                        <Route path="/" element={<Navigate to="/marathon" replace />} />
+        <ErrorBoundary fallback={<ErrorPage />}>
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/" element={<RootLayout />}>
+                        <Route index element={<Navigate to="/marathon" />} />
                         <Route path="/marathon" element={<MarathonLayout />}>
-                            <Route index element={<MarathonPage />} />
-                            <Route path="play" element={<MarathonPlay />} />
+                            <Route index element={<MarathonHome />} />
                             <Route path="statistics" element={<MarathonStatistics />} />
                             <Route path="history" element={<MarathonHistory />} />
                             <Route path="results/:id" element={<MarathonResults />} />
                         </Route>
                         <Route path="/explore" element={<Explore />} />
                         <Route path="*" element={<NotFound />} />
-                    </Routes>
-                </BrowserRouter>
-            </ErrorBoundary>
-        </>
+                    </Route>
+                </Routes>
+            </BrowserRouter>
+        </ErrorBoundary>
     );
 };
 

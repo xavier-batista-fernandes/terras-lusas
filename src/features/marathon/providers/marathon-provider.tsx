@@ -1,6 +1,5 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useCountdown } from '../../../core/hooks/useCountdown.ts';
-import { MarathonContextType } from './marathon-context-type.ts';
 import { areMunicipalitiesEqual } from '../../../core/utils/are-municipalities-equal.ts';
 import { Details } from '../../../core/models/details.ts';
 import { useMunicipalities } from '../../../core/providers/municipalities-context/use-municipalities.ts';
@@ -12,8 +11,7 @@ import { subtractDurations } from '../../../core/utils/subtract-durations.ts';
 import { durationToSeconds } from '../../../core/utils/duration-to-seconds.ts';
 import { GameState } from '../../../core/models/game-states.ts';
 import { getMarathonHistory } from '../utils/get-marathon-history.ts';
-
-const MarathonContext = createContext<MarathonContextType | undefined>(undefined);
+import { MarathonContext } from './marathon-context.ts';
 
 export function MarathonProvider({ children }: { children: ReactNode }) {
 
@@ -30,12 +28,12 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
 
     const countdownString = durationToString(countdown);
 
+    // FIXME: nonGuessedMunicipalities starts empty when user goes to /marathon/play directly
     function marathonStart() {
         setGuessedMunicipalities(new Set());
         setNonGuessedMunicipalities(new Set(details.map((detail) => detail.id)));
         startCountdown();
         setGameState(GameState.Playing);
-        navigate('/marathon/play');
     }
 
     function marathonStop() {
@@ -60,14 +58,18 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
     }
 
     function isGuessRepeated(id: number) {
+        console.log('isGuessRepeated', guessedMunicipalities.has(id));
         return guessedMunicipalities.has(id);
     }
 
     function isGuessCorrect(id: number) {
+        console.log('nonGuessedMunicipalities', nonGuessedMunicipalities);
+        console.log('isGuessCorrect', nonGuessedMunicipalities.has(id));
         return nonGuessedMunicipalities.has(id);
     }
 
     function markCorrect(id: number) {
+        console.log('marking correct', id);
         setLastGuess(details.find(detail => detail.id === id));
 
         guessedMunicipalities.add(id); // TODO: why are components reacting to changes?
@@ -99,10 +101,4 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
             {children}
         </MarathonContext.Provider>
     );
-}
-
-export function useMarathon() {
-    const context = useContext(MarathonContext);
-    if (!context) throw new Error('useMarathon must be used within a MarathonProvider');
-    return context;
 }

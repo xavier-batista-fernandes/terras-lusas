@@ -1,10 +1,8 @@
-import { createContext, ReactNode, useEffect, useState } from 'react';
-import { fetchMunicipalities } from '../../utils/fetchMunicipalities.ts';
+import { ReactNode, useEffect, useState } from 'react';
 import { stringToTitleCase } from '../../utils/string-to-title-case.ts';
 import { Details } from '../../models/details.ts';
-import { MunicipalitiesContextType } from './municipalities-context-type.ts';
-
-export const MunicipalitiesContext = createContext<MunicipalitiesContextType | undefined>(undefined);
+import { MunicipalitiesContextType } from './municipalities-context.type.ts';
+import { MunicipalitiesContext } from './municipalities-context.ts';
 
 export function MunicipalitiesProvider({ children }: { children: ReactNode }) {
 
@@ -22,16 +20,18 @@ export function MunicipalitiesProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         const init = async () => {
-
             // Fetch the raw data
-            const rawData = await fetchMunicipalities();
+            const URL = '/assets/data/municipalities.json';
+            const response = await fetch(URL);
+            // TODO: see how to handle errors when awaiting instead of using then or catch
+            const rawData = await response.json();
             setRawData(rawData);
 
             // Populate array of all municipality details
             const details: Details[] = [];
-            rawData.features.forEach((feature: any, index: number) => {
-                const district = stringToTitleCase(feature.properties['District']);
-                const municipality = stringToTitleCase(feature.properties['Municipality']);
+            rawData.objects.municipalities.geometries.forEach((geometry: any, index: number) => {
+                const district = stringToTitleCase(geometry.properties['NAME_1']);
+                const municipality = stringToTitleCase(geometry.properties['NAME_2']);
 
                 details.push({ id: index, municipality, district });
             });

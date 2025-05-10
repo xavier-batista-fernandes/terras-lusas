@@ -1,96 +1,163 @@
-import { RefObject, useEffect, useRef } from 'react';
-import { useGeographic } from 'ol/proj';
-import { Feature, Map, View } from 'ol';
-import { GeoJSON } from 'ol/format';
-import VectorSource from 'ol/source/Vector';
-import VectorLayer from 'ol/layer/Vector';
-import { Fill, Stroke, Style } from 'ol/style';
-import { getRandomColor } from '../utils/getRandomColor.ts';
-import { getMunicipalityCenter } from '../utils/getMunicipalityCenter.ts';
-import { stringToTitleCase } from '../utils/string-to-title-case.ts';
-import { useMunicipalities } from '../providers/municipalities-context/use-municipalities.ts';
+import { RefObject, useEffect, useRef, useState } from 'react';
+import * as d3 from 'd3';
+import * as topojson from 'topojson-client';
+import { getDistrictColor } from '../utils/get-district-color.ts';
 
 export function useMap(mapElement: RefObject<any>) {
 
-    useGeographic();
+    const [featureCollection, setFeatureCollection] = useState<any>();
 
-    const mapInstance = useRef<Map>(null);
-    const mapFeatures = useRef<Feature[]>(null);
+    const geoPathRef = useRef<d3.GeoPath>(null);
+    const geoProjectionRef = useRef<d3.GeoProjection>(null);
+    const zoomBehaviorRef = useRef<d3.ZoomBehavior<any, any>>(null);
 
-    const { isLoading, rawData, details } = useMunicipalities();
-
-    const DEFAULT_STYLE = new Style({
-        stroke: new Stroke({
-            color: 'black',
-            width: 1,
-        }),
-        fill: new Fill({
-            color: 'rgba(211,211,211,0.66)',
-        }),
-        zIndex: 5,
-    });
-
-    const DEFAULT_VIEW = new View({
-        center: [-8, 39.5],
-        zoom: 7.25,
-    });
-
-    const paintMunicipality = (id: number) => {
-        const features: Feature[] = mapFeatures.current ?? [];
-        const municipality = details.find((detail) => detail.id === id)?.municipality;
-        const target = features.find(
-            (feature) => stringToTitleCase(feature.getProperties()['Municipality']) === municipality);
-        if (!target) return;
-
-        target.setStyle(
-            new Style({
-                fill: new Fill({ color: getRandomColor() }),
-                stroke: new Stroke({ width: 1 }),
-                zIndex: 10,
-            }),
-        );
-
-        // TODO: move mapInstance.current?.getView() to a variable
-        mapInstance.current?.getView()?.setCenter(getMunicipalityCenter(target));
-        mapInstance.current?.getView()?.setZoom(9);
-    };
-
+    // Load the topology data
     useEffect(() => {
-        if (!mapElement.current) throw new Error('Could not retrieve map reference from the component\'s view.');
+        if (!mapElement.current) {
+            throw new Error('[useMap]: Could not retrieve map reference from the component\'s view.');
+        }
+
+        async function init() {
+            const topology: any = await d3.json('/assets/data/municipalities.json');
+            setFeatureCollection(topojson.feature(topology, topology.objects.municipalities));
+        }
+
+        init().then(() => {
+            console.info('[useMap]: Topology loaded');
+        });
     }, []);
 
+    // Create the map
     useEffect(() => {
-        if (isLoading) return;
-        if (mapInstance.current) return;
-        if (!mapElement.current) return;
+        if (!featureCollection) {
+            console.info('[useMap]: No topology data available yet.');
+            return;
+        }
 
-        mapInstance.current = new Map();
+        const { width, height } = mapElement.current.getBoundingClientRect();
 
-        const features = new GeoJSON().readFeatures(rawData);
-        const source = new VectorSource({ features });
-        const layer = new VectorLayer({ source });
-        layer.setStyle(() => DEFAULT_STYLE);
+        const geoProjection = d3.geoMercator()
+            .fitExtent([[width * 0.05, height * 0.05], [width * 0.95, height * 0.95]], featureCollection);
 
-        mapInstance.current.setTarget(mapElement.current);
-        mapInstance.current.setLayers([layer]);
-        mapInstance.current.setView(DEFAULT_VIEW);
+        const geoPath = d3.geoPath()
+            .projection(geoProjection)
+            .digits(3);
 
-        mapFeatures.current = features;
+        const container = d3.select(mapElement.current);
+
+        const svg = container.append('svg')
+            .attr('height', '100%')
+            .attr('width', '100%');
+
+        const g = svg.append('g');
+        const zoomBehavior = d3.zoom()
+            .scaleExtent([1, Infinity])
+            .on('zoom', function(event) {
+                const { transform } = event;
+                g.attr('transform', transform);
+            });
+        svg.call(zoomBehavior as any);
+
+        const paths = g.selectAll('path');
+        paths.data(featureCollection.features)
+            .enter()
+            .append('path')
+            .attr('d', geoPath as any)
+            .attr('fill', 'rgba(198, 198, 198, 0.25)')
+            .attr('stroke', '#000000')
+            .attr('stroke-width', 0.25);
+
+        geoProjectionRef.current = geoProjection;
+        geoPathRef.current = geoPath;
+        zoomBehaviorRef.current = zoomBehavior;
 
         return () => {
-            if (!mapInstance.current) return;
-            mapInstance.current.setTarget(undefined);
-            mapInstance.current.dispose();
-            mapInstance.current = null;
+            console.info('[useMap]: Cleaning up the map');
+            d3.select(mapElement.current).selectAll('*').remove();
         };
-    }, [isLoading]);
+    }, [featureCollection]);
+
+
+    const utilPaintMunicipality = (id: number) => {
+        const svg = d3.select(mapElement.current).select('svg');
+        console.log('svg', svg);
+        const g = svg.select('g');
+        console.log('g', g);
+        const target = g.selectAll('path').filter((_, index: number) => index === id);
+        console.log('target', target);
+
+        const datum: any = target.datum();
+
+        target.transition()
+            .duration(500)
+            .attr('fill', getDistrictColor(datum.properties.NAME_1));
+    };
+
+    const utilJumpToMunicipality = (id: number) => {
+        const geoPath = geoPathRef.current as any;
+
+        const svg = d3.select(mapElement.current).select('svg');
+        const g = svg.select('g');
+        const target = g.selectAll('path').filter((_, index: number) => index === id);
+
+        const [[x0, y0], [x1, y1]] = geoPath.bounds(target.datum() as any);
+
+        const { width, height } = mapElement.current?.getBoundingClientRect();
+        const targetWidth = x1 - x0;
+        const targetHeight = y1 - y0;
+        console.log(targetWidth, targetHeight);
+        console.log(width, height);
+        const scale = Math.min(5, 0.5 / Math.max((x1 - x0) / width, (y1 - y0) / height));
+        console.log('scale', scale);
+
+        // Calculate the center of the municipality's bounds
+
+
+        // Get the current zoom scale
+        const currentZoom = d3.zoomTransform(target.node() as any).k;
+        console.log('currentZoom', currentZoom);
+
+        const transform = d3.zoomIdentity
+            .translate(width / 2, height / 2)
+            .scale(scale)
+            .translate(-(x0 + x1) / 2, -(y0 + y1) / 2);
+
+        svg.transition()
+            .duration(750)
+            .call(
+                zoomBehaviorRef.current?.transform as any,
+                transform,
+            );
+
+
+        const datum: any = target.datum();
+        console.log('Jumping to:', datum.properties.NAME_1);
+    };
+
+    const resetView = () => {
+        console.log('resetZoom');
+        const svg = d3.select(mapElement.current).select('svg');
+        svg.transition().duration(750).call(
+            zoomBehaviorRef.current?.transform as any,
+            d3.zoomIdentity,
+        );
+
+        // FIXME: This is a workaround to recalculate the projection
+        const { width, height } = mapElement.current.getBoundingClientRect();
+        geoProjectionRef.current?.fitExtent(
+            [[width * 0.05, height * 0.05], [width * 0.95, height * 0.95]],
+            featureCollection,
+        );
+        geoPathRef.current = d3.geoPath().projection(geoProjectionRef.current).digits(3);
+        d3.select(mapElement.current).selectAll('path')
+            .attr('d', geoPathRef.current as any);
+    };
+
 
     return {
-        isLoading,
         mapElement,
-        mapInstance: mapInstance.current,
-        mapFeatures: mapFeatures.current,
-        mapView: mapInstance.current?.getView(),
-        paintMunicipality,
+        utilPaintMunicipality,
+        utilJumpToMunicipality,
+        resetView,
     };
 }

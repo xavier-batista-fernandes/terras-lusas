@@ -1,0 +1,27 @@
+.primary-button {
+    background: linear-gradient(to top, #ffffff 50%, #dddddd 50%) bottom;
+    background-size: 100% 200%;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    padding: 15px 30px;
+    position: relative;
+    transition: background-position 0.25s ease-out, box-shadow 0.25s ease-out, transform 0.25s ease-out;
+    box-shadow: #242424 5px 5px;
+}
+
+.primary-button[disabled] {
+    pointer-events: none;
+}
+
+.primary-button:hover,
+.primary-button:focus {
+    background-position: top;
+    box-shadow: #242424 7px 7px;
+    transform: translate(-1px, -1px);
+}
+
+.primary-button:active {
+    transform: translate(5px, 5px);
+    box-shadow: none;
+}

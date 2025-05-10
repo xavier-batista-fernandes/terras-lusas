@@ -1,0 +1,22 @@
+.secondary-button {
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    padding: 15px;
+    position: relative;
+    background: transparent;
+    text-wrap: nowrap;
+}
+
+.secondary-button[disabled] {
+    pointer-events: none;
+}
+
+.secondary-button:hover {
+    text-decoration-line: underline;
+    text-decoration-color: black;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 5px;
+}
+

@@ -1,0 +1,129 @@
+.marathon-home-container {
+    flex-direction: column;
+    margin-inline: clamp(0.75rem, 3vw, 4rem);
+    padding-block: clamp(0.75rem, 3vw, 4rem);
+    box-sizing: border-box;
+}
+
+.marathon-home-container .hero {
+    padding-block: 3vw;
+    box-sizing: border-box;
+    height: 75vh;
+    display: flex;
+    align-items: center;
+    gap: 3vw;
+
+    div:nth-child(1) {
+        flex-basis: 50%;
+        padding-block: 2.5%;
+
+        h1 {
+            font-size: clamp(2.5rem, 4vw, 4rem);
+            font-weight: normal;
+            margin: 0;
+        }
+
+        p:nth-of-type(2) {
+            font-size: clamp(1rem, 1.25vw, 1.15rem);
+            margin-block: 1rem;
+        }
+
+        div {
+            display: flex;
+            margin-top: 2rem;
+            gap: 1rem;
+        }
+    }
+
+    img {
+        flex-basis: 50%;
+        margin: 0;
+        height: 100%;
+        max-height: 50vh;
+        width: 50%;
+        border-radius: 8px;
+    }
+}
+
+.marathon-home-container .cards {
+    display: flex;
+    gap: 2rem;
+
+    a {
+        background: white;
+        min-width: 260px;
+        padding: 2.5rem;
+        padding-inline: 2rem;
+
+        display: flex;
+        flex: 0 1 30%;
+        align-items: center;
+        gap: 1rem;
+
+        border-radius: 8px;
+        border: none;
+
+        cursor: pointer;
+        font-family: inherit;
+        text-decoration: none;
+        position: relative;
+        transition: transform 0.2s ease;
+
+        img {
+            height: 30px
+        }
+
+        div {
+            h2 {
+                margin: 0;
+                margin-block-end: 0;
+            }
+
+            p {
+                margin: 0;
+                margin-block-start: 0.5rem;
+            }
+        }
+
+        img:last-child {
+            height: 30px;
+            position: absolute;
+            right: 1.5rem;
+            top: 1rem;
+            transform: rotateY(180deg);
+        }
+    }
+
+    a:visited {
+        color: inherit;
+    }
+
+    a:hover {
+        transform: translateY(-4px);
+    }
+}
+
+@media (max-width: 800px) {
+    .marathon-home-container .hero {
+        flex-direction: column-reverse;
+        text-align: center;
+        height: 100vh;
+
+        div:nth-child(1) {
+            div {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    }
+
+    .marathon-home-container .cards {
+        flex-direction: column;
+        flex-grow: 1;
+
+        a {
+            margin-inline: 20px;
+        }
+
+    }
+}

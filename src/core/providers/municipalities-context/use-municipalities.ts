@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { MunicipalitiesContext } from './municipalities-provider.tsx';
+import { MunicipalitiesContext } from './municipalities-context.ts';
 
 export const useMunicipalities = () => {
     const context = useContext(MunicipalitiesContext);

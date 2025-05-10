@@ -1,16 +1,14 @@
 import './marathon-play.css';
-import { useMarathon } from '../../../providers/marathon-provider.tsx';
 import { useEffect, useRef, useState } from 'react';
 import { Text } from '../../../../../core/components/atoms/text/text.tsx';
-import { HomeButton } from '../../../../../core/components/atoms/buttons/home-button/home-button.tsx';
-import { useFlyout } from '../../../../../core/providers/flyout-context/flyout-provider.tsx';
-import { UnderlinedTextInput } from '../../atoms/underlined-text-input/underlined-text-input.tsx';
 import { useMap } from '../../../../../core/hooks/useMap.ts';
-import { MarathonFlyout } from '../../molecules/marathon-flyout/marathon-flyout.tsx';
+import { SecondaryButton } from '../../../../../core/components/atoms/buttons/secondary-button/secondary-button.tsx';
+import { useMarathon } from '../../../providers/use-marathon.ts';
+import { RefreshArrowIcon } from '../../../../../core/components/atoms/icons/refresh-arrow-icon.tsx';
 
 export function MarathonPlay() {
-    const mapElement = useRef<HTMLDivElement | null>(null);
-    const { paintMunicipality } = useMap(mapElement);
+    const mapElement = useRef(null);
+    const { utilPaintMunicipality, utilJumpToMunicipality, resetView } = useMap(mapElement);
     const {
         remainingTime,
         getMunicipalityId,
@@ -20,7 +18,6 @@ export function MarathonPlay() {
         marathonStart,
         marathonStop,
     } = useMarathon();
-    const { openFlyout } = useFlyout();
 
     const [isRepeated, setIsRepeated] = useState(false);
 
@@ -33,6 +30,7 @@ export function MarathonPlay() {
 
         window.addEventListener('beforeunload', handleBeforeUnload);
         return () => {
+            console.log('Unmounting MarathonPlay component.');
             window.removeEventListener('beforeunload', handleBeforeUnload);
         };
     }, []);
@@ -59,29 +57,35 @@ export function MarathonPlay() {
 
         if (isGuessCorrect(municipalityId)) {
             markCorrect(municipalityId);
-            paintMunicipality(municipalityId);
+            utilPaintMunicipality(municipalityId);
+            utilJumpToMunicipality(municipalityId);
         }
 
         event.target.value = '';
     }
 
-    return <>
-        <MarathonFlyout />
-        <div className={'marathon-running-container'}>
-            <div className={'marathon-running-content'}>
+    return (
+        <div className="marathon-play-container">
+            <div className="actions-container">
                 <p>{remainingTime}</p>
-                <UnderlinedTextInput onChange={handleChange} onKeyDown={handleKeyDown} />
+                <input onChange={handleChange} onKeyDown={handleKeyDown} />
                 <Text fontSize="0.75rem" margin={'2%'} color="red" visibility={isRepeated ? 'visible' : 'hidden'}>
                     Já adivinhaste este.
                 </Text>
-                <div className={'actions'}>
-                    <HomeButton fontSize={'0.75rem'} onClick={openFlyout}>
-                        Abrir detalhes
-                    </HomeButton>
-                    <HomeButton fontSize={'0.75rem'} onClick={marathonStop}>Desistir</HomeButton>
+                <div>
+                    <SecondaryButton fontSize={'0.75rem'} onClick={marathonStop}>Desistir</SecondaryButton>
                 </div>
             </div>
-            <div className={'map'} ref={mapElement}></div>
+            <div className="map-container">
+                <div ref={mapElement} className={'map'}></div>
+                <button onClick={resetView}><RefreshArrowIcon /></button>
+            </div>
+            {/* TODO: district completion... progress bar? */}
+            {/*<div>*/}
+            {/*    <div>Lisboa</div>*/}
+            {/*    <div>Leiria</div>*/}
+            {/*    <div>Pombal</div>*/}
+            {/*</div>*/}
         </div>
-    </>;
+    );
 }

@@ -1,5 +1,7 @@
-import { IconProps } from './icon.props.ts';
+import { IconProps } from '../../../models/icon.props.ts';
 
+
+// TODO: add height and/or width?
 export function ArrowLeftIcon({ fill = 'none', stroke = 'white', strokeWidth = 10 }: IconProps) {
     return (
         <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">

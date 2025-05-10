@@ -1,7 +1,5 @@
 .marathon-layout-container {
-    max-width: 100vw;
-}
-
-.marathon-layout-container main {
-    margin-inline-start: 4rem;
+    max-height: 100vh;
+    max-width: calc(100vw - 4rem);
+    overflow-x: hidden;
 }

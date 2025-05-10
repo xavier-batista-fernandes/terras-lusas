@@ -1,59 +1,91 @@
-.marathon-running-container {
+.marathon-play-container {
+    display: flex;
+    gap: 2rem;
+    height: 100vh;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+.marathon-play-container > div {
+    height: 100%;
+    flex: 1 1 35%;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: #919090 0 0.1rem 0.5rem;
+}
+
+.marathon-play-container .actions-container {
+    height: 50%;
     width: 100%;
     display: flex;
-    flex-direction: row;
-}
-
-.marathon-running-content {
-    height: 100vh;
-    width: 50%;
-    display: flex;
-    flex-flow: column nowrap;
-    row-gap: 2%;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+
+    p {
+        text-align: center;
+        font-size: 3rem;
+        font-weight: normal;
+    }
+
+    input {
+        width: 50%;
+        height: 3rem;
+        border: none;
+        border-bottom: 1px solid #000;
+        font-size: 2rem;
+        font-family: 'Bebas Neue', Courier, monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.1rem;
+        padding-inline: 0.5rem;
+        outline: none;
+    }
 }
 
-.marathon-running-content > p {
-    font-size: clamp(3rem, 3vw, 4rem);
+.marathon-play-container .map-container {
+    position: relative;
+    flex: 1 1 50%;
 }
 
-.marathon-running-container .map {
-    height: 100vh;
-    width: 50%;
-    pointer-events: none;
+.marathon-play-container .map-container .map {
+    height: 100%;
+    width: 100%;
+    cursor: grab;
+    background: white;
 }
 
-.marathon-running-content .actions {
-    width: 75%;
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
-    gap: 1rem;
+.marathon-play-container .map-container .map:active {
+    cursor: grabbing;
 }
 
-.marathon-running-content .actions button {
-    flex: 0 1 clamp(15rem, 20%, 50rem);
+.marathon-play-container .map-container button {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 2rem;
+    height: 2rem;
+    background: transparent;
+    border: 1px solid #000;
+    border-radius: 50%;
+    cursor: pointer;
 }
 
-@media (max-width: 1024px) {
-    .marathon-running-container {
-        height: 200vh;
+.marathon-play-container .map-container button:hover {
+    stroke: white;
+    background: white;
+}
+
+@media (max-width: 950px) {
+    .marathon-play-container {
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
+        gap: 1rem;
     }
 
-    .marathon-running-content {
-        width: 100%;
+    .marathon-play-container > div {
+        flex: 1 1 100%;
     }
 
-    .marathon-running-content .actions {
-        width: 100%;
-    }
-
-    .marathon-running-container .map {
-        width: 100%;
-        border-top: 1px dashed #000;
+    .marathon-play-container .map-container {
+        height: 50vh;
     }
 }
