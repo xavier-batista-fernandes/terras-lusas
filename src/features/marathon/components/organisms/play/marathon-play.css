@@ -52,6 +52,10 @@
     width: 100%;
     cursor: grab;
     background: white;
+
+    path {
+        vector-effect: non-scaling-stroke;
+    }
 }
 
 .marathon-play-container .map-container .map:active {

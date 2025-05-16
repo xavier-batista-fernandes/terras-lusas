@@ -15,7 +15,7 @@ export const App = () => {
 
     useEffect(() => {
         // @ts-ignore
-        console.log('process.env.NODE_ENV:', process.env.NODE_ENV);
+        console.log(`Running in ${process.env.NODE_ENV} environment.`);
     }, []);
 
     return (

@@ -4,6 +4,7 @@ import { Details } from '../../models/details.ts';
 import { MunicipalitiesContextType } from './municipalities-context.type.ts';
 import { MunicipalitiesContext } from './municipalities-context.ts';
 import { areMunicipalitiesEqual } from '../../utils/are-municipalities-equal.ts';
+import { stringToSlug } from '../../utils/string-to-slug.ts';
 
 export function MunicipalitiesProvider({ children }: { children: ReactNode }) {
 
@@ -63,7 +64,13 @@ export function MunicipalitiesProvider({ children }: { children: ReactNode }) {
 
     function getMatchingMunicipalityIds(substring: string) {
         if (substring.length === 0) return [];
-        const matchingDetails = details.filter((detail) => detail.municipality.toLowerCase().startsWith(substring.toLowerCase()));
+
+        const slug1 = stringToSlug(substring);
+        const matchingDetails = details.filter((detail) => {
+            const slug2 = stringToSlug(detail.municipality);
+            return slug2.startsWith(slug1);
+        });
+        
         return matchingDetails.map((detail) => detail.id);
     }
 

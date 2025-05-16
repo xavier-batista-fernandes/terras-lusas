@@ -11,7 +11,7 @@ export function useStatistics() {
 
     const [histogram, setHistogram] = useState<{ id: number, count: number }[]>([]);
 
-
+    // TODO: Create an heat map like this example: https://observablehq.com/@d3/choropleth/2
     useEffect(() => {
         // Create a histogram of municipalities
         const unsorted = new Map<number, number>();

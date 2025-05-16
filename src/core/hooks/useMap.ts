@@ -25,19 +25,20 @@ export function useMap(mapElement: RefObject<any>) {
         }
 
         init().then(() => {
-            console.info('[useMap]: Topology loaded');
+            console.info('[useMap]: Topology data was successfully loaded.');
         });
     }, []);
 
     // Create the map
     useEffect(() => {
         if (!featureCollection) {
-            console.info('[useMap]: No topology data available yet.');
+            console.info('[useMap]: No topology data available yet...');
             return;
         }
 
         const { width, height } = mapElement.current.getBoundingClientRect();
 
+        /* Create a projection that leaves 5% padding on every side */
         const geoProjection = d3.geoMercator()
             .fitExtent([[width * 0.05, height * 0.05], [width * 0.95, height * 0.95]], featureCollection);
 
@@ -45,22 +46,25 @@ export function useMap(mapElement: RefObject<any>) {
             .projection(geoProjection)
             .digits(3);
 
-        const container = d3.select(mapElement.current);
-
-        const svg = container.append('svg')
+        const svg = d3.select(mapElement.current).append('svg')
             .attr('height', '100%')
             .attr('width', '100%')
             .style('display', 'block');
 
         const g = svg.append('g');
-        const zoomBehavior = d3.zoom()
-            .scaleExtent([1, Infinity])
-            .on('zoom', function(event) {
-                const { transform } = event;
-                g.attr('transform', transform);
-            });
+
+        /* Creating a zoom behavior and attaching it to the svg */
+        const zoomBehavior = d3.zoom();
         svg.call(zoomBehavior as any);
 
+        /* Zoom events are detected at the svg level, and its handler applies the transform to the g element */
+        zoomBehavior.scaleExtent([1, 10]);
+        zoomBehavior.translateExtent([[0, 0], [width, height]]);
+        zoomBehavior.on('zoom', function({ transform }) {
+            g.attr('transform', transform);
+        });
+
+        // Bind every feature (municipality) to a path element
         const paths = g.selectAll('path');
         paths.data(featureCollection.features)
             .enter()
@@ -74,14 +78,24 @@ export function useMap(mapElement: RefObject<any>) {
         geoPathRef.current = geoPath;
         zoomBehaviorRef.current = zoomBehavior;
 
+        // Append a graticule to the map
+        // const graticule = d3.geoGraticule().step([0.325, 0.25]);
+        // g.datum(graticule())
+        //     .attr('d', geoPath)
+        //     .attr('pointer-events', 'none')
+        //     .attr('fill', 'none')
+        //     .attr('stroke', '#777')
+        //     .attr('stroke-width', '.5px')
+        //     .attr('stroke-opacity', 0.5);
+
         return () => {
-            console.info('[useMap]: Cleaning up the map');
+            console.info('[useMap]: Cleaning up the map.');
             d3.select(mapElement.current).selectAll('*').remove();
         };
     }, [featureCollection]);
 
 
-    const addMarkedMunicipality = (id: number) => {
+    function addMarkedMunicipality(id: number) {
         const svg = d3.select(mapElement.current).select('svg');
         const g = svg.select('g');
         const target = g.selectAll('path').filter((_, index: number) => index === id);
@@ -89,46 +103,66 @@ export function useMap(mapElement: RefObject<any>) {
         target.transition()
             .duration(500)
             .attr('fill', (datum: any) => getDistrictColor(datum.properties.NAME_1));
-    };
+    }
 
-    const setMarkedMunicipalities = (ids: number[]) => {
+    function setMarkedMunicipalities(ids: number[]) {
         const svg = d3.select(mapElement.current).select('svg');
         const g = svg.select('g');
 
+        // Marked municipalities
         const markedTargets = g.selectAll('path').filter((_, index: number) => ids.includes(index));
+
         markedTargets.transition()
             .duration(500)
-            .attr('fill', (datum: any) => getDistrictColor(datum.properties.NAME_1));
+            .attr('fill', '#79adbc')
+            .attr('stroke-width', 0.5);
 
+        markedTargets
+            .on('mouseover', function(event: any, datum: any) {
+                const target: SVGPathElement = event.target;
+
+                target.setAttribute('cursor', 'pointer');
+                target.setAttribute('fill', '#66cbe9');
+                target.setAttribute('stroke-width', '0.75');
+
+                console.log('mouseover', datum.properties.NAME_2, event);
+            })
+            .on('mouseout', function(event: any) {
+                const target: SVGPathElement = event.target;
+
+                target.setAttribute('cursor', 'default');
+                target.setAttribute('fill', '#79adbc');
+                target.setAttribute('stroke-width', '0.5');
+            });
+
+        // Unmarked municipalities
         const unmarkedTargets = g.selectAll('path').filter((_, index: number) => !ids.includes(index));
+
         unmarkedTargets.transition()
             .duration(500)
-            .attr('fill', DEFAULT_COLOR);
-    };
+            .attr('fill', DEFAULT_COLOR)
+            .attr('stroke-width', 0.25);
 
-    const utilJumpToMunicipality = (id: number) => {
-        const geoPath = geoPathRef.current as any;
+        unmarkedTargets.on('mouseover', null);
+        unmarkedTargets.on('mouseout', null);
+    }
 
+    function zoomToMunicipality(id: number) {
+        if (!mapElement.current) return;
+        if (!zoomBehaviorRef.current) return;
+        if (!geoPathRef.current) return;
+
+        // TODO: extract svg to a variable, g as well?
         const svg = d3.select(mapElement.current).select('svg');
         const g = svg.select('g');
         const target = g.selectAll('path').filter((_, index: number) => index === id);
 
-        const [[x0, y0], [x1, y1]] = geoPath.bounds(target.datum() as any);
+        const [[x0, y0], [x1, y1]] = geoPathRef.current.bounds(target.datum() as any);
 
-        const { width, height } = mapElement.current?.getBoundingClientRect();
+        const { width, height } = mapElement.current.getBoundingClientRect();
         const targetWidth = x1 - x0;
         const targetHeight = y1 - y0;
-        console.log(targetWidth, targetHeight);
-        console.log(width, height);
-        const scale = Math.min(5, 0.5 / Math.max((x1 - x0) / width, (y1 - y0) / height));
-        console.log('scale', scale);
-
-        // Calculate the center of the municipality's bounds
-
-
-        // Get the current zoom scale
-        const currentZoom = d3.zoomTransform(target.node() as any).k;
-        console.log('currentZoom', currentZoom);
+        const scale = Math.min(5, 0.5 / Math.max((targetWidth) / width, (targetHeight) / height));
 
         const transform = d3.zoomIdentity
             .translate(width / 2, height / 2)
@@ -136,26 +170,58 @@ export function useMap(mapElement: RefObject<any>) {
             .translate(-(x0 + x1) / 2, -(y0 + y1) / 2);
 
         svg.transition()
-            .duration(750)
-            .call(
-                zoomBehaviorRef.current?.transform as any,
-                transform,
-            );
+            .duration(1000)
+            .call(zoomBehaviorRef.current.transform as any, transform);
+    }
 
+    function zoomToMunicipalities(ids: number[]) {
+        if (!mapElement.current) return;
+        if (!zoomBehaviorRef.current) return;
+        if (!geoPathRef.current) return;
 
-        const datum: any = target.datum();
-        console.log('Jumping to:', datum.properties.NAME_1);
-    };
+        const svg = d3.select(mapElement.current).select('svg');
+        const g = svg.select('g');
+        const targets = g.selectAll('path').filter((_, index: number) => ids.includes(index));
+
+        let x0 = Infinity;
+        let y0 = Infinity;
+        let x1 = -Infinity;
+        let y1 = -Infinity;
+
+        targets.each((target: any) => {
+            const [[fx0, fy0], [fx1, fy1]] = geoPathRef.current!.bounds(target);
+            x0 = Math.min(x0, fx0);
+            y0 = Math.min(y0, fy0);
+            x1 = Math.max(x1, fx1);
+            y1 = Math.max(y1, fy1);
+        });
+
+        const { width, height } = mapElement.current.getBoundingClientRect();
+        const targetWidth = x1 - x0;
+        const targetHeight = y1 - y0;
+        const scale = Math.min(3, 0.9 / Math.max((targetWidth) / width, (targetHeight) / height));
+
+        /* Apply the transform to the svg element */
+        const transform = ids.length === 0
+            ? d3.zoomIdentity
+            : d3.zoomIdentity
+                .translate(width / 2, height / 2)
+                .scale(scale)
+                .translate(-(x0 + x1) / 2, -(y0 + y1) / 2);
+
+        svg.transition()
+            .duration(500)
+            .call(zoomBehaviorRef.current.transform, transform);
+    }
 
     const resetView = () => {
-        console.log('resetZoom');
         const svg = d3.select(mapElement.current).select('svg');
-        svg.transition().duration(750).call(
+        svg.transition().call(
             zoomBehaviorRef.current?.transform as any,
             d3.zoomIdentity,
         );
 
-        // FIXME: This is a workaround to recalculate the projection
+        // FIXME: This is a workaround to recalculate the projection when view height and width change
         const { width, height } = mapElement.current.getBoundingClientRect();
         geoProjectionRef.current?.fitExtent(
             [[width * 0.05, height * 0.05], [width * 0.95, height * 0.95]],
@@ -171,7 +237,8 @@ export function useMap(mapElement: RefObject<any>) {
         mapElement,
         addMarkedMunicipality,
         setMarkedMunicipalities,
-        utilJumpToMunicipality,
+        zoomToMunicipality,
+        zoomToMunicipalities,
         resetView,
     };
 }

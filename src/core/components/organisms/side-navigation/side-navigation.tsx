@@ -49,6 +49,18 @@ export function SideNavigation() {
                 </ul>
             </div>
             <hr />
+            <div className="section">
+                <ul>
+                    <li>
+                        <div className="icon">
+                            <DiceIcon fill="white" />
+                        </div>
+                        <a href="/exploration">
+                            <span>Descobrimentos</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </nav>
     );
 }

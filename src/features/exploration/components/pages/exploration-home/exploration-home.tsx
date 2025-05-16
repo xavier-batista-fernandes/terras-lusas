@@ -5,7 +5,7 @@ import { useMunicipalities } from '../../../../../core/providers/municipalities-
 
 export function ExplorationHome() {
     const mapElement = useRef(null);
-    const { setMarkedMunicipalities } = useMap(mapElement);
+    const { setMarkedMunicipalities, zoomToMunicipalities } = useMap(mapElement);
     const { getMatchingMunicipalityIds } = useMunicipalities();
 
     function inputChangeHandler(event: React.ChangeEvent<HTMLInputElement>) {
@@ -15,17 +15,15 @@ export function ExplorationHome() {
         const matchingIds = getMatchingMunicipalityIds(input);
         console.log('matchingIds:', matchingIds);
         setMarkedMunicipalities(matchingIds);
+        zoomToMunicipalities(matchingIds);
     }
 
     return (
         <div className="exploration-home-container">
             <div>
-                <div>
-                    <h1>ExplorationHome works!</h1>
-                    <input onChange={inputChangeHandler} />
-                </div>
-                <div ref={mapElement}></div>
+                <input placeholder="Escreve qualquer coisa..." onChange={inputChangeHandler} />
             </div>
+            <div ref={mapElement}></div>
         </div>
     );
 }
