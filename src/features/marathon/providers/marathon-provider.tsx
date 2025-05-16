@@ -1,6 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { useCountdown } from '../../../core/hooks/useCountdown.ts';
-import { areMunicipalitiesEqual } from '../../../core/utils/are-municipalities-equal.ts';
 import { Details } from '../../../core/models/details.ts';
 import { useMunicipalities } from '../../../core/providers/municipalities-context/use-municipalities.ts';
 import { CountdownState } from '../../../core/models/countdown-state.ts';
@@ -19,7 +18,7 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
 
     const navigate = useNavigate();
     const { countdown, countdownState, startCountdown, stopCountdown } = useCountdown(GAME_DURATION);
-    const { details } = useMunicipalities();
+    const { details, getMunicipalityId } = useMunicipalities();
 
     const [gameState, setGameState] = useState(GameState.Idle);
     const [guessedMunicipalities, setGuessedMunicipalities] = useState(new Set<number>());
@@ -50,11 +49,6 @@ export function MarathonProvider({ children }: { children: ReactNode }) {
 
         const history = getMarathonHistory();
         navigate(`/marathon/results/${history.length - 1}`);
-    }
-
-    function getMunicipalityId(municipality: string) {
-        const target = details.find((detail) => areMunicipalitiesEqual(detail.municipality, municipality));
-        return target?.id;
     }
 
     function isGuessRepeated(id: number) {

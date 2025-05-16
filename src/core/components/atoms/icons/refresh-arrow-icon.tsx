@@ -4,7 +4,7 @@ export function RefreshArrowIcon({ fill = 'none', stroke = '#000000', strokeWidt
     return (
         <svg
             height="100%"
-            width="auto"
+            width="100%"
             viewBox="0 0 512 512"
             xmlns="http://www.w3.org/2000/svg"
         >

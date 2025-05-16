@@ -3,31 +3,31 @@ import { stringToTitleCase } from '../../utils/string-to-title-case.ts';
 import { Details } from '../../models/details.ts';
 import { MunicipalitiesContextType } from './municipalities-context.type.ts';
 import { MunicipalitiesContext } from './municipalities-context.ts';
+import { areMunicipalitiesEqual } from '../../utils/are-municipalities-equal.ts';
 
 export function MunicipalitiesProvider({ children }: { children: ReactNode }) {
 
     const [isLoading, setIsLoading] = useState(true);
-    const [rawData, setRawData] = useState<{ type: string, features: any } | undefined>(undefined);
     const [details, setDetails] = useState<Details[]>([]);
 
     const context: MunicipalitiesContextType = {
         isLoading,
-        rawData,
         details,
         getDistricts,
         getDetailsForDistrict,
+        getMunicipalityId,
+        getMatchingMunicipalityIds,
     };
 
     useEffect(() => {
         const init = async () => {
             // Fetch the raw data
+            // TODO: see how to handle errors when awaiting instead of using then or catch
             const URL = '/assets/data/municipalities.json';
             const response = await fetch(URL);
-            // TODO: see how to handle errors when awaiting instead of using then or catch
             const rawData = await response.json();
-            setRawData(rawData);
 
-            // Populate array of all municipality details
+            // Populate an array with all the municipality details
             const details: Details[] = [];
             rawData.objects.municipalities.geometries.forEach((geometry: any, index: number) => {
                 const district = stringToTitleCase(geometry.properties['NAME_1']);
@@ -39,10 +39,10 @@ export function MunicipalitiesProvider({ children }: { children: ReactNode }) {
             setIsLoading(false);
         };
 
-        init();
+        init().then();
 
+        // TODO: learn how to clean up providers
         return () => {
-            // TODO: learn how to clean up providers
         };
     }, []);
 
@@ -54,6 +54,17 @@ export function MunicipalitiesProvider({ children }: { children: ReactNode }) {
 
     function getDetailsForDistrict(district: string) {
         return details.filter(detail => detail.district === district);
+    }
+
+    function getMunicipalityId(municipality: string) {
+        const target = details.find((detail) => areMunicipalitiesEqual(detail.municipality, municipality));
+        return target?.id;
+    }
+
+    function getMatchingMunicipalityIds(substring: string) {
+        if (substring.length === 0) return [];
+        const matchingDetails = details.filter((detail) => detail.municipality.toLowerCase().startsWith(substring.toLowerCase()));
+        return matchingDetails.map((detail) => detail.id);
     }
 
     return (

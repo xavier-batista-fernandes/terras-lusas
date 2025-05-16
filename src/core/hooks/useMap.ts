@@ -3,8 +3,10 @@ import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
 import { getDistrictColor } from '../utils/get-district-color.ts';
 
+// TODO: receive an input option determining the map type (districts, municipalities, etc.)
 export function useMap(mapElement: RefObject<any>) {
 
+    const DEFAULT_COLOR = 'rgba(198, 198, 198, 0.25)';
     const [featureCollection, setFeatureCollection] = useState<any>();
 
     const geoPathRef = useRef<d3.GeoPath>(null);
@@ -47,7 +49,8 @@ export function useMap(mapElement: RefObject<any>) {
 
         const svg = container.append('svg')
             .attr('height', '100%')
-            .attr('width', '100%');
+            .attr('width', '100%')
+            .style('display', 'block');
 
         const g = svg.append('g');
         const zoomBehavior = d3.zoom()
@@ -63,7 +66,7 @@ export function useMap(mapElement: RefObject<any>) {
             .enter()
             .append('path')
             .attr('d', geoPath as any)
-            .attr('fill', 'rgba(198, 198, 198, 0.25)')
+            .attr('fill', DEFAULT_COLOR)
             .attr('stroke', '#000000')
             .attr('stroke-width', 0.25);
 
@@ -78,19 +81,29 @@ export function useMap(mapElement: RefObject<any>) {
     }, [featureCollection]);
 
 
-    const utilPaintMunicipality = (id: number) => {
+    const addMarkedMunicipality = (id: number) => {
         const svg = d3.select(mapElement.current).select('svg');
-        console.log('svg', svg);
         const g = svg.select('g');
-        console.log('g', g);
         const target = g.selectAll('path').filter((_, index: number) => index === id);
-        console.log('target', target);
-
-        const datum: any = target.datum();
 
         target.transition()
             .duration(500)
-            .attr('fill', getDistrictColor(datum.properties.NAME_1));
+            .attr('fill', (datum: any) => getDistrictColor(datum.properties.NAME_1));
+    };
+
+    const setMarkedMunicipalities = (ids: number[]) => {
+        const svg = d3.select(mapElement.current).select('svg');
+        const g = svg.select('g');
+
+        const markedTargets = g.selectAll('path').filter((_, index: number) => ids.includes(index));
+        markedTargets.transition()
+            .duration(500)
+            .attr('fill', (datum: any) => getDistrictColor(datum.properties.NAME_1));
+
+        const unmarkedTargets = g.selectAll('path').filter((_, index: number) => !ids.includes(index));
+        unmarkedTargets.transition()
+            .duration(500)
+            .attr('fill', DEFAULT_COLOR);
     };
 
     const utilJumpToMunicipality = (id: number) => {
@@ -156,7 +169,8 @@ export function useMap(mapElement: RefObject<any>) {
 
     return {
         mapElement,
-        utilPaintMunicipality,
+        addMarkedMunicipality,
+        setMarkedMunicipalities,
         utilJumpToMunicipality,
         resetView,
     };

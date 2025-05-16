@@ -8,7 +8,7 @@ import { RefreshArrowIcon } from '../../../../../core/components/atoms/icons/ref
 
 export function MarathonPlay() {
     const mapElement = useRef(null);
-    const { utilPaintMunicipality, utilJumpToMunicipality, resetView } = useMap(mapElement);
+    const { addMarkedMunicipality, utilJumpToMunicipality, resetView } = useMap(mapElement);
     const {
         remainingTime,
         getMunicipalityId,
@@ -57,7 +57,7 @@ export function MarathonPlay() {
 
         if (isGuessCorrect(municipalityId)) {
             markCorrect(municipalityId);
-            utilPaintMunicipality(municipalityId);
+            addMarkedMunicipality(municipalityId);
             utilJumpToMunicipality(municipalityId);
         }
 
