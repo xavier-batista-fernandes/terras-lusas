@@ -118,21 +118,44 @@ export function useMap(mapElement: RefObject<any>) {
             .attr('stroke-width', 0.5);
 
         markedTargets
-            .on('mouseover', function(event: any, datum: any) {
+            .on('mousemove', function(event: any, datum: any) {
+                console.log('MOUSEOVER', datum.properties.NAME_2);
                 const target: SVGPathElement = event.target;
-
                 target.setAttribute('cursor', 'pointer');
                 target.setAttribute('fill', '#66cbe9');
                 target.setAttribute('stroke-width', '0.75');
 
-                console.log('mouseover', datum.properties.NAME_2, event);
-            })
-            .on('mouseout', function(event: any) {
-                const target: SVGPathElement = event.target;
+                const tooltip: HTMLElement =
+                    document.querySelector('#tooltip') ??
+                    document.createElement('div');
 
+                tooltip.id = 'tooltip';
+                tooltip.innerHTML = datum.properties.NAME_2;
+                tooltip.style.pointerEvents = 'none';
+                tooltip.style.width = 'fit-content';
+                tooltip.style.height = 'fit-content';
+                tooltip.style.position = 'fixed';
+                tooltip.style.zIndex = '1000';
+                tooltip.style.left = `${event.clientX}px`;
+                tooltip.style.top = `${event.clientY}px`;
+                tooltip.style.transform = 'translate(-50%, -125%)';
+                tooltip.style.background = 'rgba(246,246,246)';
+                tooltip.style.fontSize = '1rem';
+                tooltip.style.display = 'block';
+                tooltip.style.padding = '.5% 1%';
+                tooltip.style.border = '1px solid black';
+                tooltip.style.borderRadius = '8px';
+
+                mapElement.current.append(tooltip);
+            })
+            .on('mouseleave', function(event: any) {
+                const target: SVGPathElement = event.target;
                 target.setAttribute('cursor', 'default');
                 target.setAttribute('fill', '#79adbc');
                 target.setAttribute('stroke-width', '0.5');
+
+                const tooltip = document.querySelector('#tooltip');
+                tooltip?.remove();
             });
 
         // Unmarked municipalities
@@ -143,8 +166,8 @@ export function useMap(mapElement: RefObject<any>) {
             .attr('fill', DEFAULT_COLOR)
             .attr('stroke-width', 0.25);
 
-        unmarkedTargets.on('mouseover', null);
-        unmarkedTargets.on('mouseout', null);
+        unmarkedTargets.on('mousemove', null);
+        unmarkedTargets.on('mouseleave', null);
     }
 
     function zoomToMunicipality(id: number) {
