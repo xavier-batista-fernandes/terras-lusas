@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { NotFound } from './core/components/pages/not-found/not-found.tsx';
 import { MarathonLayout } from './features/marathon/components/templates/marathon-layout.tsx';
 import { MarathonResults } from './features/marathon/components/pages/marathon-results/marathon-results.tsx';
