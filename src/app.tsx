@@ -10,9 +10,9 @@ import { ErrorPage } from './core/components/pages/error-page/error-page.tsx';
 import { useEffect } from 'react';
 import { RootLayout } from './core/components/templates/root-layout.tsx';
 import { ExplorationHome } from './features/exploration/components/pages/exploration-home/exploration-home.tsx';
+import { Home } from './core/components/pages/home/home.tsx';
 
 export const App = () => {
-
     useEffect(() => {
         // @ts-ignore
         console.log(`Running in ${process.env.NODE_ENV} environment.`);
@@ -23,7 +23,7 @@ export const App = () => {
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<RootLayout />}>
-                        <Route index element={<Navigate to="/marathon" />} />
+                        <Route index element={<Home />} />
                         <Route path="/marathon" element={<MarathonLayout />}>
                             <Route index element={<MarathonHome />} />
                             <Route path="statistics" element={<MarathonStatistics />} />
@@ -38,4 +38,3 @@ export const App = () => {
         </ErrorBoundary>
     );
 };
-
